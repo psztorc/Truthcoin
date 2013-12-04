@@ -1,61 +1,14 @@
-#rm(list=ls())
+#Consensus Mechanism
+#This is the mechanism that, theoretically,
+ #   1] allows the software to determine the state of contracts truthfully, and
+ #   2] only allows an efficient number of most-traded-upon-contracts.
+
+
+#try(setwd("W:/VeteranCord/Documents/Decentralized Prediction Markets/Latest"))
+#To my knowledge, R does not feature 'automatic working directories' uneless it is being run as a script
 
 # #Function Library
-
-#expand this into a property directory so that it is intelligible to other people
-# !'s denote known sub-optimalities
-
-#Load an entire folder of .R sources
-#sapply(list.files(pattern="*.R"), source, .GlobalEnv); 
-
-
-# if( !require(foreach)) install.packages('foreach') ; require(foreach)
-# if( !require(doParallel)) install.packages('doParallel') ; require(doParallel)
-# 
-# registerDoParallel(cores=4) #remember to remove this before publishing (!) - OS and machine specific
-
-
-MeanNA <- function(vec) {
-  #Replaces NA instances with their mean instead
-  m <- mean(vec, na.rm = TRUE)
-  vec[is.na(vec)] <- m
-  return(vec)
-}
-
-GetWeight <- function(vec,AddMean=FALSE) {
-  #Takes a vector, absolute value, then proportional linear deviance from 0.
-  new <- abs(vec)
-  if(AddMean==1) new  <- new + mean(new)
-  if(sum(new)==0) new <- new + 1
-  new <- new/sum(new)
-  return(new)
-}
-
-Catch <- function(x,m=0) {
-  #x is the ConoutRAW, m is the length of the midpoint corresponding to .5 
-  #The purpose here is to handle rounding for binary contracts
-  if(x<(.5-(m/2))) return(0)
-  else if(x>(.5+(m/2))) return(1)
-  else return(.5)
-}
-
-Influence  <- function(weight) {
-  #Takes a vector that sums to 1 and computes relative strength of the indicators above expected.
-  #this is because by-default the conformity of each Author and Judge is expressed relatively.
-  expected <- rep(1/length(weight),length(weight))
-  return( weight / expected)
-}
-
-WeightedPrinComp <- function(X,Weights=rep(1,nrow(X))/nrow(X) ) {
-  
-  wCVM <- cov.wt(x=X,wt=Weights)
-  
-  L <- svd(wCVM$cov)$u[,1]
-  S <- as.vector(scale(X,center=wCVM$center,scale= FALSE) %*% L)
-  
-  Out <- list("Scores"=S,"Loadings"=L)
-  return(Out)
-}
+source("CustomMath.r")
 
 
 GetRewardWeights3 <- function(M,Rep=ReWeight(rep(1,nrow(M))),alpha=.1,Debug=0) {
@@ -64,19 +17,29 @@ GetRewardWeights3 <- function(M,Rep=ReWeight(rep(1,nrow(M))),alpha=.1,Debug=0) {
   #Rep=ReWeight(rep(1,nrow(M)))
   Results <- WeightedPrinComp(M,Rep)
   
-  FirstLoading <- Results$Loadings #The loadings show which contracts were more 'agreed-upon' than others. 
+  FirstLoading <- Results$Loadings #The first loading is designed to indicate which contracts were more 'agreed-upon' than others. 
   FirstScore   <- Results$Scores   #The scores show loadings on consensus (to what extent does this observation represent consensus?)
   
+  #PCA, being an abstract factorization, is incapable of determining anything absolute.
+  #Therefore the results of the entire procedure would theoretically be reversed if the average state of contracts changed from TRUE to FALSE.
+  #Because the average state of contracts is a function both of randomness and the way the contracts are worded, I quickly check to see which
+  #  of the two possible 'new' reputation vectors had more opinion in common with the original 'old' reputation.
+  #  I originally tried doing this using math but after multiple failures I chose this ad hoc way.
   Set1 <-  FirstScore+abs(min(FirstScore))
   Set2 <-  FirstScore-max(FirstScore)   
   
-  #Make results independent of average state of contracts (generally true "status 1" OR  generally false "status 0")
   Old <- Rep%*%M
+  
   New1 <- GetWeight(Set1%*%M)
-  New2 <- GetWeight(Set2%*%M) 
-  #Difference in Sum of squared errors, if +, then New1 had higher errors (use 2), and converse.
+  New2 <- GetWeight(Set2%*%M)
+  
+  #Difference in Sum of squared errors, if >0, then New1 had higher errors (use New2), and conversely if <0 use 1.
   RefInd <- sum( (New1-Old)^2) -  sum( (New2-Old)^2)
-
+  
+  if(RefInd<=0) AdjPrinComp <- Set1  
+  if(RefInd>0)  AdjPrinComp <- Set2  
+  
+  #optionally print some variables 
   if(Debug==1) {
     print("FirstLoading")
     print(FirstLoading)
@@ -84,117 +47,58 @@ GetRewardWeights3 <- function(M,Rep=ReWeight(rep(1,nrow(M))),alpha=.1,Debug=0) {
     print(FirstScore)
     print("RefInd")
     print(RefInd)
-  }
-
-  #reorder by average contract reference point. Notice the treatment based on average contract outcome (RefInd) below or above .5 
-  if(RefInd<=0) AdjPrinComp <- Set1  #Adjust for reference case: biggest liar=0   
-  if(RefInd>0)  AdjPrinComp <- Set2  
-  
-  if(Debug==1) {
     print("AdjPrinComp - Adjusted to take into account the average reference point")
     print(AdjPrinComp)
   }
-  
-  RowRewardWeighted <- GetWeight(rep(1,nrow(M))) #Declared here, filled below.
+
+  #Declared here, filled below (unless there was a perfect consensus).
+  RowRewardWeighted <- Rep # (set this to uniform if you want a passive diffusion toward equality when people cooperate [not sure you would])
   if(max(abs(AdjPrinComp))!=0) RowRewardWeighted <- GetWeight( (AdjPrinComp * Rep/mean(Rep)) ) #Overwrite the inital declaration IFF there wasn't perfect consensus.
-  #note: Rep/mean(Rep) is a correction ensuring Reputation is additive.
+  #note: Rep/mean(Rep) is a correction ensuring Reputation is additive. Therefore, nothing can be gained by splitting/combining Reputation into single/multiple accounts.
   
   
-  #Freshly-Calculated Reward (Reputation)
+  #Freshly-Calculated Reward (Reputation) - Exponential Smoothing
   #New Reward: RowRewardWeighted
   #Old Reward: Rep
   SmoothedR <- alpha*(RowRewardWeighted) + (1-alpha)*Rep
   
+  #Return Data
   Out <- list("FirstL"=FirstLoading,"OldRep"=Rep,"ThisRep"=RowRewardWeighted,"SmoothRep"=SmoothedR)  #Keep the factors and time information along for the ride, they are interesting.
   return(Out)
 }
 
-ReWeight <- function(vec,exclude=is.na(vec)) {
-  #Get the relative influence of numbers, treat NA as influence-less
-  out <- vec
-  out[exclude] <- 0
-  out <- out/sum(out)
-  return(out)
-}
-
-x <- iris[which(iris[,5] != "setosa"), c(1,5)]
-trials <- 1000
-ptime <- system.time({
-  r <- foreach(icount(trials), .combine=cbind) %dopar% {
-    ind <- sample(100, 100, replace=TRUE)
-    result1 <- glm(x[ind,2]~x[ind,1], family=binomial(logit))
-    coefficients(result1)
-  }
-})[3]
-
-BuildConOut2 <- function(Mtemp=M1,Rep=rep(1/6,6),Debug=1) {
-  #Determines the outcomes of contracts based on the provided reputation
-  RewardWeightsNA <- Rep
-  
-  #ConoutRAW  <- 1:ncol(Mtemp) #Declare this (filled below)
-  
-  ConoutRAW <- foreach(i=1:ncol(Mtemp), .combine=c) %dopar% {
-    
-#     if(Debug==1)  print(paste("Building Row",i))
-    
-    Row <- (RewardWeightsNA[!is.na(Mtemp[,i])])/sum(RewardWeightsNA[!is.na(Mtemp[,i])]) #The Consensus Scores of the row-players who DID provide judgements.
-    Col <- Mtemp[!is.na(Mtemp[,i]),i]                   #What these row-players had to say about the contracts they DID judge.
-    
-    Row%*%Col                                           #Our Current best-guess for this contract.
-    
-#     if(Debug==1) {
-#       print(i)
-#       print(Row)
-#       print(Col)
-#       print(ConoutRAW[i])
-#     }
-    
-  }
-  
-  return(ConoutRAW)
-}
-
-BuildConOut <- function(Mtemp=M1,Rep=rep(1/6,6),Debug=1){
-  #Determines the outcomes of contracts based on the provided reputation
+BuildConOut <- function(Mtemp=M1, Rep=ReWeight(rep(1,nrow(Mtemp))), Debug=1) {
+  #Determines the outcomes of contracts based on the provided reputation (weighted vote)
   RewardWeightsNA <- Rep
   
   ConoutRAW  <- 1:ncol(Mtemp) #Declare this (filled below)
-  
-  for(i in 1:ncol(Mtemp)) {
+  for(i in 1:ncol(Mtemp)) {    
+    #For each column:    
+    Row <- ReWeight(RewardWeightsNA[!is.na(Mtemp[,i])]) #The Reputation of the row-players who DID provide judgements, rescaled to sum to 1.
+    Col <- Mtemp[!is.na(Mtemp[,i]),i]                   #The relevant contract with NAs removed. ("What these row-players had to say about the contracts they DID judge.")
     
-#     if(Debug==1)  print(paste("Building Row",i))
-    
-    Row <- ReWeight(RewardWeightsNA[!is.na(Mtemp[,i])]) #The Consensus Scores of the row-players who DID provide judgements.
-    Col <- Mtemp[!is.na(Mtemp[,i]),i]                   #What these row-players had to say about the contracts they DID judge.
-    
-    ConoutRAW[i] <- Row%*%Col                           #Our Current best-guess for this contract.
-    
-#     if(Debug==1) {
-#       print(i)
-#       print(Row)
-#       print(Col)
-#       print(ConoutRAW[i])
-#     }
-    
+    ConoutRAW[i] <- Row%*%Col                           #Our Current best-guess for this contract (weighted average)  
   }
   
+  #Output
   return(ConoutRAW)
 }
 
-FillNa <- function(Mna,Rep=ReWeight( rep(1,nrow(Mna)) ), GroupFits=TRUE, CatchP=.1, Debug=0) { 
+FillNa <- function(Mna,Rep=ReWeight( rep(1,nrow(Mna)) ), CatchP=.1, Debug=0) { 
   #Uses exisiting data and reputations to fill missing observations.
-    
-  #Count the missing observations (NA)
+  #Essentially a weighted average using all availiable non-NA data.
+  #How much should slackers who arent voting suffer? I decided this would depend on the global percentage of slacking.
+  
+  #Count the missing observations (NA). We will need this information later.
   NAcontract <- apply(Mna,2,function(x) sum(is.na(x)) )
   NAvote <- apply(Mna,1,function(x) sum(is.na(x)) )
 
-  Mnew <- Mna #Declare (in case no NAs)
+  Mnew <- Mna #Declare (in case no Missing values, Mnew and Mna will be the same)
   
   if(sum(NAcontract)>0) {
-    #Only do this if there ARE missing values.
+    #Of course, only do this process if there ARE missing values.
     
-    #Contract Outcome - Our best guess for the contract outcome so far.
-    #This is the "So what was the outcome of this contract, anyway?" in the non-NA section.
+    #Contract Outcome - Our best guess for the contract state (FALSE=0, Ambiguous=.5, TRUE=1) so far (ie, using the present, non-missing, values).
     ConoutRAW <- BuildConOut(Mna,Rep,Debug)
     
     #Fill in the predictions to the original M
@@ -210,16 +114,16 @@ FillNa <- function(Mna,Rep=ReWeight( rep(1,nrow(Mna)) ), GroupFits=TRUE, CatchP=
       print(" ")
     }
     
+    #Slightly complicated:
     NAsToFill <- ( NAmat%*%diag(as.vector(ConoutRAW)) )
     #   This builds a matrix whose columns j:
         #          NAmat was false (the observation wasn't missing)     ...  have a value of Zero
-        #          NAmat was true (the observation was missing)         ...  have a value of the jth element of ConoutRAW (the 'current best guess')
-    
-    
+        #          NAmat was true (the observation was missing)         ...  have a value of the jth element of ConoutRAW (the 'current best guess') 
     Mnew <- Mna + NAsToFill
     #This replaces the NAs, which were zeros, with the predicted Contract outcome.
-    #Essentially a weighted average using all availiable non-NA data.
     
+    
+    #Print some items 
     if(Debug==1) {
       print("Creation of New Matrix")
       print("Added Part 1")
@@ -234,8 +138,10 @@ FillNa <- function(Mna,Rep=ReWeight( rep(1,nrow(Mna)) ), GroupFits=TRUE, CatchP=
   
   }
   
+  #Appropriately force the predictions into their discrete (0,.5,1) slot. (continuous variables can be gamed).
   MnewC <- apply(Mnew, c(1,2), function(x) Catch(x,CatchP) )
   
+  #Results
   Output <- vector("list")
   Output[[1]] <- MnewC
   Output[[2]] <- NAcontract
@@ -243,11 +149,7 @@ FillNa <- function(Mna,Rep=ReWeight( rep(1,nrow(Mna)) ), GroupFits=TRUE, CatchP=
   return(Output)
 }
 
-ReverseMatrix <- function(M) {
-  #Inverts a binary matrix
-  return((M-1)*-1)
-}
-
+#Putting it all together:
 Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
   #Main Routine
   #Fill the default reputations if none are provided
@@ -255,7 +157,7 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
   
 #   TruncateMatrix
   
-  INPUT2 <- FillNa(M0, Rep, GroupFits=TRUE, CatchP=CatchP, Debug=0)
+  INPUT2 <- FillNa(M0, Rep, CatchP=CatchP, Debug=0)
   #Pre-Analytics
    
   M <- INPUT2[[1]]
@@ -320,6 +222,7 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
   return(Output)
 }
 
+#Long-Term
 Chain <- function(X,N=2,ThisRep=NULL) {
   #Repeats factory process N times
   if(is.null(ThisRep)) ThisRep <- ReWeight(rep(1,nrow(X)))
@@ -333,44 +236,7 @@ Chain <- function(X,N=2,ThisRep=NULL) {
   return(Output)
 }
 
-# Chain2 <- function()
 
-CompareIncentives <- function(X,FF=Factory,N=1) {
-  Dim <- dim(X)
-  Results <- data.frame('Group'=row.names(X))
-  Results <- suppressWarnings( cbind(Results, Chain(X,N=N)[[N]]$Agents[,c("OldRep","SmoothRep")] ) )
-  Results$Drep <- Results$SmoothRep - Results$OldRep
-  
-  Groups <- aggregate( . ~ Group, Results, sum)
-  Groups <- Groups[order(Groups$Drep,decreasing=TRUE),]
-  
-  Out <- vector("list",2)
-  Out[[1]] <- Results
-  Out[[2]] <- Groups
-  return(Out)
-}
-
-PlotJ <- function(m,FF=Factory,Title="Plot of Judgement Space") { 
-  library(ggplot2)
-  library(reshape)
-  
-  d <- melt(m)
-  d$value <- factor(d$value)
-  d$X1  <- factor(d$X1)
-  
-  s <- data.frame(X1=rownames(m), Scores= Factory(m)[["Agents"]][,"RowBonus"])
-  
-  d <- merge(d,s)
-  
-  p1 <- ggplot(d,aes(x=value,fill=X1,alpha=Scores)) + geom_histogram() + facet_grid(X2~.)
-  
-  p1 + theme_bw() +
-    scale_fill_discrete(guide=guide_legend(title = "Judge")) +
-    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.2,.9)) +
-    xlab("Contract Outcome") +
-    ylab('Unscaled "Naive" Votes (%)') +
-    labs(title = Title)
-}
 
 # !!! Must FillNa with .5 FIRST, then average in, to prevent monopoly voting on brand-new contracts. (Actually, if it will eventually be ruled .5).
 

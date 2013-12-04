@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Tests, Results, and Commentary</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Tests, Results, and Commentary</h1>
+
+<p>Dec 3, 2013</p>
+
+<pre><code class="r"># Cleanup
+rm(list = ls())
+
+# Load everything
+try(setwd(&quot;~/Real/Programs/Decentralized Prediction Markets/Latest&quot;))
+source(file = &quot;ConsensusMechanism.r&quot;)
+</code></pre>
+
+<h2>Base</h2>
+
+<pre><code class="r">Factory(Scenarios$Base)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0
+## True         1    1    0    0
+## Distort 1    1    0    0    0
+## True         1    1    0    0
+## Distort 2    1    1    1    0
+## Liar         0    0    1    1
+## Liar         0    0    1    1
+## 
+## $Agents
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.1667  0.2824    0.1782     0              1       0.1667
+## Distort 1 0.1667  0.2176    0.1718     0              1       0.1667
+## True      0.1667  0.2824    0.1782     0              1       0.1667
+## Distort 2 0.1667  0.2176    0.1718     0              1       0.1667
+## Liar      0.1667  0.0000    0.1500     0              1       0.1667
+## Liar      0.1667  0.0000    0.1500     0              1       0.1667
+##           RowBonus
+## True        0.1782
+## Distort 1   0.1718
+## True        0.1782
+## Distort 2   0.1718
+## Liar        0.1500
+## Liar        0.1500
+## 
+## $Contracts
+##                     C1.1      C2.1     C3.0   C4.0
+## First Loading    -0.5395 -0.457056 0.457056 0.5395
+## ConoutRAW         0.7000  0.528238 0.471762 0.3000
+## Consensus Reward  0.4381  0.061860 0.061860 0.4381
+## Certainty         0.1600  0.003189 0.003189 0.1600
+## Agreement         0.5138  0.915730 0.915730 0.5138
+## RelativeAg        0.1797  0.320302 0.320302 0.1797
+## NAs Filled        0.0000  0.000000 0.000000 0.0000
+## ParticipationC    1.0000  1.000000 1.000000 1.0000
+## Contract Bonus    0.4381  0.061860 0.061860 0.4381
+## ConoutFinal       1.0000  0.500000 0.500000 0.0000
+</code></pre>
+
+<pre><code class="r">CompareIncentives(Scenarios$Base)
+</code></pre>
+
+<pre><code>## [[1]]
+##       Group OldRep SmoothRep      Drep
+## 1      True 0.1667    0.1782  0.011571
+## 2 Distort 1 0.1667    0.1718  0.005096
+## 3      True 0.1667    0.1782  0.011571
+## 4 Distort 2 0.1667    0.1718  0.005096
+## 5      Liar 0.1667    0.1500 -0.016667
+## 6      Liar 0.1667    0.1500 -0.016667
+## 
+## [[2]]
+##       Group OldRep SmoothRep      Drep
+## 4      True 0.3333    0.3565  0.023142
+## 1 Distort 1 0.1667    0.1718  0.005096
+## 2 Distort 2 0.1667    0.1718  0.005096
+## 3      Liar 0.3333    0.3000 -0.033333
+</code></pre>
+
+<pre><code class="r"># Good.
+Chain(X = Scenarios$Base)
+</code></pre>
+
+<pre><code>## [[1]]
+## [[1]]$Original
+##           C1.1 C2.1 C3.0 C4.0
+## True         1    1    0    0
+## Distort 1    1    0    0    0
+## True         1    1    0    0
+## Distort 2    1    1    1    0
+## Liar         0    0    1    1
+## Liar         0    0    1    1
+## 
+## [[1]]$Agents
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.1667  0.2824    0.1782     0              1       0.1667
+## Distort 1 0.1667  0.2176    0.1718     0              1       0.1667
+## True      0.1667  0.2824    0.1782     0              1       0.1667
+## Distort 2 0.1667  0.2176    0.1718     0              1       0.1667
+## Liar      0.1667  0.0000    0.1500     0              1       0.1667
+## Liar      0.1667  0.0000    0.1500     0              1       0.1667
+##           RowBonus
+## True        0.1782
+## Distort 1   0.1718
+## True        0.1782
+## Distort 2   0.1718
+## Liar        0.1500
+## Liar        0.1500
+## 
+## [[1]]$Contracts
+##                     C1.1      C2.1     C3.0   C4.0
+## First Loading    -0.5395 -0.457056 0.457056 0.5395
+## ConoutRAW         0.7000  0.528238 0.471762 0.3000
+## Consensus Reward  0.4381  0.061860 0.061860 0.4381
+## Certainty         0.1600  0.003189 0.003189 0.1600
+## Agreement         0.5138  0.915730 0.915730 0.5138
+## RelativeAg        0.1797  0.320302 0.320302 0.1797
+## NAs Filled        0.0000  0.000000 0.000000 0.0000
+## ParticipationC    1.0000  1.000000 1.000000 1.0000
+## Contract Bonus    0.4381  0.061860 0.061860 0.4381
+## ConoutFinal       1.0000  0.500000 0.500000 0.0000
+## 
+## 
+## [[2]]
+## [[2]]$Original
+##           C1.1 C2.1 C3.0 C4.0
+## True         1    1    0    0
+## Distort 1    1    0    0    0
+## True         1    1    0    0
+## Distort 2    1    1    1    0
+## Liar         0    0    1    1
+## Liar         0    0    1    1
+## 
+## [[2]]$Agents
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.1782  0.2873    0.1891     0              1       0.1667
+## Distort 1 0.1718  0.2127    0.1759     0              1       0.1667
+## True      0.1782  0.2873    0.1891     0              1       0.1667
+## Distort 2 0.1718  0.2127    0.1759     0              1       0.1667
+## Liar      0.1500  0.0000    0.1350     0              1       0.1667
+## Liar      0.1500  0.0000    0.1350     0              1       0.1667
+##           RowBonus
+## True        0.1891
+## Distort 1   0.1759
+## True        0.1891
+## Distort 2   0.1759
+## Liar        0.1350
+## Liar        0.1350
+## 
+## [[2]]$Contracts
+##                     C1.1     C2.1    C3.0   C4.0
+## First Loading    -0.5352 -0.46214 0.46214 0.5352
+## ConoutRAW         0.7300  0.55414 0.44586 0.2700
+## Consensus Reward  0.4047  0.09527 0.09527 0.4047
+## Certainty         0.2116  0.01173 0.01173 0.2116
+## Agreement         0.4154  0.88986 0.88986 0.4154
+## RelativeAg        0.1591  0.34088 0.34088 0.1591
+## NAs Filled        0.0000  0.00000 0.00000 0.0000
+## ParticipationC    1.0000  1.00000 1.00000 1.0000
+## Contract Bonus    0.4047  0.09527 0.09527 0.4047
+## ConoutFinal       1.0000  1.00000 0.00000 0.0000
+</code></pre>
+
+<p>Very good. Conforms quickly to a correct prediction.
+I&#39;m thinking one block per day, or something, assuming we smooth difficulty correctly.</p>
+
+<h2>Reversed</h2>
+
+<pre><code class="r">Factory(Scenarios$Reversed)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0
+## True         0    0    1    1
+## Distort 1    0    1    1    1
+## True         0    0    1    1
+## Distort 2    0    0    0    1
+## Liar         1    1    0    0
+## Liar         1    1    0    0
+## 
+## $Agents
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.1667  0.2824    0.1782     0              1       0.1667
+## Distort 1 0.1667  0.2176    0.1718     0              1       0.1667
+## True      0.1667  0.2824    0.1782     0              1       0.1667
+## Distort 2 0.1667  0.2176    0.1718     0              1       0.1667
+## Liar      0.1667  0.0000    0.1500     0              1       0.1667
+## Liar      0.1667  0.0000    0.1500     0              1       0.1667
+##           RowBonus
+## True        0.1782
+## Distort 1   0.1718
+## True        0.1782
+## Distort 2   0.1718
+## Liar        0.1500
+## Liar        0.1500
+## 
+## $Contracts
+##                     C1.1      C2.1     C3.0   C4.0
+## First Loading    -0.5395 -0.457056 0.457056 0.5395
+## ConoutRAW         0.3000  0.471762 0.528238 0.7000
+## Consensus Reward  0.4381  0.061860 0.061860 0.4381
+## Certainty         0.1600  0.003189 0.003189 0.1600
+## Agreement         0.5138  0.915730 0.915730 0.5138
+## RelativeAg        0.1797  0.320302 0.320302 0.1797
+## NAs Filled        0.0000  0.000000 0.000000 0.0000
+## ParticipationC    1.0000  1.000000 1.000000 1.0000
+## Contract Bonus    0.4381  0.061860 0.061860 0.4381
+## ConoutFinal       0.0000  0.500000 0.500000 1.0000
+</code></pre>
+
+<pre><code class="r">all.equal(Factory(Scenarios$Reversed)$Agents, Factory(Scenarios$Base)$Agents)  #TRUE
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<p>Identical incentive structure, despite reversed inputs and outputs.
+Good.</p>
+
+<h2>One Liar</h2>
+
+<pre><code class="r">Factory(Scenarios$Deviance)
+</code></pre>
+
+<pre><code>## $Original
+##      C1.1 C2.1 C3.0 C4.0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## Liar    0    0    1    1
+## 
+## $Agents
+##      OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True    0.2    0.25     0.205     0              1          0.2    0.205
+## True    0.2    0.25     0.205     0              1          0.2    0.205
+## True    0.2    0.25     0.205     0              1          0.2    0.205
+## True    0.2    0.25     0.205     0              1          0.2    0.205
+## Liar    0.2    0.00     0.180     0              1          0.2    0.180
+## 
+## $Contracts
+##                     C1.1    C2.1   C3.0   C4.0
+## First Loading    -0.5000 -0.5000 0.5000 0.5000
+## ConoutRAW         0.8200  0.8200 0.1800 0.1800
+## Consensus Reward  0.2500  0.2500 0.2500 0.2500
+## Certainty         0.4096  0.4096 0.4096 0.4096
+## Agreement         0.1937  0.1937 0.1937 0.1937
+## RelativeAg        0.2500  0.2500 0.2500 0.2500
+## NAs Filled        0.0000  0.0000 0.0000 0.0000
+## ParticipationC    1.0000  1.0000 1.0000 1.0000
+## Contract Bonus    0.2500  0.2500 0.2500 0.2500
+## ConoutFinal       1.0000  1.0000 0.0000 0.0000
+</code></pre>
+
+<p>Biggest Deviator gets CRUSHED to zero. High-Stakes!
+Good.</p>
+
+<h2>Many Liars</h2>
+
+<pre><code class="r">
+Factory(Scenarios$CoalitionalDeviance)
+</code></pre>
+
+<pre><code>## $Original
+##       [,1] [,2] [,3] [,4]
+## True     1    1    0    0
+## True     1    1    0    0
+## True     1    1    0    0
+## True     1    1    0    0
+## True     1    1    0    0
+## True     1    1    0    0
+## Diver    0    0    1    1
+## Liar     1    1    1    0
+## Liar     1    1    1    0
+## Liar     1    1    1    0
+## Liar     1    1    1    0
+## 
+## $Agents
+##        OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True  0.09091 0.11715   0.09353     0              1      0.09091  0.09353
+## True  0.09091 0.11715   0.09353     0              1      0.09091  0.09353
+## True  0.09091 0.11715   0.09353     0              1      0.09091  0.09353
+## True  0.09091 0.11715   0.09353     0              1      0.09091  0.09353
+## True  0.09091 0.11715   0.09353     0              1      0.09091  0.09353
+## True  0.09091 0.11715   0.09353     0              1      0.09091  0.09353
+## Diver 0.09091 0.00000   0.08182     0              1      0.09091  0.08182
+## Liar  0.09091 0.07427   0.08925     0              1      0.09091  0.08925
+## Liar  0.09091 0.07427   0.08925     0              1      0.09091  0.08925
+## Liar  0.09091 0.07427   0.08925     0              1      0.09091  0.08925
+## Liar  0.09091 0.07427   0.08925     0              1      0.09091  0.08925
+## 
+## $Contracts
+##                     [,1]    [,2]    [,3]    [,4]
+## First Loading    -0.4082 -0.4082 0.70711 0.40825
+## ConoutRAW         0.9182  0.9182 0.43880 0.08182
+## Consensus Reward  0.3178  0.3178 0.04651 0.31783
+## Certainty         0.6995  0.6995 0.01498 0.69950
+## Agreement         0.3150  0.3150 0.88011 0.31499
+## RelativeAg        0.1726  0.1726 0.48223 0.17259
+## NAs Filled        0.0000  0.0000 0.00000 0.00000
+## ParticipationC    1.0000  1.0000 1.00000 1.00000
+## Contract Bonus    0.3178  0.3178 0.04651 0.31783
+## ConoutFinal       1.0000  1.0000 0.00000 0.00000
+</code></pre>
+
+<pre><code class="r"># Success: An attempted &lt;51% attack which failed.
+
+Factory(Scenarios$CoalitionalDeviance2)
+</code></pre>
+
+<pre><code>## $Original
+##       [,1] [,2] [,3] [,4]
+## True     1    1    0    0
+## True     1    1    0    0
+## True     1    1    0    0
+## True     1    1    0    0
+## True     1    1    0    0
+## True     1    1    0    0
+## Diver    0    0    0    1
+## Liar     1    1    1    0
+## Liar     1    1    1    0
+## Liar     1    1    1    0
+## Liar     1    1    1    0
+## 
+## $Agents
+##        OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True  0.09091 0.08333   0.09015     0              1      0.09091  0.09015
+## True  0.09091 0.08333   0.09015     0              1      0.09091  0.09015
+## True  0.09091 0.08333   0.09015     0              1      0.09091  0.09015
+## True  0.09091 0.08333   0.09015     0              1      0.09091  0.09015
+## True  0.09091 0.08333   0.09015     0              1      0.09091  0.09015
+## True  0.09091 0.08333   0.09015     0              1      0.09091  0.09015
+## Diver 0.09091 0.00000   0.08182     0              1      0.09091  0.08182
+## Liar  0.09091 0.12500   0.09432     0              1      0.09091  0.09432
+## Liar  0.09091 0.12500   0.09432     0              1      0.09091  0.09432
+## Liar  0.09091 0.12500   0.09432     0              1      0.09091  0.09432
+## Liar  0.09091 0.12500   0.09432     0              1      0.09091  0.09432
+## 
+## $Contracts
+##                     [,1]    [,2]     [,3]    [,4]
+## First Loading    -0.4364 -0.4364 -0.65465 0.43644
+## ConoutRAW         0.9182  0.9182  0.37727 0.08182
+## Consensus Reward  0.3036  0.3036  0.08911 0.30363
+## Certainty         0.6995  0.6995  0.06025 0.69950
+## Agreement         0.3150  0.3150  0.75152 0.31499
+## RelativeAg        0.1857  0.1857  0.44298 0.18567
+## NAs Filled        0.0000  0.0000  0.00000 0.00000
+## ParticipationC    1.0000  1.0000  1.00000 1.00000
+## Contract Bonus    0.3036  0.3036  0.08911 0.30363
+## ConoutFinal       1.0000  1.0000  0.00000 0.00000
+</code></pre>
+
+<pre><code class="r"># Oh, no: A Sucessful &lt;51% attack &#39;Friendly Fire&#39; ...will have to address
+# this.
+
+# Pre-Analytics
+CompareIncentives(X = Scenarios$CoalitionalDeviance2)
+</code></pre>
+
+<pre><code>## [[1]]
+##    Group  OldRep SmoothRep       Drep
+## 1   True 0.09091   0.09015 -0.0007576
+## 2   True 0.09091   0.09015 -0.0007576
+## 3   True 0.09091   0.09015 -0.0007576
+## 4   True 0.09091   0.09015 -0.0007576
+## 5   True 0.09091   0.09015 -0.0007576
+## 6   True 0.09091   0.09015 -0.0007576
+## 7  Diver 0.09091   0.08182 -0.0090909
+## 8   Liar 0.09091   0.09432  0.0034091
+## 9   Liar 0.09091   0.09432  0.0034091
+## 10  Liar 0.09091   0.09432  0.0034091
+## 11  Liar 0.09091   0.09432  0.0034091
+## 
+## [[2]]
+##   Group  OldRep SmoothRep      Drep
+## 2  Liar 0.36364   0.37727  0.013636
+## 3  True 0.54545   0.54091 -0.004545
+## 1 Diver 0.09091   0.08182 -0.009091
+</code></pre>
+
+<pre><code class="r">
+row.names(Scenarios$CoalitionalDeviance2)[7] &lt;- &quot;Liar&quot;
+CompareIncentives(X = Scenarios$CoalitionalDeviance2)
+</code></pre>
+
+<pre><code>## [[1]]
+##    Group  OldRep SmoothRep       Drep
+## 1   True 0.09091   0.09015 -0.0007576
+## 2   True 0.09091   0.09015 -0.0007576
+## 3   True 0.09091   0.09015 -0.0007576
+## 4   True 0.09091   0.09015 -0.0007576
+## 5   True 0.09091   0.09015 -0.0007576
+## 6   True 0.09091   0.09015 -0.0007576
+## 7   Liar 0.09091   0.08182 -0.0090909
+## 8   Liar 0.09091   0.09432  0.0034091
+## 9   Liar 0.09091   0.09432  0.0034091
+## 10  Liar 0.09091   0.09432  0.0034091
+## 11  Liar 0.09091   0.09432  0.0034091
+## 
+## [[2]]
+##   Group OldRep SmoothRep      Drep
+## 1  Liar 0.4545    0.4591  0.004545
+## 2  True 0.5455    0.5409 -0.004545
+</code></pre>
+
+<pre><code class="r">
+# [1] Success: &#39;Symmetric Friendly Fire&#39; (ie Team truth forms a coalition of
+# their own)
+Scenarios$CoalitionalDeviance3 &lt;- Scenarios$CoalitionalDeviance2
+Scenarios$CoalitionalDeviance3[6, ] &lt;- c(0, 0, 1, 1)
+
+CompareIncentives(X = Scenarios$CoalitionalDeviance3)
+</code></pre>
+
+<pre><code>## [[1]]
+##    Group  OldRep SmoothRep      Drep
+## 1   True 0.09091   0.09308  0.002170
+## 2   True 0.09091   0.09308  0.002170
+## 3   True 0.09091   0.09308  0.002170
+## 4   True 0.09091   0.09308  0.002170
+## 5   True 0.09091   0.09308  0.002170
+## 6   True 0.09091   0.08182 -0.009091
+## 7   Liar 0.09091   0.08227 -0.008643
+## 8   Liar 0.09091   0.09263  0.001721
+## 9   Liar 0.09091   0.09263  0.001721
+## 10  Liar 0.09091   0.09263  0.001721
+## 11  Liar 0.09091   0.09263  0.001721
+## 
+## [[2]]
+##   Group OldRep SmoothRep      Drep
+## 2  True 0.5455    0.5472  0.001757
+## 1  Liar 0.4545    0.4528 -0.001757
+</code></pre>
+
+<p>#Chain(Scenarios$CoalitionalDeviance3,N=100)
+  #Team &#39;True&#39; wins via symmetry-exploitation</p>
+
+<pre><code class="r">  # [2] Success: &#39;Cold Feet 1&#39; (a single player abandons the coalition)
+  Scenarios$CoalitionalDeviance4 &lt;- Scenarios$CoalitionalDeviance2
+  Scenarios$CoalitionalDeviance4[8,] &lt;- c(1,1,0,0)
+
+  CompareIncentives(X=Scenarios$CoalitionalDeviance4)
+</code></pre>
+
+<pre><code>## [[1]]
+##    Group  OldRep SmoothRep      Drep
+## 1   True 0.09091   0.09091  0.000000
+## 2   True 0.09091   0.09091  0.000000
+## 3   True 0.09091   0.09091  0.000000
+## 4   True 0.09091   0.09091  0.000000
+## 5   True 0.09091   0.09091  0.000000
+## 6   True 0.09091   0.09091  0.000000
+## 7   Liar 0.09091   0.08182 -0.009091
+## 8   Liar 0.09091   0.09091  0.000000
+## 9   Liar 0.09091   0.09394  0.003030
+## 10  Liar 0.09091   0.09394  0.003030
+## 11  Liar 0.09091   0.09394  0.003030
+## 
+## [[2]]
+##   Group OldRep SmoothRep      Drep
+## 1  Liar 0.4545    0.4545 1.388e-17
+## 2  True 0.5455    0.5455 0.000e+00
+</code></pre>
+
+<pre><code class="r">  Ss &lt;- Chain(Scenarios$CoalitionalDeviance4,N=70)[[70]]$Agents
+  Ss &lt;- data.frame(NewRep=as.numeric(Ss[,&quot;NewRep&quot;]),Group=row.names(Ss))
+</code></pre>
+
+<pre><code>## Error: subscript out of bounds
+</code></pre>
+
+<pre><code class="r">  aggregate(.~Group,data=Ss, FUN=sum)
+</code></pre>
+
+<pre><code>## Error: object &#39;Group&#39; not found
+</code></pre>
+
+<pre><code class="r">
+  Scenarios$CoalitionalDeviance5 &lt;- Scenarios$CoalitionalDeviance2
+  Scenarios$CoalitionalDeviance5[8,] &lt;- c(1,1,0,0)
+  Scenarios$CoalitionalDeviance5[9,] &lt;- c(1,1,0,0)
+
+  CompareIncentives(X=Scenarios$CoalitionalDeviance5)
+</code></pre>
+
+<pre><code>## [[1]]
+##    Group  OldRep SmoothRep      Drep
+## 1   True 0.09091   0.09152  0.000609
+## 2   True 0.09091   0.09152  0.000609
+## 3   True 0.09091   0.09152  0.000609
+## 4   True 0.09091   0.09152  0.000609
+## 5   True 0.09091   0.09152  0.000609
+## 6   True 0.09091   0.09152  0.000609
+## 7   Liar 0.09091   0.08182 -0.009091
+## 8   Liar 0.09091   0.09152  0.000609
+## 9   Liar 0.09091   0.09152  0.000609
+## 10  Liar 0.09091   0.09302  0.002110
+## 11  Liar 0.09091   0.09302  0.002110
+## 
+## [[2]]
+##   Group OldRep SmoothRep      Drep
+## 2  True 0.5455    0.5491  0.003654
+## 1  Liar 0.4545    0.4509 -0.003654
+</code></pre>
+
+<pre><code class="r">  Ss &lt;- Chain(Scenarios$CoalitionalDeviance5,N=50)[[50]]$Agents
+  Ss &lt;- data.frame(NewRep=as.numeric(Ss[,&quot;NewRep&quot;]),Group=row.names(Ss))
+</code></pre>
+
+<pre><code>## Error: subscript out of bounds
+</code></pre>
+
+<pre><code class="r">  aggregate(.~Group,data=Ss, FUN=sum)
+</code></pre>
+
+<pre><code>## Error: object &#39;Group&#39; not found
+</code></pre>
+
+<pre><code class="r">  #Notice after 50 rounds, the devil [=King of Liars] has actually become the two bottommost liars, as they represent the most significant source of confusion.
+  #Team &#39;True&#39; wins via stoicism
+
+  #[3] Recursive Friendly Fire - a sub-coalition forms to defect, but a sub-coalition of this coalition forms to defect again.
+  Scenarios$CoalitionalDeviance6 &lt;- rbind(c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1), #10
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1),
+                                          c(1,1,0,0,1), #15 (60%)
+
+                                          #Coalition 1, backstabbing Truth to game contract 3
+                                          c(0,0,0,1,0), #1 - Friendly Fire
+                                          c(1,1,1,0,1),
+                                          c(1,1,1,0,1),
+                                          c(1,1,1,0,1),
+                                          c(1,1,1,0,1),
+                                          c(1,1,1,0,1), #6 (24%)
+
+                                          #Coalition 2, &#39;backstabbing&#39; Coalition 1 to game contract 4
+                                          c(0,0,1,0,0), #1 - Friendly Fire
+                                          c(1,1,0,1,1),
+                                          c(1,1,0,1,1),
+                                          c(1,1,0,1,1)) #4 (16%)
+
+  row.names(Scenarios$CoalitionalDeviance6) &lt;- c(rep(&#39;Truth&#39;,15),rep(&#39;Lie 1&#39;,6),rep(&#39;Lie 2&#39;,4))
+  Factory(Scenarios$CoalitionalDeviance6)
+</code></pre>
+
+<pre><code>## $Original
+##       [,1] [,2] [,3] [,4] [,5]
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Truth    1    1    0    0    1
+## Lie 1    0    0    0    1    0
+## Lie 1    1    1    1    0    1
+## Lie 1    1    1    1    0    1
+## Lie 1    1    1    1    0    1
+## Lie 1    1    1    1    0    1
+## Lie 1    1    1    1    0    1
+## Lie 2    0    0    1    0    0
+## Lie 2    1    1    0    1    1
+## Lie 2    1    1    0    1    1
+## Lie 2    1    1    0    1    1
+## 
+## $Agents
+##       OldRep  ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Truth   0.04 0.046005   0.04060     0              1         0.04  0.04060
+## Lie 1   0.04 0.002097   0.03621     0              1         0.04  0.03621
+## Lie 1   0.04 0.037693   0.03977     0              1         0.04  0.03977
+## Lie 1   0.04 0.037693   0.03977     0              1         0.04  0.03977
+## Lie 1   0.04 0.037693   0.03977     0              1         0.04  0.03977
+## Lie 1   0.04 0.037693   0.03977     0              1         0.04  0.03977
+## Lie 1   0.04 0.037693   0.03977     0              1         0.04  0.03977
+## Lie 2   0.04 0.000000   0.03600     0              1         0.04  0.03600
+## Lie 2   0.04 0.039790   0.03998     0              1         0.04  0.03998
+## Lie 2   0.04 0.039790   0.03998     0              1         0.04  0.03998
+## Lie 2   0.04 0.039790   0.03998     0              1         0.04  0.03998
+## 
+## $Contracts
+##                     [,1]    [,2]   [,3]   [,4]    [,5]
+## First Loading    -0.5211 -0.5211 0.3447 0.2578 -0.5211
+## ConoutRAW         0.9278  0.9278 0.2348 0.1561  0.9278
+## Consensus Reward  0.2261  0.2261 0.1401 0.1817  0.2261
+## Certainty         0.7320  0.7320 0.2812 0.4729  0.7320
+## Agreement         0.3616  0.3616 0.3092 0.1750  0.3616
+## RelativeAg        0.2305  0.2305 0.1971 0.1115  0.2305
+## NAs Filled        0.0000  0.0000 0.0000 0.0000  0.0000
+## ParticipationC    1.0000  1.0000 1.0000 1.0000  1.0000
+## Contract Bonus    0.2261  0.2261 0.1401 0.1817  0.2261
+## ConoutFinal       1.0000  1.0000 0.0000 0.0000  1.0000
+</code></pre>
+
+<pre><code class="r">  CompareIncentives(Scenarios$CoalitionalDeviance6)
+</code></pre>
+
+<pre><code>## [[1]]
+##    Group OldRep SmoothRep       Drep
+## 1  Truth   0.04   0.04060  6.005e-04
+## 2  Truth   0.04   0.04060  6.005e-04
+## 3  Truth   0.04   0.04060  6.005e-04
+## 4  Truth   0.04   0.04060  6.005e-04
+## 5  Truth   0.04   0.04060  6.005e-04
+## 6  Truth   0.04   0.04060  6.005e-04
+## 7  Truth   0.04   0.04060  6.005e-04
+## 8  Truth   0.04   0.04060  6.005e-04
+## 9  Truth   0.04   0.04060  6.005e-04
+## 10 Truth   0.04   0.04060  6.005e-04
+## 11 Truth   0.04   0.04060  6.005e-04
+## 12 Truth   0.04   0.04060  6.005e-04
+## 13 Truth   0.04   0.04060  6.005e-04
+## 14 Truth   0.04   0.04060  6.005e-04
+## 15 Truth   0.04   0.04060  6.005e-04
+## 16 Lie 1   0.04   0.03621 -3.790e-03
+## 17 Lie 1   0.04   0.03977 -2.307e-04
+## 18 Lie 1   0.04   0.03977 -2.307e-04
+## 19 Lie 1   0.04   0.03977 -2.307e-04
+## 20 Lie 1   0.04   0.03977 -2.307e-04
+## 21 Lie 1   0.04   0.03977 -2.307e-04
+## 22 Lie 2   0.04   0.03600 -4.000e-03
+## 23 Lie 2   0.04   0.03998 -2.101e-05
+## 24 Lie 2   0.04   0.03998 -2.101e-05
+## 25 Lie 2   0.04   0.03998 -2.101e-05
+## 
+## [[2]]
+##   Group OldRep SmoothRep      Drep
+## 3 Truth   0.60    0.6090  0.009007
+## 2 Lie 2   0.16    0.1559 -0.004063
+## 1 Lie 1   0.24    0.2351 -0.004944
+</code></pre>
+
+<pre><code class="r">  #fantastic sucess...Lie 2 loses less
+
+  #clearly, the Nash Equilibrium
+  Scenarios$CoalitionalDeviance7 &lt;- Scenarios$CoalitionalDeviance6[1:21,]
+  Scenarios$CoalitionalDeviance7 &lt;- rbind(Scenarios$CoalitionalDeviance7, rbind(
+                                                                              &#39;Truth 2&#39;=c(1,1,0,0,1),
+                                                                              &#39;Truth 2&#39;=c(1,1,0,0,1),
+                                                                              &#39;Truth 2&#39;=c(1,1,0,0,1),
+                                                                              &#39;Truth 2&#39;=c(1,1,0,0,1)))
+  Factory(Scenarios$CoalitionalDeviance7)
+</code></pre>
+
+<pre><code>## $Original
+##         [,1] [,2] [,3] [,4] [,5]
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Truth      1    1    0    0    1
+## Lie 1      0    0    0    1    0
+## Lie 1      1    1    1    0    1
+## Lie 1      1    1    1    0    1
+## Lie 1      1    1    1    0    1
+## Lie 1      1    1    1    0    1
+## Lie 1      1    1    1    0    1
+## Truth 2    1    1    0    0    1
+## Truth 2    1    1    0    0    1
+## Truth 2    1    1    0    0    1
+## Truth 2    1    1    0    0    1
+## 
+## $Agents
+##         OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Truth     0.04 0.04621   0.04062     0              1         0.04
+## Lie 1     0.04 0.12198   0.04820     0              1         0.04
+## Lie 1     0.04 0.00000   0.03600     0              1         0.04
+## Lie 1     0.04 0.00000   0.03600     0              1         0.04
+## Lie 1     0.04 0.00000   0.03600     0              1         0.04
+## Lie 1     0.04 0.00000   0.03600     0              1         0.04
+## Lie 1     0.04 0.00000   0.03600     0              1         0.04
+## Truth 2   0.04 0.04621   0.04062     0              1         0.04
+## Truth 2   0.04 0.04621   0.04062     0              1         0.04
+## Truth 2   0.04 0.04621   0.04062     0              1         0.04
+## Truth 2   0.04 0.04621   0.04062     0              1         0.04
+##         RowBonus
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Truth    0.04062
+## Lie 1    0.04820
+## Lie 1    0.03600
+## Lie 1    0.03600
+## Lie 1    0.03600
+## Lie 1    0.03600
+## Lie 1    0.03600
+## Truth 2  0.04062
+## Truth 2  0.04062
+## Truth 2  0.04062
+## Truth 2  0.04062
+## 
+## $Contracts
+##                     [,1]    [,2]     [,3]   [,4]    [,5]
+## First Loading    -0.3170 -0.3170 -0.77334 0.3170 -0.3170
+## ConoutRAW         0.9518  0.9518  0.18000 0.0482  0.9518
+## Consensus Reward  0.2124  0.2124  0.15043 0.2124  0.2124
+## Certainty         0.8165  0.8165  0.40960 0.8165  0.8165
+## Agreement         0.5140  0.5140  0.19369 0.5140  0.5140
+## RelativeAg        0.2285  0.2285  0.08609 0.2285  0.2285
+## NAs Filled        0.0000  0.0000  0.00000 0.0000  0.0000
+## ParticipationC    1.0000  1.0000  1.00000 1.0000  1.0000
+## Contract Bonus    0.2124  0.2124  0.15043 0.2124  0.2124
+## ConoutFinal       1.0000  1.0000  0.00000 0.0000  1.0000
+</code></pre>
+
+<pre><code class="r">  CompareIncentives(Scenarios$CoalitionalDeviance7)
+</code></pre>
+
+<pre><code>## [[1]]
+##      Group OldRep SmoothRep       Drep
+## 1    Truth   0.04   0.04062  0.0006212
+## 2    Truth   0.04   0.04062  0.0006212
+## 3    Truth   0.04   0.04062  0.0006212
+## 4    Truth   0.04   0.04062  0.0006212
+## 5    Truth   0.04   0.04062  0.0006212
+## 6    Truth   0.04   0.04062  0.0006212
+## 7    Truth   0.04   0.04062  0.0006212
+## 8    Truth   0.04   0.04062  0.0006212
+## 9    Truth   0.04   0.04062  0.0006212
+## 10   Truth   0.04   0.04062  0.0006212
+## 11   Truth   0.04   0.04062  0.0006212
+## 12   Truth   0.04   0.04062  0.0006212
+## 13   Truth   0.04   0.04062  0.0006212
+## 14   Truth   0.04   0.04062  0.0006212
+## 15   Truth   0.04   0.04062  0.0006212
+## 16   Lie 1   0.04   0.04820  0.0081980
+## 17   Lie 1   0.04   0.03600 -0.0040000
+## 18   Lie 1   0.04   0.03600 -0.0040000
+## 19   Lie 1   0.04   0.03600 -0.0040000
+## 20   Lie 1   0.04   0.03600 -0.0040000
+## 21   Lie 1   0.04   0.03600 -0.0040000
+## 22 Truth 2   0.04   0.04062  0.0006212
+## 23 Truth 2   0.04   0.04062  0.0006212
+## 24 Truth 2   0.04   0.04062  0.0006212
+## 25 Truth 2   0.04   0.04062  0.0006212
+## 
+## [[2]]
+##     Group OldRep SmoothRep      Drep
+## 2   Truth   0.60    0.6093  0.009317
+## 3 Truth 2   0.16    0.1625  0.002485
+## 1   Lie 1   0.24    0.2282 -0.011802
+</code></pre>
+
+<pre><code class="r">
+  # [4] Passive - Sideways expansion by 2 contracts
+  Scenarios$CoalitionalDeviance8 &lt;- cbind(Scenarios$CoalitionalDeviance2,Scenarios$CoalitionalDeviance2[,1:2])
+  Factory(Scenarios$CoalitionalDeviance8)
+</code></pre>
+
+<pre><code>## $Original
+##      [,1] [,2] [,3] [,4] [,5] [,6]
+## True    1    1    0    0    1    1
+## True    1    1    0    0    1    1
+## True    1    1    0    0    1    1
+## True    1    1    0    0    1    1
+## True    1    1    0    0    1    1
+## True    1    1    0    0    1    1
+## Liar    0    0    0    1    0    0
+## Liar    1    1    1    0    1    1
+## Liar    1    1    1    0    1    1
+## Liar    1    1    1    0    1    1
+## Liar    1    1    1    0    1    1
+## 
+## $Agents
+##       OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True 0.09091 0.09402   0.09122     0              1      0.09091  0.09122
+## True 0.09091 0.09402   0.09122     0              1      0.09091  0.09122
+## True 0.09091 0.09402   0.09122     0              1      0.09091  0.09122
+## True 0.09091 0.09402   0.09122     0              1      0.09091  0.09122
+## True 0.09091 0.09402   0.09122     0              1      0.09091  0.09122
+## True 0.09091 0.09402   0.09122     0              1      0.09091  0.09122
+## Liar 0.09091 0.00000   0.08182     0              1      0.09091  0.08182
+## Liar 0.09091 0.10896   0.09271     0              1      0.09091  0.09271
+## Liar 0.09091 0.10896   0.09271     0              1      0.09091  0.09271
+## Liar 0.09091 0.10896   0.09271     0              1      0.09091  0.09271
+## Liar 0.09091 0.10896   0.09271     0              1      0.09091  0.09271
+## 
+## $Contracts
+##                     [,1]    [,2]     [,3]    [,4]    [,5]    [,6]
+## First Loading    -0.4214 -0.4214 -0.33475 0.42141 -0.4214 -0.4214
+## ConoutRAW         0.9182  0.9182  0.37086 0.08182  0.9182  0.9182
+## Consensus Reward  0.1884  0.1884  0.05817 0.18837  0.1884  0.1884
+## Certainty         0.6995  0.6995  0.06671 0.69950  0.6995  0.6995
+## Agreement         0.3150  0.3150  0.73421 0.31499  0.3150  0.3150
+## RelativeAg        0.1364  0.1364  0.31796 0.13641  0.1364  0.1364
+## NAs Filled        0.0000  0.0000  0.00000 0.00000  0.0000  0.0000
+## ParticipationC    1.0000  1.0000  1.00000 1.00000  1.0000  1.0000
+## Contract Bonus    0.1884  0.1884  0.05817 0.18837  0.1884  0.1884
+## ConoutFinal       1.0000  1.0000  0.00000 0.00000  1.0000  1.0000
+</code></pre>
+
+<pre><code class="r">  CompareIncentives(Scenarios$CoalitionalDeviance8)   
+</code></pre>
+
+<pre><code>## [[1]]
+##    Group  OldRep SmoothRep       Drep
+## 1   True 0.09091   0.09122  0.0003116
+## 2   True 0.09091   0.09122  0.0003116
+## 3   True 0.09091   0.09122  0.0003116
+## 4   True 0.09091   0.09122  0.0003116
+## 5   True 0.09091   0.09122  0.0003116
+## 6   True 0.09091   0.09122  0.0003116
+## 7   Liar 0.09091   0.08182 -0.0090909
+## 8   Liar 0.09091   0.09271  0.0018054
+## 9   Liar 0.09091   0.09271  0.0018054
+## 10  Liar 0.09091   0.09271  0.0018054
+## 11  Liar 0.09091   0.09271  0.0018054
+## 
+## [[2]]
+##   Group OldRep SmoothRep      Drep
+## 2  True 0.5455    0.5473  0.001869
+## 1  Liar 0.4545    0.4527 -0.001869
+</code></pre>
+
+<pre><code class="r">  #Success, larger number of contracts makes this attack improbable.
+
+  Scenarios$CoalitionalDeviance9 &lt;- cbind(Scenarios$CoalitionalDeviance2,
+                                          Scenarios$CoalitionalDeviance2,
+                                          Scenarios$CoalitionalDeviance2,
+                                          Scenarios$CoalitionalDeviance2[,-3])
+  Factory(Scenarios$CoalitionalDeviance9)
+</code></pre>
+
+<pre><code>## $Original
+##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]
+## True    1    1    0    0    1    1    0    0    1     1     0     0     1
+## True    1    1    0    0    1    1    0    0    1     1     0     0     1
+## True    1    1    0    0    1    1    0    0    1     1     0     0     1
+## True    1    1    0    0    1    1    0    0    1     1     0     0     1
+## True    1    1    0    0    1    1    0    0    1     1     0     0     1
+## True    1    1    0    0    1    1    0    0    1     1     0     0     1
+## Liar    0    0    0    1    0    0    0    1    0     0     0     1     0
+## Liar    1    1    1    0    1    1    1    0    1     1     1     0     1
+## Liar    1    1    1    0    1    1    1    0    1     1     1     0     1
+## Liar    1    1    1    0    1    1    1    0    1     1     1     0     1
+## Liar    1    1    1    0    1    1    1    0    1     1     1     0     1
+##      [,14] [,15]
+## True     1     0
+## True     1     0
+## True     1     0
+## True     1     0
+## True     1     0
+## True     1     0
+## Liar     0     1
+## Liar     1     0
+## Liar     1     0
+## Liar     1     0
+## Liar     1     0
+## 
+## $Agents
+##       OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True 0.09091 0.09091   0.09091     0              1      0.09091  0.09091
+## True 0.09091 0.09091   0.09091     0              1      0.09091  0.09091
+## True 0.09091 0.09091   0.09091     0              1      0.09091  0.09091
+## True 0.09091 0.09091   0.09091     0              1      0.09091  0.09091
+## True 0.09091 0.09091   0.09091     0              1      0.09091  0.09091
+## True 0.09091 0.09091   0.09091     0              1      0.09091  0.09091
+## Liar 0.09091 0.00000   0.08182     0              1      0.09091  0.08182
+## Liar 0.09091 0.11364   0.09318     0              1      0.09091  0.09318
+## Liar 0.09091 0.11364   0.09318     0              1      0.09091  0.09318
+## Liar 0.09091 0.11364   0.09318     0              1      0.09091  0.09318
+## Liar 0.09091 0.11364   0.09318     0              1      0.09091  0.09318
+## 
+## $Contracts
+##                      [,1]     [,2]     [,3]    [,4]     [,5]     [,6]
+## First Loading    -0.25820 -0.25820 -0.25820 0.25820 -0.25820 -0.25820
+## ConoutRAW         0.91818  0.91818  0.37273 0.08182  0.91818  0.91818
+## Consensus Reward  0.07744  0.07744  0.02357 0.07744  0.07744  0.07744
+## Certainty         0.69950  0.69950  0.06479 0.69950  0.69950  0.69950
+## Agreement         0.31499  0.31499  0.73932 0.31499  0.31499  0.31499
+## RelativeAg        0.05252  0.05252  0.12326 0.05252  0.05252  0.05252
+## NAs Filled        0.00000  0.00000  0.00000 0.00000  0.00000  0.00000
+## ParticipationC    1.00000  1.00000  1.00000 1.00000  1.00000  1.00000
+## Contract Bonus    0.07744  0.07744  0.02357 0.07744  0.07744  0.07744
+## ConoutFinal       1.00000  1.00000  0.00000 0.00000  1.00000  1.00000
+##                      [,7]    [,8]     [,9]    [,10]    [,11]   [,12]
+## First Loading    -0.25820 0.25820 -0.25820 -0.25820 -0.25820 0.25820
+## ConoutRAW         0.37273 0.08182  0.91818  0.91818  0.37273 0.08182
+## Consensus Reward  0.02357 0.07744  0.07744  0.07744  0.02357 0.07744
+## Certainty         0.06479 0.69950  0.69950  0.69950  0.06479 0.69950
+## Agreement         0.73932 0.31499  0.31499  0.31499  0.73932 0.31499
+## RelativeAg        0.12326 0.05252  0.05252  0.05252  0.12326 0.05252
+## NAs Filled        0.00000 0.00000  0.00000  0.00000  0.00000 0.00000
+## ParticipationC    1.00000 1.00000  1.00000  1.00000  1.00000 1.00000
+## Contract Bonus    0.02357 0.07744  0.07744  0.07744  0.02357 0.07744
+## ConoutFinal       0.00000 0.00000  1.00000  1.00000  0.00000 0.00000
+##                     [,13]    [,14]   [,15]
+## First Loading    -0.25820 -0.25820 0.25820
+## ConoutRAW         0.91818  0.91818 0.08182
+## Consensus Reward  0.07744  0.07744 0.07744
+## Certainty         0.69950  0.69950 0.69950
+## Agreement         0.31499  0.31499 0.31499
+## RelativeAg        0.05252  0.05252 0.05252
+## NAs Filled        0.00000  0.00000 0.00000
+## ParticipationC    1.00000  1.00000 1.00000
+## Contract Bonus    0.07744  0.07744 0.07744
+## ConoutFinal       1.00000  1.00000 0.00000
+</code></pre>
+
+<pre><code class="r">  CompareIncentives(Scenarios$CoalitionalDeviance9)
+</code></pre>
+
+<pre><code>## [[1]]
+##    Group  OldRep SmoothRep      Drep
+## 1   True 0.09091   0.09091  0.000000
+## 2   True 0.09091   0.09091  0.000000
+## 3   True 0.09091   0.09091  0.000000
+## 4   True 0.09091   0.09091  0.000000
+## 5   True 0.09091   0.09091  0.000000
+## 6   True 0.09091   0.09091  0.000000
+## 7   Liar 0.09091   0.08182 -0.009091
+## 8   Liar 0.09091   0.09318  0.002273
+## 9   Liar 0.09091   0.09318  0.002273
+## 10  Liar 0.09091   0.09318  0.002273
+## 11  Liar 0.09091   0.09318  0.002273
+## 
+## [[2]]
+##   Group OldRep SmoothRep Drep
+## 1  Liar 0.4545    0.4545    0
+## 2  True 0.5455    0.5455    0
+</code></pre>
+
+<pre><code class="r">  #The attack must expand proportionally.
+</code></pre>
+
+<h2>Uninformed People</h2>
+
+<pre><code class="r">Factory(Scenarios$CluelessControl)
+</code></pre>
+
+<pre><code>## $Original
+##      C1.1 C2.1 C3.0 C4.0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## 
+## $Agents
+##      OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## 
+## $Contracts
+##                  C1.1 C2.1 C3.0 C4.0
+## First Loading    1.00 0.00 0.00 0.00
+## ConoutRAW        1.00 1.00 0.00 0.00
+## Consensus Reward 0.25 0.25 0.25 0.25
+## Certainty        1.00 1.00 1.00 1.00
+## Agreement        1.00 1.00 1.00 1.00
+## RelativeAg       0.25 0.25 0.25 0.25
+## NAs Filled       0.00 0.00 0.00 0.00
+## ParticipationC   1.00 1.00 1.00 1.00
+## Contract Bonus   0.25 0.25 0.25 0.25
+## ConoutFinal      1.00 1.00 0.00 0.00
+</code></pre>
+
+<pre><code class="r">Factory(Scenarios$CluelessTest)
+</code></pre>
+
+<pre><code>## $Original
+##      C1.1 C2.1 C3.0 C4.0
+## True    1    1    0    0
+## True    1   NA    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## True    1    1    0    0
+## 
+## $Agents
+##      OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True 0.1429  0.1429    0.1429     0           1.00       0.1481   0.1430
+## True 0.1429  0.1429    0.1429     1           0.75       0.1111   0.1417
+## True 0.1429  0.1429    0.1429     0           1.00       0.1481   0.1430
+## True 0.1429  0.1429    0.1429     0           1.00       0.1481   0.1430
+## True 0.1429  0.1429    0.1429     0           1.00       0.1481   0.1430
+## True 0.1429  0.1429    0.1429     0           1.00       0.1481   0.1430
+## True 0.1429  0.1429    0.1429     0           1.00       0.1481   0.1430
+## 
+## $Contracts
+##                    C1.1   C2.1   C3.0   C4.0
+## First Loading    1.0000 0.0000 0.0000 0.0000
+## ConoutRAW        1.0000 1.0000 0.0000 0.0000
+## Consensus Reward 0.2500 0.2500 0.2500 0.2500
+## Certainty        1.0000 1.0000 1.0000 1.0000
+## Agreement        1.0000 1.0000 1.0000 1.0000
+## RelativeAg       0.2500 0.2500 0.2500 0.2500
+## NAs Filled       0.0000 1.0000 0.0000 0.0000
+## ParticipationC   1.0000 0.8571 1.0000 1.0000
+## Contract Bonus   0.2503 0.2490 0.2503 0.2503
+## ConoutFinal      1.0000 1.0000 0.0000 0.0000
+</code></pre>
+
+<p>Finding: 2 falls from tie at 5th .11 to a tie at 7th with .07; no impact on other results: success.</p>
+
+<p>Note: Must be a discrete set of options: c(1,0,NA,.5)    &mdash;- !!! by extention, Catch must be implemented in FillNA. Indeed, in this example our lazy character is punished twice.
+otherwise there will likely be pragmatic individuals who rationally deviate to answers like ~.85 or ~.92 or some nonsense. [obviously]</p>
+
+<h2>Overwhelming Incoherence</h2>
+
+<pre><code class="r">
+Factory(Scenarios$Incoherence)
+</code></pre>
+
+<pre><code>## $Original
+##      C1.1 C2.1 C3.0 C4.0
+## True    1  0.5    0    0
+## True    1  0.5    0    0
+## True    1  1.0    0    0
+## True    1  0.5    0    0
+## True    1  0.5    0    0
+## True    1  0.5    0    0
+## True    1  0.5    0    0
+## 
+## $Agents
+##      OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True 0.1429  0.1667    0.1452     0              1       0.1429   0.1452
+## True 0.1429  0.1667    0.1452     0              1       0.1429   0.1452
+## True 0.1429  0.0000    0.1286     0              1       0.1429   0.1286
+## True 0.1429  0.1667    0.1452     0              1       0.1429   0.1452
+## True 0.1429  0.1667    0.1452     0              1       0.1429   0.1452
+## True 0.1429  0.1667    0.1452     0              1       0.1429   0.1452
+## True 0.1429  0.1667    0.1452     0              1       0.1429   0.1452
+## 
+## $Contracts
+##                    C1.1    C2.1   C3.0   C4.0
+## First Loading    0.0000 1.00000 0.0000 0.0000
+## ConoutRAW        1.0000 0.56429 0.0000 0.0000
+## Consensus Reward 0.3196 0.04110 0.3196 0.3196
+## Certainty        1.0000 0.01653 1.0000 1.0000
+## Agreement        1.0000 0.87550 1.0000 1.0000
+## RelativeAg       0.2580 0.22591 0.2580 0.2580
+## NAs Filled       0.0000 0.00000 0.0000 0.0000
+## ParticipationC   1.0000 1.00000 1.0000 1.0000
+## Contract Bonus   0.3196 0.04110 0.3196 0.3196
+## ConoutFinal      1.0000 1.00000 0.0000 0.0000
+</code></pre>
+
+<pre><code class="r">Factory(Scenarios$Incoherence2)
+</code></pre>
+
+<pre><code>## $Original
+##      C1.1 C2.1 C3.0 C4.0
+## True    1  0.5    0    0
+## True    1  0.5    0    0
+## True    1  1.0    0    0
+## True    1  0.5    0    0
+## True    1  0.5    0    0
+## True    1  0.5    0    0
+## True    1  0.0    0    0
+## 
+## $Agents
+##      OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.0000    0.1286     0              1       0.1429   0.1286
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.1429    0.1429     0              1       0.1429   0.1429
+## True 0.1429  0.2857    0.1571     0              1       0.1429   0.1571
+## 
+## $Contracts
+##                    C1.1      C2.1   C3.0   C4.0
+## First Loading    0.0000 1.0000000 0.0000 0.0000
+## ConoutRAW        1.0000 0.4857143 0.0000 0.0000
+## Consensus Reward 0.3302 0.0094340 0.3302 0.3302
+## Certainty        1.0000 0.0008163 1.0000 1.0000
+## Agreement        1.0000 0.9230039 1.0000 1.0000
+## RelativeAg       0.2549 0.2352798 0.2549 0.2549
+## NAs Filled       0.0000 0.0000000 0.0000 0.0000
+## ParticipationC   1.0000 1.0000000 1.0000 1.0000
+## Contract Bonus   0.3302 0.0094340 0.3302 0.3302
+## ConoutFinal      1.0000 0.5000000 0.0000 0.0000
+</code></pre>
+
+<p>Interesting behavior, but incentive compatible, particularly given low Schelling Salience
+Incentive to switch to the consensus .5</p>
+
+<h2>Perfect Consensus</h2>
+
+<pre><code class="r">Factory(Scenarios$PerCon)
+</code></pre>
+
+<pre><code>## $Original
+##      C1.1 C2.1 C3.0 C4.0
+## [1,]    1    1    0    0
+## [2,]    1    1    0    0
+## [3,]    1    1    0    0
+## [4,]    1    1    0    0
+## 
+## $Agents
+##      OldRep ThisRep SmoothRep NArow ParticipationR RelativePart RowBonus
+## [1,]   0.25    0.25      0.25     0              1         0.25     0.25
+## [2,]   0.25    0.25      0.25     0              1         0.25     0.25
+## [3,]   0.25    0.25      0.25     0              1         0.25     0.25
+## [4,]   0.25    0.25      0.25     0              1         0.25     0.25
+## 
+## $Contracts
+##                  C1.1 C2.1 C3.0 C4.0
+## First Loading    1.00 0.00 0.00 0.00
+## ConoutRAW        1.00 1.00 0.00 0.00
+## Consensus Reward 0.25 0.25 0.25 0.25
+## Certainty        1.00 1.00 1.00 1.00
+## Agreement        1.00 1.00 1.00 1.00
+## RelativeAg       0.25 0.25 0.25 0.25
+## NAs Filled       0.00 0.00 0.00 0.00
+## ParticipationC   1.00 1.00 1.00 1.00
+## Contract Bonus   0.25 0.25 0.25 0.25
+## ConoutFinal      1.00 1.00 0.00 0.00
+</code></pre>
+
+<pre><code class="r"># No problems.
+</code></pre>
+
+<h2>Gaming</h2>
+
+<pre><code class="r">
+Factory(Scenarios$Gaming)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0 C0.5 C0.5 C0.5 C0.5 C0.5 C0.5 C0.5 C0.5
+## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Distort 1    1    0    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Distort 2    1    1    1    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Liar         0    0    1    1  0.0  1.0  0.0  1.0  0.0  1.0  0.0  1.0
+## Liar         0    0    1    1  1.0  0.0  1.0  0.0  1.0  0.0  1.0  0.0
+## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Distort 1    1    0    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Distort 2    1    1    1    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Liar         0    0    1    1  0.0  1.0  0.0  1.0  0.0  1.0  0.0  1.0
+## Liar         0    0    1    1  1.0  0.0  1.0  0.0  1.0  0.0  1.0  0.0
+## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Distort 1    1    0    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Distort 2    1    1    1    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Liar         0    0    1    1  0.0  1.0  0.0  1.0  0.0  1.0  0.0  1.0
+## Liar         0    0    1    1  1.0  0.0  1.0  0.0  1.0  0.0  1.0  0.0
+## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Distort 1    1    0    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Distort 2    1    1    1    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
+## Liar         0    0    1    1  0.0  1.0  0.0  1.0  0.0  1.0  0.0  1.0
+## Liar         0    0    1    1  1.0  0.0  1.0  0.0  1.0  0.0  1.0  0.0
+## 
+## $Agents
+##            OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.04167 0.07059   0.04456     0              1      0.04167
+## Distort 1 0.04167 0.05441   0.04294     0              1      0.04167
+## True      0.04167 0.07059   0.04456     0              1      0.04167
+## Distort 2 0.04167 0.05441   0.04294     0              1      0.04167
+## Liar      0.04167 0.00000   0.03750     0              1      0.04167
+## Liar      0.04167 0.00000   0.03750     0              1      0.04167
+## True      0.04167 0.07059   0.04456     0              1      0.04167
+## Distort 1 0.04167 0.05441   0.04294     0              1      0.04167
+## True      0.04167 0.07059   0.04456     0              1      0.04167
+## Distort 2 0.04167 0.05441   0.04294     0              1      0.04167
+## Liar      0.04167 0.00000   0.03750     0              1      0.04167
+## Liar      0.04167 0.00000   0.03750     0              1      0.04167
+## True      0.04167 0.07059   0.04456     0              1      0.04167
+## Distort 1 0.04167 0.05441   0.04294     0              1      0.04167
+## True      0.04167 0.07059   0.04456     0              1      0.04167
+## Distort 2 0.04167 0.05441   0.04294     0              1      0.04167
+## Liar      0.04167 0.00000   0.03750     0              1      0.04167
+## Liar      0.04167 0.00000   0.03750     0              1      0.04167
+## True      0.04167 0.07059   0.04456     0              1      0.04167
+## Distort 1 0.04167 0.05441   0.04294     0              1      0.04167
+## True      0.04167 0.07059   0.04456     0              1      0.04167
+## Distort 2 0.04167 0.05441   0.04294     0              1      0.04167
+## Liar      0.04167 0.00000   0.03750     0              1      0.04167
+## Liar      0.04167 0.00000   0.03750     0              1      0.04167
+##           RowBonus
+## True       0.04456
+## Distort 1  0.04294
+## True       0.04456
+## Distort 2  0.04294
+## Liar       0.03750
+## Liar       0.03750
+## True       0.04456
+## Distort 1  0.04294
+## True       0.04456
+## Distort 2  0.04294
+## Liar       0.03750
+## Liar       0.03750
+## True       0.04456
+## Distort 1  0.04294
+## True       0.04456
+## Distort 2  0.04294
+## Liar       0.03750
+## Liar       0.03750
+## True       0.04456
+## Distort 1  0.04294
+## True       0.04456
+## Distort 2  0.04294
+## Liar       0.03750
+## Liar       0.03750
+## 
+## $Contracts
+##                      C1.1      C2.1     C3.0    C4.0    C0.5    C0.5
+## First Loading    -0.53954 -0.457056 0.457056 0.53954 0.00000 0.00000
+## ConoutRAW         0.70000  0.528238 0.471762 0.30000 0.50000 0.50000
+## Consensus Reward  0.43814  0.061860 0.061860 0.43814 0.00000 0.00000
+## Certainty         0.16000  0.003189 0.003189 0.16000 0.00000 0.00000
+## Agreement         0.51375  0.915730 0.915730 0.51375 0.92551 0.92551
+## RelativeAg        0.05006  0.089226 0.089226 0.05006 0.09018 0.09018
+## NAs Filled        0.00000  0.000000 0.000000 0.00000 0.00000 0.00000
+## ParticipationC    1.00000  1.000000 1.000000 1.00000 1.00000 1.00000
+## Contract Bonus    0.43814  0.061860 0.061860 0.43814 0.00000 0.00000
+## ConoutFinal       1.00000  0.500000 0.500000 0.00000 0.50000 0.50000
+##                     C0.5    C0.5    C0.5    C0.5    C0.5    C0.5
+## First Loading    0.00000 0.00000 0.00000 0.00000 0.00000 0.00000
+## ConoutRAW        0.50000 0.50000 0.50000 0.50000 0.50000 0.50000
+## Consensus Reward 0.00000 0.00000 0.00000 0.00000 0.00000 0.00000
+## Certainty        0.00000 0.00000 0.00000 0.00000 0.00000 0.00000
+## Agreement        0.92551 0.92551 0.92551 0.92551 0.92551 0.92551
+## RelativeAg       0.09018 0.09018 0.09018 0.09018 0.09018 0.09018
+## NAs Filled       0.00000 0.00000 0.00000 0.00000 0.00000 0.00000
+## ParticipationC   1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
+## Contract Bonus   0.00000 0.00000 0.00000 0.00000 0.00000 0.00000
+## ConoutFinal      0.50000 0.50000 0.50000 0.50000 0.50000 0.50000
+</code></pre>
+
+<pre><code class="r">CompareIncentives(Scenarios$Gaming)
+</code></pre>
+
+<pre><code>## [[1]]
+##        Group  OldRep SmoothRep      Drep
+## 1       True 0.04167   0.04456  0.002893
+## 2  Distort 1 0.04167   0.04294  0.001274
+## 3       True 0.04167   0.04456  0.002893
+## 4  Distort 2 0.04167   0.04294  0.001274
+## 5       Liar 0.04167   0.03750 -0.004167
+## 6       Liar 0.04167   0.03750 -0.004167
+## 7       True 0.04167   0.04456  0.002893
+## 8  Distort 1 0.04167   0.04294  0.001274
+## 9       True 0.04167   0.04456  0.002893
+## 10 Distort 2 0.04167   0.04294  0.001274
+## 11      Liar 0.04167   0.03750 -0.004167
+## 12      Liar 0.04167   0.03750 -0.004167
+## 13      True 0.04167   0.04456  0.002893
+## 14 Distort 1 0.04167   0.04294  0.001274
+## 15      True 0.04167   0.04456  0.002893
+## 16 Distort 2 0.04167   0.04294  0.001274
+## 17      Liar 0.04167   0.03750 -0.004167
+## 18      Liar 0.04167   0.03750 -0.004167
+## 19      True 0.04167   0.04456  0.002893
+## 20 Distort 1 0.04167   0.04294  0.001274
+## 21      True 0.04167   0.04456  0.002893
+## 22 Distort 2 0.04167   0.04294  0.001274
+## 23      Liar 0.04167   0.03750 -0.004167
+## 24      Liar 0.04167   0.03750 -0.004167
+## 
+## [[2]]
+##       Group OldRep SmoothRep      Drep
+## 4      True 0.3333    0.3565  0.023142
+## 1 Distort 1 0.1667    0.1718  0.005096
+## 2 Distort 2 0.1667    0.1718  0.005096
+## 3      Liar 0.3333    0.3000 -0.033333
+</code></pre>
+
+<pre><code class="r"># more or less what i expected
+</code></pre>
+
+<h2>Missing Values</h2>
+
+<pre><code class="r">
+Factory(Scenarios$Missing1)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0 C0
+## True         1    1    0    0  0
+## Distort 1    1    0    0    0 NA
+## True         1    1    0    0  0
+## Distort 2    1    1    1    0 NA
+## Liar         0    0    1    1  1
+## Liar         0    0    1    1  1
+## 
+## $Agents
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.1667  0.2913    0.1791     0         1.0000       0.1813
+## Distort 1 0.1667  0.2087    0.1709     1         0.7574       0.1373
+## True      0.1667  0.2913    0.1791     0         1.0000       0.1813
+## Distort 2 0.1667  0.2087    0.1709     1         0.7574       0.1373
+## Liar      0.1667  0.0000    0.1500     0         1.0000       0.1813
+## Liar      0.1667  0.0000    0.1500     0         1.0000       0.1813
+##           RowBonus
+## True        0.1793
+## Distort 1   0.1686
+## True        0.1793
+## Distort 2   0.1686
+## Liar        0.1521
+## Liar        0.1521
+## 
+## $Contracts
+##                     C1.1      C2.1     C3.0   C4.0       C0
+## First Loading    -0.4827 -0.421878 0.421878 0.4827 0.421878
+## ConoutRAW         0.7000  0.529131 0.470869 0.3000 0.470869
+## Consensus Reward  0.4103  0.059770 0.059770 0.4103 0.059770
+## Certainty         0.1600  0.003395 0.003395 0.1600 0.003395
+## Agreement         0.5138  0.915103 0.915103 0.5138 0.915103
+## RelativeAg        0.1362  0.242552 0.242552 0.1362 0.242552
+## NAs Filled        0.0000  0.000000 0.000000 0.0000 2.000000
+## ParticipationC    1.0000  1.000000 1.000000 1.0000 0.658263
+## Contract Bonus    0.3973  0.070096 0.070096 0.3973 0.065206
+## ConoutFinal       1.0000  0.500000 0.500000 0.0000 0.500000
+</code></pre>
+
+<pre><code class="r">Factory(Scenarios$Missing2)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0 C0 C1 C1
+## True         1    1    0    0  0  1 NA
+## Distort 1    1    0    0    0 NA  1 NA
+## True         1    1    0    0  0  1 NA
+## Distort 2    1    1    1    0 NA NA  0
+## Liar         0    0    1    1  1  0  1
+## Liar         0    0    1    1  1  0  1
+## True         1    1    0    0  0  1 NA
+## Distort 1    1    0    0    0 NA  1 NA
+## True         1    1    0    0  0  1 NA
+## Distort 2    1    1    1    0 NA NA  0
+## Liar         0    0    1    1  1  0  1
+## Liar         0    0    1    1  1  0  1
+## 
+## $Agents
+##            OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.08333  0.1398   0.08898     1         0.9586      0.08956
+## Distort 1 0.08333  0.1075   0.08575     2         0.7539      0.07044
+## True      0.08333  0.1398   0.08898     1         0.9586      0.08956
+## Distort 2 0.08333  0.1128   0.08628     2         0.6805      0.06358
+## Liar      0.08333  0.0000   0.07500     0         1.0000      0.09343
+## Liar      0.08333  0.0000   0.07500     0         1.0000      0.09343
+## True      0.08333  0.1398   0.08898     1         0.9586      0.08956
+## Distort 1 0.08333  0.1075   0.08575     2         0.7539      0.07044
+## True      0.08333  0.1398   0.08898     1         0.9586      0.08956
+## Distort 2 0.08333  0.1128   0.08628     2         0.6805      0.06358
+## Liar      0.08333  0.0000   0.07500     0         1.0000      0.09343
+## Liar      0.08333  0.0000   0.07500     0         1.0000      0.09343
+##           RowBonus
+## True       0.08907
+## Distort 1  0.08356
+## True       0.08907
+## Distort 2  0.08304
+## Liar       0.07763
+## Liar       0.07763
+## True       0.08907
+## Distort 1  0.08356
+## True       0.08907
+## Distort 2  0.08304
+## Liar       0.07763
+## Liar       0.07763
+## 
+## $Contracts
+##                     C1.1      C2.1     C3.0   C4.0       C0      C1
+## First Loading    -0.4409 -0.376924 0.362934 0.4409 0.369929 -0.4409
+## ConoutRAW         0.7000  0.528494 0.472563 0.3000 0.472035  0.7000
+## Consensus Reward  0.1978  0.028175 0.027129 0.1978 0.027652  0.1978
+## Certainty         0.1600  0.003248 0.003011 0.1600 0.003128  0.1600
+## Agreement         0.5138  0.915552 0.916275 0.5138 0.915917  0.5138
+## RelativeAg        0.1148  0.204624 0.204786 0.1148 0.204706  0.1148
+## NAs Filled        0.0000  0.000000 0.000000 0.0000 4.000000  2.0000
+## ParticipationC    1.0000  1.000000 1.000000 1.0000 0.655931  0.8274
+## Contract Bonus    0.1935  0.048136 0.047239 0.1935 0.039435  0.1894
+## ConoutFinal       1.0000  0.500000 0.500000 0.0000 0.500000  1.0000
+##                       C1
+## First Loading    0.07800
+## ConoutRAW        0.82744
+## Consensus Reward 0.32377
+## Certainty        0.42886
+## Agreement        0.18532
+## RelativeAg       0.04142
+## NAs Filled       6.00000
+## ParticipationC   0.47256
+## Contract Bonus   0.28885
+## ConoutFinal      1.00000
+</code></pre>
+
+<pre><code class="r">Factory(Scenarios$Missing3)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0 C0 C1 C1
+## True         1    1    0    0  0  1 NA
+## Distort 1    1    0    0    0 NA  1 NA
+## True         1    1    0    0  0  1 NA
+## Distort 2    1    1    1    0 NA NA  0
+## Liar        NA    0    1    1  1  0  1
+## Liar         0   NA    1    1  1  0  1
+## True         1    1    0    0  0  1 NA
+## Distort 1    1    0    0    0 NA  1 NA
+## True         1    1    0    0  0  1 NA
+## Distort 2    1    1    1    0 NA NA  0
+## Liar        NA    0    1    1  1  0  1
+## Liar         0   NA    1    1  1  0  1
+## 
+## $Agents
+##            OldRep  ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.08333 0.138439   0.08884     1         0.9522      0.09447
+## Distort 1 0.08333 0.116097   0.08661     2         0.7124      0.07068
+## True      0.08333 0.138439   0.08884     1         0.9522      0.09447
+## Distort 2 0.08333 0.098602   0.08486     2         0.6244      0.06194
+## Liar      0.08333 0.008422   0.07584     1         0.9544      0.09469
+## Liar      0.08333 0.000000   0.07500     1         0.8442      0.08376
+## True      0.08333 0.138439   0.08884     1         0.9522      0.09447
+## Distort 1 0.08333 0.116097   0.08661     2         0.7124      0.07068
+## True      0.08333 0.138439   0.08884     1         0.9522      0.09447
+## Distort 2 0.08333 0.098602   0.08486     2         0.6244      0.06194
+## Liar      0.08333 0.008422   0.07584     1         0.9544      0.09469
+## Liar      0.08333 0.000000   0.07500     1         0.8442      0.08376
+##           RowBonus
+## True       0.08991
+## Distort 1  0.08358
+## True       0.08991
+## Distort 2  0.08050
+## Liar       0.07943
+## Liar       0.07667
+## True       0.08991
+## Distort 1  0.08358
+## True       0.08991
+## Distort 2  0.08050
+## Liar       0.07943
+## Liar       0.07667
+## 
+## $Contracts
+##                      C1.1    C2.1     C3.0   C4.0       C0      C1      C1
+## First Loading    -0.26689 -0.1350 0.457899 0.5068 0.429883 -0.5068 0.04890
+## ConoutRAW         0.85000  0.6751 0.471405 0.3017 0.473154  0.6983 0.83028
+## Consensus Reward  0.26770  0.1339 0.021871 0.1517 0.020533  0.1517 0.25261
+## Certainty         0.49000  0.1226 0.003271 0.1573 0.002883  0.1573 0.43634
+## Agreement         0.17423  0.5955 0.915481 0.5193 0.916668  0.5193 0.18269
+## RelativeAg        0.04557  0.1558 0.239455 0.1358 0.239765  0.1358 0.04779
+## NAs Filled        2.00000  2.0000 0.000000 0.0000 4.000000  2.0000 6.00000
+## ParticipationC    0.84832  0.8500 1.000000 1.0000 0.657060  0.8303 0.47140
+## Contract Bonus    0.24527  0.1370 0.051376 0.1565 0.038745  0.1507 0.22037
+## ConoutFinal       1.00000  1.0000 0.500000 0.0000 0.500000  1.0000 1.00000
+</code></pre>
+
+<pre><code class="r">Factory(Scenarios$Missing4)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0 C0 C1 C1
+## True         1    1    0    0  0  1 NA
+## Distort 1    1   NA   NA    0 NA  1 NA
+## True         1    1    0    0  0  1 NA
+## Distort 2    1    1    1    0 NA NA  0
+## Liar         0    0   NA   NA NA NA  1
+## Liar        NA   NA   NA   NA  1  0  1
+## True        NA   NA    0    0  0  1 NA
+## Distort 1   NA   NA    0    0 NA  1 NA
+## True         1    1    0    0  0  1 NA
+## Distort 2    1    1    1    0 NA NA  0
+## 
+## $Agents
+##           OldRep   ThisRep SmoothRep NArow ParticipationR RelativePart
+## True         0.1 1.000e-01      0.10     1         0.7224      0.11624
+## Distort 1    0.1 1.000e-01      0.10     4         0.4712      0.07583
+## True         0.1 1.000e-01      0.10     1         0.7224      0.11624
+## Distort 2    0.1 2.000e-01      0.11     2         0.8304      0.13363
+## Liar         0.1 2.564e-17      0.09     4         0.4473      0.07197
+## Liar         0.1 0.000e+00      0.09     4         0.4473      0.07197
+## True         0.1 1.000e-01      0.10     3         0.5527      0.08895
+## Distort 1    0.1 1.000e-01      0.10     4         0.4679      0.07530
+## True         0.1 1.000e-01      0.10     1         0.7224      0.11624
+## Distort 2    0.1 2.000e-01      0.11     2         0.8304      0.13363
+##           RowBonus
+## True       0.10603
+## Distort 1  0.09102
+## True       0.10603
+## Distort 2  0.11878
+## Liar       0.08330
+## Liar       0.08330
+## True       0.09589
+## Distort 1  0.09083
+## True       0.10603
+## Distort 2  0.11878
+## 
+## $Contracts
+##                      C1.1     C2.1     C3.0   C4.0      C0       C1
+## First Loading    -0.28868 -0.28868 -0.57735 0.0000 0.28868 -0.28868
+## ConoutRAW         0.91000  0.91000  0.22000 0.0000 0.09000  0.91000
+## Consensus Reward  0.16803  0.16803  0.11475 0.2049 0.16803  0.16803
+## Certainty         0.67240  0.67240  0.31360 1.0000 0.67240  0.67240
+## Agreement         0.28120  0.28120  0.27031 1.0000 0.28120  0.28120
+## RelativeAg        0.08481  0.08481  0.08152 0.3016 0.08481  0.08481
+## NAs Filled        3.00000  4.00000  3.00000 2.0000 5.00000  3.00000
+## ParticipationC    0.71000  0.61000  0.72000 0.8200 0.49000  0.69000
+## Contract Bonus    0.16502  0.15665  0.13236 0.1974 0.14661  0.16334
+## ConoutFinal       1.00000  1.00000  0.00000 0.0000 0.00000  1.00000
+##                        C1
+## First Loading    0.577350
+## ConoutRAW        0.480000
+## Consensus Reward 0.008197
+## Certainty        0.001600
+## Agreement        0.920598
+## RelativeAg       0.277649
+## NAs Filled       6.000000
+## ParticipationC   0.400000
+## Contract Bonus   0.038614
+## ConoutFinal      0.500000
+</code></pre>
+
+<pre><code class="r">Factory(Scenarios$Missing5)
+</code></pre>
+
+<pre><code>## $Original
+##              C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0
+## True      NA   NA   NA   NA   NA    1    1    0    0
+## Distort 1  1   NA   NA   NA   NA   NA    0    0    0
+## True       1    1   NA   NA   NA   NA   NA    0    0
+## Distort 2  1    1    1   NA   NA   NA   NA   NA    0
+## Liar       0    0    0    1   NA   NA   NA   NA   NA
+## Liar      NA    0    0    1    1   NA   NA   NA   NA
+## True      NA   NA    1    0    0    1   NA   NA   NA
+## Distort 1 NA   NA   NA    0    0    1    0   NA   NA
+## True      NA   NA   NA   NA    0    1    1    0   NA
+## Distort 2 NA   NA   NA   NA   NA    1    1    1    0
+## Liar       0   NA   NA   NA   NA   NA    0    1    1
+## Liar       0    0   NA   NA   NA   NA   NA    1    1
+## 
+## $Agents
+##            OldRep  ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.08333 0.098100   0.08481     5         0.4232      0.08278
+## Distort 1 0.08333 0.109330   0.08593     5         0.4095      0.08010
+## True      0.08333 0.135194   0.08852     5         0.2799      0.05474
+## Distort 2 0.08333 0.139279   0.08893     5         0.3904      0.07637
+## Liar      0.08333 0.073103   0.08231     5         0.5230      0.10230
+## Liar      0.08333 0.091409   0.08414     5         0.4140      0.08098
+## True      0.08333 0.101190   0.08512     5         0.5568      0.10891
+## Distort 1 0.08333 0.094435   0.08444     5         0.5568      0.10892
+## True      0.08333 0.098100   0.08481     5         0.4463      0.08728
+## Distort 2 0.08333 0.057191   0.08072     5         0.4232      0.08278
+## Liar      0.08333 0.000000   0.07500     5         0.4095      0.08010
+## Liar      0.08333 0.002669   0.07527     5         0.2799      0.05474
+##           RowBonus
+## True       0.08368
+## Distort 1  0.08269
+## True       0.06975
+## Distort 2  0.08195
+## Liar       0.09341
+## Liar       0.08238
+## True       0.09834
+## Distort 1  0.09804
+## True       0.08618
+## Distort 2  0.08186
+## Liar       0.07784
+## Liar       0.06386
+## 
+## $Contracts
+##                                 C1.1       C2.1      C3.0     C4.0   C1.1
+## First Loading    -0.4852066 -0.33963 -1.196e-01 4.901e-02 -0.02544 0.0000
+## ConoutRAW         0.5154015  0.17745  5.038e-01 4.984e-01  0.08414 1.0000
+## Consensus Reward  0.0081906  0.17153  2.020e-03 8.273e-04  0.22116 0.2659
+## Certainty         0.0009488  0.41616  5.769e-05 9.679e-06  0.69176 1.0000
+## Agreement         0.9225968  0.19057  9.253e-01 9.255e-01  0.30486 1.0000
+## RelativeAg        0.1627957  0.03363  1.633e-01 1.633e-01  0.05379 0.1765
+## NAs Filled        6.0000000  7.00000  8.000e+00 8.000e+00  8.00000 7.0000
+## ParticipationC    0.4959575  0.41917  3.405e-01 3.360e-01  0.33851 0.4199
+## Contract Bonus    0.0725232  0.13446  4.819e-02 4.704e-02  0.14531 0.1765
+## ConoutFinal       0.5000000  0.00000  5.000e-01 5.000e-01  0.00000 1.0000
+##                        C2.1    C3.0    C4.0
+## First Loading    -7.817e-02 0.59901 0.51666
+## ConoutRAW         5.025e-01 0.23099 0.15027
+## Consensus Reward  1.320e-03 0.14306 0.18599
+## Certainty         2.463e-05 0.28947 0.48925
+## Agreement         9.254e-01 0.29870 0.17422
+## RelativeAg        1.633e-01 0.05271 0.03074
+## NAs Filled        6.000e+00 5.00000 5.00000
+## ParticipationC    4.957e-01 0.57506 0.57918
+## Contract Bonus    6.944e-02 0.14345 0.16310
+## ConoutFinal       5.000e-01 0.00000 0.00000
+</code></pre>
+
+<pre><code class="r"># Works
+
+
+Factory(Scenarios$Riven)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0
+## True         1    1    0    0   NA   NA   NA   NA   NA   NA   NA   NA
+## Distort 1    1    0    0    0   NA   NA   NA   NA   NA   NA   NA   NA
+## True         1    1    0    0   NA   NA   NA   NA   NA   NA   NA   NA
+## Distort 2    1    1    1    0   NA   NA   NA   NA   NA   NA   NA   NA
+## Liar         0    0    1    1   NA   NA   NA   NA   NA   NA   NA   NA
+## Liar         0    0    1    1   NA   NA   NA   NA   NA   NA   NA   NA
+## True        NA   NA   NA   NA    1    1    0    0   NA   NA   NA   NA
+## Distort 1   NA   NA   NA   NA    1    0    0    0   NA   NA   NA   NA
+## True        NA   NA   NA   NA    1    1    0    0   NA   NA   NA   NA
+## Distort 2   NA   NA   NA   NA    1    1    1    0   NA   NA   NA   NA
+## Liar        NA   NA   NA   NA    0    0    1    1   NA   NA   NA   NA
+## Liar        NA   NA   NA   NA    0    0    1    1   NA   NA   NA   NA
+## True        NA   NA   NA   NA   NA   NA   NA   NA    1    1    0    0
+## Distort 1   NA   NA   NA   NA   NA   NA   NA   NA    1    0    0    0
+## True        NA   NA   NA   NA   NA   NA   NA   NA    1    1    0    0
+## Distort 2   NA   NA   NA   NA   NA   NA   NA   NA    1    1    1    0
+## Liar        NA   NA   NA   NA   NA   NA   NA   NA    0    0    1    1
+## Liar        NA   NA   NA   NA   NA   NA   NA   NA    0    0    1    1
+## 
+## $Agents
+##            OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.05556 0.05556   0.05556     8         0.3326      0.05544
+## Distort 1 0.05556 0.05556   0.05556     8         0.3326      0.05544
+## True      0.05556 0.05556   0.05556     8         0.3326      0.05544
+## Distort 2 0.05556 0.05556   0.05556     8         0.3326      0.05544
+## Liar      0.05556 0.05556   0.05556     8         0.3326      0.05544
+## Liar      0.05556 0.05556   0.05556     8         0.3326      0.05544
+## True      0.05556 0.04244   0.05424     8         0.3262      0.05437
+## Distort 1 0.05556 0.05556   0.05556     8         0.3262      0.05437
+## True      0.05556 0.04244   0.05424     8         0.3262      0.05437
+## Distort 2 0.05556 0.05556   0.05556     8         0.3262      0.05437
+## Liar      0.05556 0.11111   0.06111     8         0.3262      0.05437
+## Liar      0.05556 0.11111   0.06111     8         0.3262      0.05437
+## True      0.05556 0.06867   0.05687     8         0.3411      0.05685
+## Distort 1 0.05556 0.05556   0.05556     8         0.3411      0.05685
+## True      0.05556 0.06867   0.05687     8         0.3411      0.05685
+## Distort 2 0.05556 0.05556   0.05556     8         0.3411      0.05685
+## Liar      0.05556 0.00000   0.05000     8         0.3411      0.05685
+## Liar      0.05556 0.00000   0.05000     8         0.3411      0.05685
+##           RowBonus
+## True       0.05548
+## Distort 1  0.05548
+## True       0.05548
+## Distort 2  0.05548
+## Liar       0.05548
+## Liar       0.05548
+## True       0.05433
+## Distort 1  0.05477
+## True       0.05433
+## Distort 2  0.05477
+## Liar       0.05662
+## Liar       0.05662
+## True       0.05686
+## Distort 1  0.05642
+## True       0.05686
+## Distort 2  0.05642
+## Liar       0.05457
+## Liar       0.05457
+## 
+## $Contracts
+##                        C1.1       C2.1      C3.0      C4.0     C1.1
+## First Loading    -8.466e-16 -7.733e-16 8.253e-16 8.594e-16  0.42533
+## ConoutRAW         8.889e-01  5.000e-01 5.000e-01 1.111e-01  0.87778
+## Consensus Reward  1.647e-01  0.000e+00 0.000e+00 1.647e-01  0.16002
+## Certainty         6.049e-01  0.000e+00 0.000e+00 6.049e-01  0.57086
+## Agreement         2.172e-01  9.255e-01 9.255e-01 2.172e-01  0.19577
+## RelativeAg        3.161e-02  1.347e-01 1.347e-01 3.161e-02  0.02849
+## NAs Filled        1.200e+01  1.200e+01 1.200e+01 1.200e+01 12.00000
+## ParticipationC    3.333e-01  3.333e-01 3.333e-01 3.333e-01  0.34182
+## Contract Bonus    1.105e-01  5.556e-02 5.556e-02 1.105e-01  0.11031
+## ConoutFinal       1.000e+00  5.000e-01 5.000e-01 0.000e+00  1.00000
+##                       C2.1       C3.0     C4.0     C1.1       C2.1
+## First Loading    2.629e-01 -0.2628656 -0.42533 -0.42533 -0.2628656
+## ConoutRAW        4.931e-01  0.5068670  0.12222  0.90000  0.5068670
+## Consensus Reward 2.909e-03  0.0029088  0.16002  0.16943  0.0029088
+## Certainty        1.886e-04  0.0001886  0.57086  0.64000  0.0001886
+## Agreement        9.249e-01  0.9249339  0.19577  0.24688  0.9249339
+## RelativeAg       1.346e-01  0.1346253  0.02849  0.03593  0.1346253
+## NAs Filled       1.200e+01 12.0000000 12.00000 12.00000 12.0000000
+## ParticipationC   3.418e-01  0.3418215  0.34182  0.32485  0.3248452
+## Contract Bonus   5.794e-02  0.0579398  0.11031  0.11062  0.0551105
+## ConoutFinal      5.000e-01  0.5000000  0.00000  1.00000  0.5000000
+##                       C3.0     C4.0
+## First Loading    2.629e-01  0.42533
+## ConoutRAW        4.931e-01  0.10000
+## Consensus Reward 2.909e-03  0.16943
+## Certainty        1.886e-04  0.64000
+## Agreement        9.249e-01  0.24687
+## RelativeAg       1.346e-01  0.03593
+## NAs Filled       1.200e+01 12.00000
+## ParticipationC   3.248e-01  0.32485
+## Contract Bonus   5.511e-02  0.11062
+## ConoutFinal      5.000e-01  0.00000
+</code></pre>
+
+<pre><code class="r">Factory(Scenarios$Riven2)
+</code></pre>
+
+<pre><code>## $Original
+##           C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0
+## True         1    1    0    0   NA   NA   NA   NA   NA   NA   NA   NA
+## Distort 1    1    0    0    0   NA   NA   NA   NA   NA   NA   NA   NA
+## True         1    1    0    0   NA   NA   NA   NA   NA   NA   NA   NA
+## Distort 2    1    1    1    0   NA   NA   NA   NA   NA   NA   NA   NA
+## Liar         0    0    1    1   NA   NA   NA   NA   NA   NA   NA   NA
+## Liar         0    0    1    1   NA   NA   NA   NA   NA   NA   NA   NA
+## True         1   NA   NA   NA    1    1    0    0   NA   NA   NA   NA
+## Distort 1   NA   NA   NA   NA    1    0    0    0   NA   NA   NA   NA
+## True        NA   NA   NA   NA    1    1    0    0   NA   NA   NA   NA
+## Distort 2   NA   NA   NA   NA    1    1    1    0   NA   NA   NA   NA
+## Liar        NA   NA   NA   NA    0    0    1    1   NA   NA   NA   NA
+## Liar        NA   NA   NA   NA    0    0    1    1   NA   NA   NA   NA
+## True        NA   NA   NA   NA   NA   NA   NA   NA    1    1    0    0
+## Distort 1   NA   NA   NA   NA   NA   NA   NA   NA    1    0    0    0
+## True        NA   NA   NA   NA   NA   NA   NA   NA    1    1    0    0
+## Distort 2   NA   NA   NA   NA   NA   NA   NA   NA    1    1    1    0
+## Liar        NA   NA   NA   NA   NA   NA   NA   NA    0    0    1    1
+## Liar        NA   NA   NA   NA   NA   NA   NA   NA    0    0    1    1
+## 
+## $Agents
+##            OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.05556 0.05556   0.05556     8         0.3326      0.05515
+## Distort 1 0.05556 0.05556   0.05556     8         0.3326      0.05515
+## True      0.05556 0.05556   0.05556     8         0.3326      0.05515
+## Distort 2 0.05556 0.05556   0.05556     8         0.3326      0.05515
+## Liar      0.05556 0.05556   0.05556     8         0.3326      0.05515
+## Liar      0.05556 0.05556   0.05556     8         0.3326      0.05515
+## True      0.05556 0.04244   0.05424     7         0.3579      0.05933
+## Distort 1 0.05556 0.05556   0.05556     8         0.3262      0.05409
+## True      0.05556 0.04244   0.05424     8         0.3262      0.05409
+## Distort 2 0.05556 0.05556   0.05556     8         0.3262      0.05409
+## Liar      0.05556 0.11111   0.06111     8         0.3262      0.05409
+## Liar      0.05556 0.11111   0.06111     8         0.3262      0.05409
+## True      0.05556 0.06867   0.05687     8         0.3411      0.05655
+## Distort 1 0.05556 0.05556   0.05556     8         0.3411      0.05655
+## True      0.05556 0.06867   0.05687     8         0.3411      0.05655
+## Distort 2 0.05556 0.05556   0.05556     8         0.3411      0.05655
+## Liar      0.05556 0.00000   0.05000     8         0.3411      0.05655
+## Liar      0.05556 0.00000   0.05000     8         0.3411      0.05655
+##           RowBonus
+## True       0.05529
+## Distort 1  0.05529
+## True       0.05529
+## Distort 2  0.05529
+## Liar       0.05529
+## Liar       0.05529
+## True       0.05761
+## Distort 1  0.05458
+## True       0.05414
+## Distort 2  0.05458
+## Liar       0.05646
+## Liar       0.05646
+## True       0.05666
+## Distort 1  0.05622
+## True       0.05666
+## Distort 2  0.05622
+## Liar       0.05434
+## Liar       0.05434
+## 
+## $Contracts
+##                        C1.1       C2.1      C3.0      C4.0     C1.1
+## First Loading    -8.466e-16 -7.733e-16 8.253e-16 8.594e-16  0.42533
+## ConoutRAW         8.889e-01  5.000e-01 5.000e-01 1.111e-01  0.87778
+## Consensus Reward  1.647e-01  0.000e+00 0.000e+00 1.647e-01  0.16002
+## Certainty         6.049e-01  0.000e+00 0.000e+00 6.049e-01  0.57086
+## Agreement         2.172e-01  9.255e-01 9.255e-01 2.172e-01  0.19577
+## RelativeAg        3.161e-02  1.347e-01 1.347e-01 3.161e-02  0.02849
+## NAs Filled        1.100e+01  1.200e+01 1.200e+01 1.200e+01 12.00000
+## ParticipationC    3.876e-01  3.333e-01 3.333e-01 3.333e-01  0.34182
+## Contract Bonus    1.190e-01  5.443e-02 5.443e-02 1.101e-01  0.10990
+## ConoutFinal       1.000e+00  5.000e-01 5.000e-01 0.000e+00  1.00000
+##                       C2.1       C3.0     C4.0     C1.1       C2.1
+## First Loading    2.629e-01 -0.2628656 -0.42533 -0.42533 -0.2628656
+## ConoutRAW        4.931e-01  0.5068670  0.12222  0.90000  0.5068670
+## Consensus Reward 2.909e-03  0.0029088  0.16002  0.16943  0.0029088
+## Certainty        1.886e-04  0.0001886  0.57086  0.64000  0.0001886
+## Agreement        9.249e-01  0.9249339  0.19577  0.24688  0.9249339
+## RelativeAg       1.346e-01  0.1346253  0.02849  0.03593  0.1346253
+## NAs Filled       1.200e+01 12.0000000 12.00000 12.00000 12.0000000
+## ParticipationC   3.418e-01  0.3418215  0.34182  0.32485  0.3248452
+## Contract Bonus   5.680e-02  0.0568007  0.10990  0.11031  0.0540286
+## ConoutFinal      5.000e-01  0.5000000  0.00000  1.00000  0.5000000
+##                       C3.0     C4.0
+## First Loading    2.629e-01  0.42533
+## ConoutRAW        4.931e-01  0.10000
+## Consensus Reward 2.909e-03  0.16943
+## Certainty        1.886e-04  0.64000
+## Agreement        9.249e-01  0.24687
+## RelativeAg       1.346e-01  0.03593
+## NAs Filled       1.200e+01 12.00000
+## ParticipationC   3.248e-01  0.32485
+## Contract Bonus   5.403e-02  0.11031
+## ConoutFinal      5.000e-01  0.00000
+</code></pre>
+
+<pre><code class="r">
+# !!! Must FillNa with .5 FIRST, then average in, to prevent monopoly voting
+# on brand-new contracts. (Actually, if it will eventually be ruled .5).
+
+# Voting Across Time Later Votes should count more ! ...simple change =
+# ConoutFinal becomes exponentially smoothed result of previous chains. !
+# require X number of chains (blocks) before the outcome is officially
+# determined (two weeks?)
+
+# Will need: 1] Percent Voted 2] Time Dimension of blocks.
+
+# Possible solutions: 1 - sequential filling of NAs (sequential removal of
+# columns) - pre-processing replace with average?  2 - what about the
+# &#39;expert factor&#39; idea? what happened to that?  3 - Completely replace
+# FillNa with Reputations (lots of positives here)
+
+# TO-DO Cascading reputation .6,.5,.3.,2., etc = dexp(nrow(Mg))
+
+# Mysterious behavior - loading only on first factor solutions 1- ignore.
+# incentives will encourage filling out of contracts on &#39;obvious&#39; events 2 -
+# use later factors. Unknown what behavior could result from this
+</code></pre>
+
+<h2>Additive Reputation</h2>
+
+<p>Is reputation completely additive? - Yes, now.</p>
+
+<pre><code class="r">Mar1 &lt;- M1
+r1 &lt;- rep(1/6, 6)
+
+Mar2 &lt;- M1[-6, ]
+r2 &lt;- c(1/6, 1/6, 1/6, 1/6, 2/6)
+
+Mar3 &lt;- M1[c(1, 2, 4, 5), ]
+r3 &lt;- c(2/6, 1/6, 1/6, 2/6)
+
+Mar4 &lt;- M1[c(1, 2, 4, 5, 6), ]
+r4 &lt;- c(2/6, 1/6, 1/6, 1/6, 1/6)
+
+Factory(Mar1, Rep = r1)$Agents
+</code></pre>
+
+<pre><code>##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.1667  0.2824    0.1782     0              1       0.1667
+## Distort 1 0.1667  0.2176    0.1718     0              1       0.1667
+## True      0.1667  0.2824    0.1782     0              1       0.1667
+## Distort 2 0.1667  0.2176    0.1718     0              1       0.1667
+## Liar      0.1667  0.0000    0.1500     0              1       0.1667
+## Liar      0.1667  0.0000    0.1500     0              1       0.1667
+##           RowBonus
+## True        0.1782
+## Distort 1   0.1718
+## True        0.1782
+## Distort 2   0.1718
+## Liar        0.1500
+## Liar        0.1500
+</code></pre>
+
+<pre><code class="r">Factory(Mar2, Rep = r2)$Agents
+</code></pre>
+
+<pre><code>##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.1667  0.2824    0.1782     0              1          0.2
+## Distort 1 0.1667  0.2176    0.1718     0              1          0.2
+## True      0.1667  0.2824    0.1782     0              1          0.2
+## Distort 2 0.1667  0.2176    0.1718     0              1          0.2
+## Liar      0.3333  0.0000    0.3000     0              1          0.2
+##           RowBonus
+## True        0.1782
+## Distort 1   0.1718
+## True        0.1782
+## Distort 2   0.1718
+## Liar        0.3000
+</code></pre>
+
+<pre><code class="r">Factory(Mar3, Rep = r3)$Agents
+</code></pre>
+
+<pre><code>##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.3333  0.5648    0.3565     0              1         0.25
+## Distort 1 0.1667  0.2176    0.1718     0              1         0.25
+## Distort 2 0.1667  0.2176    0.1718     0              1         0.25
+## Liar      0.3333  0.0000    0.3000     0              1         0.25
+##           RowBonus
+## True        0.3565
+## Distort 1   0.1718
+## Distort 2   0.1718
+## Liar        0.3000
+</code></pre>
+
+<pre><code class="r">Factory(Mar4, Rep = r4)$Agents
+</code></pre>
+
+<pre><code>##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+## True      0.3333  0.5648    0.3565     0              1          0.2
+## Distort 1 0.1667  0.2176    0.1718     0              1          0.2
+## Distort 2 0.1667  0.2176    0.1718     0              1          0.2
+## Liar      0.1667  0.0000    0.1500     0              1          0.2
+## Liar      0.1667  0.0000    0.1500     0              1          0.2
+##           RowBonus
+## True        0.3565
+## Distort 1   0.1718
+## Distort 2   0.1718
+## Liar        0.1500
+## Liar        0.1500
+</code></pre>
+
+<pre><code class="r">
+# Is reputation additive? Yes (excluding NA-born effects, we could correct
+# with Rep/mean(Rep) but NA is not part of equilibrium so it shouldnt
+# matter).
+</code></pre>
+
+<pre><code class="r">Factory(Mg)$Agents[, c(&quot;OldRep&quot;, &quot;ThisRep&quot;, &quot;SmoothRep&quot;)]
+</code></pre>
+
+<pre><code>##            OldRep ThisRep SmoothRep
+## True      0.05556 0.05556   0.05556
+## Distort 1 0.05556 0.05556   0.05556
+## True      0.05556 0.05556   0.05556
+## Distort 2 0.05556 0.05556   0.05556
+## Liar      0.05556 0.05556   0.05556
+## Liar      0.05556 0.05556   0.05556
+## True      0.05556 0.04244   0.05424
+## Distort 1 0.05556 0.05556   0.05556
+## True      0.05556 0.04244   0.05424
+## Distort 2 0.05556 0.05556   0.05556
+## Liar      0.05556 0.11111   0.06111
+## Liar      0.05556 0.11111   0.06111
+## True      0.05556 0.06867   0.05687
+## Distort 1 0.05556 0.05556   0.05556
+## True      0.05556 0.06867   0.05687
+## Distort 2 0.05556 0.05556   0.05556
+## Liar      0.05556 0.00000   0.05000
+## Liar      0.05556 0.00000   0.05000
+</code></pre>
+
+<pre><code class="r">Factory(Mg2)$Agents[, c(&quot;OldRep&quot;, &quot;ThisRep&quot;, &quot;SmoothRep&quot;)]
+</code></pre>
+
+<pre><code>##            OldRep ThisRep SmoothRep
+## True      0.05556 0.05556   0.05556
+## Distort 1 0.05556 0.05556   0.05556
+## True      0.05556 0.05556   0.05556
+## Distort 2 0.05556 0.05556   0.05556
+## Liar      0.05556 0.05556   0.05556
+## Liar      0.05556 0.05556   0.05556
+## True      0.05556 0.04244   0.05424
+## Distort 1 0.05556 0.05556   0.05556
+## True      0.05556 0.04244   0.05424
+## Distort 2 0.05556 0.05556   0.05556
+## Liar      0.05556 0.11111   0.06111
+## Liar      0.05556 0.11111   0.06111
+## True      0.05556 0.06867   0.05687
+## Distort 1 0.05556 0.05556   0.05556
+## True      0.05556 0.06867   0.05687
+## Distort 2 0.05556 0.05556   0.05556
+## Liar      0.05556 0.00000   0.05000
+## Liar      0.05556 0.00000   0.05000
+</code></pre>
+
+<pre><code class="r"># True 1 of group 2 skyrockets ahead, as desired.
+
+# upon reflection, I dont think this &#39;problem&#39; is particularly bad.
+</code></pre>
+
+<h2>Scalability</h2>
+
+<p>What are the computational limits?
+Largely irrelevant because of forking, this is important for setting parameters correctly (and in general).</p>
+
+<pre><code class="r">
+TestLimit &lt;- function(n1, n2, AddNa = 1) {
+    M_huge &lt;- matrix(round(runif(n1 * n2)), n1, n2)
+    if (AddNa == 1) 
+        M_huge[sample(1:(n1 * n2), size = (n1 * n2)/3)] &lt;- NA
+    Factory(M_huge)
+}
+
+
+system.time(print(&quot;1&quot;))
+</code></pre>
+
+<pre><code>## [1] &quot;1&quot;
+</code></pre>
+
+<pre><code>##    user  system elapsed 
+##       0       0       0
+</code></pre>
+
+<pre><code class="r">system.time(TestLimit(100, 10))
+</code></pre>
+
+<pre><code>##    user  system elapsed 
+##       0       0       0
+</code></pre>
+
+<pre><code class="r">system.time(TestLimit(1000, 100))
+</code></pre>
+
+<pre><code>##    user  system elapsed 
+##     0.7     0.0     0.7
+</code></pre>
+
+<pre><code class="r"># user system elapsed 0.66 0.00 0.65
+
+# system.time(TestLimit(100000,10)) user system elapsed 9.50 0.02 9.53
+
+
+
+# system.time(TestLimit(100000,100)) user system elapsed 134.08 0.80 134.96
+
+# Solutions
+
+# [1] - cap the number of rows in its current state, it is basically
+# unlimited - unrealistic the first 100,000 votes are probably decentralized
+# enough ...how low should this number go? (can be a f[ncol(Vmatrix)]) given
+# that reputation is fully additive, this would discourage the spreading of
+# reputations this would also solve the &#39;dust bust&#39; question (ie suck up any
+# accounts with tiny dust amounts of reputation) can add the slow retarget
+# to make this grow over the next thousand years (every 4 years?)
+
+# after simply listing the specifics of this solution I realize it is the
+# best candidate
+</code></pre>
+
+<h2>Other Notes</h2>
+
+<pre><code class="r">
+# Steps
+
+# [1] [CANCEL - BAD IDEA] Reward later factors (Comp.2, 3)? Seems
+# risky...lets square the loadings or something to truly emphasize the first
+# factor.  [2] [DONE] Build R (reward matrix) as a proportion.  [3] [DONE]
+# What if the guy has no idea? NAs [4] [DONE] Fix &#39;perfect consensus&#39; bug.
+# [5] Reward function: a% of current reserve pool? [yes], payouts over time
+# ? [this is whats happening, not finished yet] [6] Scale Cost By Funds
+# availiable [????] [7] Add payment functionality (pay-per-vote) [8]
+# Functionality for new arrivals..old contracts missing data.  [9] [DONE]
+# Remove incentive to create contracts where consensus is @.5 !  [10.a]
+# [DONE] Univariate fill missing data in an incentive-consistent way.
+# [10.b] [part-DONE] Multivariate fill missing data (recursive?
+# bootstrapped?) [chose simultaneous prediction, and ignore] [10.c - FillNa
+# should faithfully reproduce .5s]
+
+# [adding a NA to a contract can wipe out the validations there, ONLY when
+# filling NA, - fix by using exponential smoothing to calc Rewards] [Fixed!]
+# [11] Ask - Ask people the outcomes of contracts...how to maximize
+# (contract reward? d(Cr)?)
+
+# 
+
+# [20 - Discourage &#39;Obvious Outcome&#39; Contracts by fee for open interest
+# (more disagreement)]
+
+### 
+
+
+
+
+
+# [14] Subsidized Events - Principals paying Agents to influence the outcome
+# of contracts.
+
+
+# [14a] A market for an event will allow it&#39;s occurance to be noted by the
+# Factory after it&#39;s occurance.  [14b] Partition a &#39;Verification Space&#39;
+# (private information known only to the agent: date, time, colour, etc).
+# [14c] Allow private bets within the Verification Space - possibly a second
+# set of Colored Coins &#39;specical coin&#39;.  [14d] At EoC, people collect
+# proportional to their holdings of insider-information coins.  [14e]
+# Assurance contracts to allow anyone to fund a &#39;club good&#39; event.
+
+</code></pre>
+
+</body>
+
+</html>
+

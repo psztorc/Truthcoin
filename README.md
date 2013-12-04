@@ -3,6 +3,9 @@ Decentralized Prediction Markets (DPM) is my ambitious project to create a censo
 
 Contract outcomes are determined by a weighted vote based on present and past consensus with (theoretically) a unique Nash Equilibrium where all voters place 'open contracts' (contracts for events that have already happened) into the correct state, and only contracts anticipated to generate sufficiently-high transaction volume are created at all. Additionally, market liquidity (a frequent problem on sites such as InTrade.com) is guaranteed to be infinite thanks to the LMSR, an invention of Dr. Robin Hanson.
 
+<h2>Directory</h2>
+Code is generally in the 'lib' folder, other items generally in the 'docs' folder.
+
 <h2>Target Schedule</h2>
 Everything is a work in progress!<br />
 December 15th, 2013: Publish "Consensus Mechanism" + Tests in R, and writeup of this 'Oracle' function and its purpose.<br />
