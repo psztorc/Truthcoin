@@ -88,14 +88,9 @@ FillNa <- function(Mna,Rep=ReWeight( rep(1,nrow(Mna)) ), CatchP=.1, Debug=0) {
   #Uses exisiting data and reputations to fill missing observations.
   #Essentially a weighted average using all availiable non-NA data.
   #How much should slackers who arent voting suffer? I decided this would depend on the global percentage of slacking.
-  
-  #Count the missing observations (NA). We will need this information later.
-  NAcontract <- apply(Mna,2,function(x) sum(is.na(x)) )
-  NAvote <- apply(Mna,1,function(x) sum(is.na(x)) )
-
   Mnew <- Mna #Declare (in case no Missing values, Mnew and Mna will be the same)
   
-  if(sum(NAcontract)>0) {
+  if(sum(is.na(Mna))>0) {
     #Of course, only do this process if there ARE missing values.
     
     #Contract Outcome - Our best guess for the contract state (FALSE=0, Ambiguous=.5, TRUE=1) so far (ie, using the present, non-missing, values).
@@ -140,47 +135,27 @@ FillNa <- function(Mna,Rep=ReWeight( rep(1,nrow(Mna)) ), CatchP=.1, Debug=0) {
   
   #Appropriately force the predictions into their discrete (0,.5,1) slot. (continuous variables can be gamed).
   MnewC <- apply(Mnew, c(1,2), function(x) Catch(x,CatchP) )
-  
-  #Results
-  Output <- vector("list")
-  Output[[1]] <- MnewC
-  Output[[2]] <- NAcontract
-  Output[[3]] <- NAvote
-  return(Output)
+  return(MnewC)
 }
 
 #Putting it all together:
 Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
   #Main Routine
-  #Fill the default reputations if none are provided
+  #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
   if(is.null(Rep)) Rep <- ReWeight(rep(1,nrow(M0)))
   
-#   TruncateMatrix
-  
-  INPUT2 <- FillNa(M0, Rep, CatchP=CatchP, Debug=0)
-  #Pre-Analytics
-   
-  M <- INPUT2[[1]]
-  NAcontract <- INPUT2[[2]]
-  NArow <- INPUT2[[3]]  
-  
-  NAmat <- M0*0 
-  NAmat[is.na(NAmat)] <- 1
-  
-  #NA importance = % of awnsers given as NA
-  #Democratic: PercentNA  <- sum(NAcontract)/ (dim(M)[1]*dim(M)[2])  
-  PercentNA  <- sum(NAcontract)/ (dim(M)[1]*dim(M)[2])  
+  #Handle Missing Values  
+  Filled <- FillNa(M0, Rep, CatchP=CatchP, Debug=Debug)
 
   ## Consensus - Row Players 
   #New Consensus Reward
-  PlayerInfo <- GetRewardWeights3(M=M,Rep,.1,Debug)
+  PlayerInfo <- GetRewardWeights3(M=Filled,Rep,.1,Debug)
   AdjLoadings <- PlayerInfo$FirstL
-
   
   ##Column Players (The Contract Creators)
   #Calculation of Reward for Contract Authors
   # Consensus - "Who won?" Contract Outcome 
-  ConoutRAW <- PlayerInfo$SmoothRep %*% M #Simple matrix multiplication ... highest information density at RowBonus, but need ConoutRAW to get to that
+  ConoutRAW <- PlayerInfo$SmoothRep %*% Filled #Simple matrix multiplication ... highest information density at RowBonus, but need ConoutRAW to get to that
   # Quality of Outcomes - is there confusion?
   Certainty <- (2*(ConoutRAW-.5))**2      #all binary [ .5 is obviously undesireable ]
   ConReward <- GetWeight(ConoutRAW-.5)    #all binary [ .5 is obviously undesireable ]  
@@ -188,37 +163,56 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
 
     
   ## Participation
-  #Row - Easier...we calculate the % of reputation that answered each contract
-  ParticipationC <- 1-(PlayerInfo$SmoothRep%*%NAmat)
-  #Column Harder...build a quadratic loss with 3 maxima (0,.5,1) and feed it ConoutRaw
-  Coefs <- c(1,-12.907504,63.345748,-100.876487,50.438244)
-  Map <- function(X)  ( Coefs[1] + Coefs[2]*(X**1) + Coefs[3]*(X**2) + Coefs[4]*(X**3) + Coefs[5]*(X**4) )
-  Agreement <- Map(ConoutRAW)
-  RelativeAgreement <- GetWeight(Agreement)
-  ParticipationR <-  1-(NAmat%*%t(RelativeAgreement)) #1 - ( NAmat%*%t((1-Agreement)) )
   
-  ## Calculate Player Scores
+  #Information about missing values
+  NAmat <- M0*0 
+  NAmat[is.na(NAmat)] <- 1
+  
+  #Participation Within Contracts (Columns) 
+  # % of reputation that answered each contract
+  ParticipationC <- 1-(PlayerInfo$SmoothRep%*%NAmat)
+  
+  #Participation Within Agents (Rows) 
+  # Many options
+  
+  # 1- Democracy Option
+  ParticipationR  <- 1-( apply(NAmat,1,sum)/ncol(M0) )
+  
+#   # 2 - Quadradic Loss
+#   #build a quadratic loss with 3 maxima (0,.5,1) and feed it ConoutRaw (this is super complex, largely arbitrary and will probably be cut).
+#   Coefs <- c(1,-12.907504,63.345748,-100.876487,50.438244)
+#   Map <- function(X)  ( Coefs[1] + Coefs[2]*(X**1) + Coefs[3]*(X**2) + Coefs[4]*(X**3) + Coefs[5]*(X**4) )
+#   Agreement <- Map(ConoutRAW)
+#   RelativeAgreement <- GetWeight(Agreement)
+#   ParticipationR <-  1-(NAmat%*%t(RelativeAgreement)) #1 - ( NAmat%*%t((1-Agreement)) )
+  
+#   # 3 - Difference between ConoutRAW and ConoutFinal (unfinished)
+  #   Agreement <- 
+  
+  #General Participation
+  PercentNA <- 1-mean(ParticipationC)
+  #(Possibly integrate two functions of participation?) Chicken and egg problem...
+  
+  ## Combine Information
   #Row
-  #NAbonusR <- GetWeight(NArow-max(NArow)) #Set most-missing player to zero and reweigh the rest. 
   NAbonusR <- GetWeight(ParticipationR)
-  #Aggregation
-  RowBonus <- (NAbonusR*(PercentNA))+(PlayerInfo$SmoothR*(1-PercentNA)) #aggregation of all supplied data...
+  RowBonus <- (NAbonusR*(PercentNA))+(PlayerInfo$SmoothR*(1-PercentNA))
   
   #Column
-  #NAbonusC <- GetWeight(NAcontract-max(NAcontract))
   NAbonusC <- GetWeight(ParticipationC)
-  #Aggregation
   ColBonus <- (NAbonusC*(PercentNA))+(ConReward*(1-PercentNA))  
   
   #Present Results
-  Output <- vector("list",3) #Declare
-  names(Output) <- c("Original","Agents","Contracts")
-  Output[[1]] <- M0
-  Output[[2]] <- cbind(PlayerInfo$OldRep, PlayerInfo$ThisRep,PlayerInfo$SmoothRep,NArow,ParticipationR,NAbonusR,RowBonus)
-  colnames(Output[[2]]) <- c("OldRep", "ThisRep", "SmoothRep", "NArow", "ParticipationR","RelativePart","RowBonus") 
+  Output <- vector("list",4) #Declare
+  names(Output) <- c("Original","Filled","Agents","Contracts")
   
-  Output[[3]] <- rbind(AdjLoadings,ConoutRAW,ConReward,Certainty,Agreement,RelativeAgreement,NAcontract,ParticipationC,ColBonus,ConoutFinal) # [2]
-  rownames(Output[[3]]) <- c("First Loading","ConoutRAW","Consensus Reward","Certainty","Agreement","RelativeAg", "NAs Filled","ParticipationC","Contract Bonus","ConoutFinal") 
+  Output[[1]] <- M0
+  Output[[2]] <- Filled
+  Output[[3]] <- cbind(PlayerInfo$OldRep, PlayerInfo$ThisRep,PlayerInfo$SmoothRep,apply(NAmat,1,sum),ParticipationR,NAbonusR,RowBonus)
+  colnames(Output[[3]]) <- c("OldRep", "ThisRep", "SmoothRep", "NArow", "ParticipationR","RelativePart","RowBonus")   
+  Output[[4]] <- rbind(AdjLoadings,ConoutRAW,ConReward,Certainty,apply(NAmat,2,sum),ParticipationC,ColBonus,ConoutFinal)
+  rownames(Output[[4]]) <- c("First Loading","ConoutRAW","Consensus Reward","Certainty","NAs Filled","ParticipationC","Contract Bonus","ConoutFinal")
+  
   return(Output)
 }
 

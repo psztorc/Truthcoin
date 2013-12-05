@@ -31,20 +31,22 @@ CompareIncentives <- function(X,FF=Factory,N=1) {
 }
 
 #2 - Visual display of a given period.
-PlotJ <- function(m,FF=Factory,Title="Plot of Judgement Space") { 
+PlotJ <- function(M,FF=Factory,Title="Plot of Judgement Space") { 
   library(ggplot2)
   library(reshape)
   library(ggthemes)
   
-  d <- melt(m)
-  d$value <- factor(d$value)
-  d$X1  <- factor(d$X1)
+  Results <- Factory(M)
   
-  s <- data.frame(X1=rownames(m), Scores= Factory(m)[["Agents"]][,"RowBonus"])
+  DF <- melt(Results[["Filled"]])
+  DF$value <- factor(DF$value)
+  DF$X1  <- factor(DF$X1)
   
-  d <- merge(d,s)
+  SC <- data.frame(X1=rownames(M), Scores= Results[["Agents"]][,"RowBonus"])
   
-  p1 <- ggplot(d,aes(x=value,fill=X1,alpha=Scores)) + geom_histogram() + facet_grid(X2~.)
+  DF <- merge(DF,SC)
+  
+  p1 <- ggplot(DF,aes(x=value,fill=X1,alpha=Scores)) + geom_histogram() + facet_grid(X2~.)
   
   p1f <- p1 + theme_bw() +
     scale_fill_hue(h=c(180, 225), guide=guide_legend(title = "Judge")) +
@@ -246,6 +248,7 @@ Factory(Scenarios$Base)
 CompareIncentives(Scenarios$Base)
 #Good.
 Chain(X=Scenarios$Base)
+PlotJ(M=Scenarios$Base)
 ```
 
 Very good. Conforms quickly to a correct prediction.
@@ -424,6 +427,9 @@ Missing Values
 Factory(Scenarios$Missing1)
 Factory(Scenarios$Missing2)
 Factory(Scenarios$Missing3)
+
+PlotJ(M=Scenarios$Missing3)
+
 Factory(Scenarios$Missing4)
 Factory(Scenarios$Missing5)
 #Works
