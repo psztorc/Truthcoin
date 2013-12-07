@@ -4,14 +4,13 @@
  #   2] only allows an efficient number of most-traded-upon-contracts.
 
 
-#try(setwd("W:/VeteranCord/Documents/Decentralized Prediction Markets/Latest"))
+try(setwd("~/GitHub/Truthcoin/lib"))
 #To my knowledge, R does not feature 'automatic working directories' uneless it is being run as a script
 
+source("consensus/CustomMath.r")
+
 # #Function Library
-source("CustomMath.r")
-
-
-GetRewardWeights3 <- function(M,Rep=ReWeight(rep(1,nrow(M))),alpha=.1,Debug=0) {
+GetRewardWeights <- function(M,Rep=ReWeight(rep(1,nrow(M))),alpha=.1,Debug=0) {
   #Calculates the new reputations using WPCA
 
   #Rep=ReWeight(rep(1,nrow(M)))
@@ -149,7 +148,7 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
 
   ## Consensus - Row Players 
   #New Consensus Reward
-  PlayerInfo <- GetRewardWeights3(M=Filled,Rep,.1,Debug)
+  PlayerInfo <- GetRewardWeights(M=Filled,Rep,.1,Debug)
   AdjLoadings <- PlayerInfo$FirstL
   
   ##Column Players (The Contract Creators)

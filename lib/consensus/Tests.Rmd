@@ -2,13 +2,13 @@ Tests, Results, and Commentary
 ========================================================
 Dec 3, 2013
 
-```{r Load}
+```{r Load,echo=FALSE,message=FALSE}
 #Cleanup
 rm(list=ls())
 
 #Load everything
-try(setwd("~/Real/Programs/Decentralized Prediction Markets/Latest"))
-source(file="ConsensusMechanism.r")
+try(setwd("~/GitHub/Truthcoin/lib"))
+source(file="consensus/ConsensusMechanism.r")
 ```
 
 
