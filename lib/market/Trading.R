@@ -7,7 +7,6 @@ Markets <- vector("list",length=0)
 Users <- vector("list",length=0)
 Users$Alice$Cash <- 10
 Users$Bob$Cash <- 50
-Users$Charlie$Cash <- 78
 
 
 #New Contract
@@ -66,77 +65,87 @@ QueryCost("Obama",2,1)
 QueryCost("Hillary",1,1)
 
 QueryMoveCost <- function(ID,State,P) {
-  NewS <- QueryMove(ID,State,P)
-  if(NewS<0) return("Price already exceeds target. Sell shares or buy MuEx.")
+  NewS <- QueryMove(ID,State,P) 
   return( QueryCost(ID,State, NewS ) )
 }
-
-QueryMoveCost("Obama",1,.5)
-QueryMoveCost("Obama",1,.6)
-QueryMoveCost("Obama",1,.7)
-QueryMoveCost("Obama",1,.90)
-QueryMoveCost("Obama",1,.99)
-
-QueryMoveCost("Hillary",1,.25)
-QueryMoveCost("Hillary",1,.35)
-QueryMoveCost("Hillary",1,.45)
-QueryMoveCost("Hillary",1,.90)
-QueryMoveCost("Hillary",1,.99)
-
 
 Buy <- function(uID,ID,State,P) {
   #Calculate Required Cost
   Cost <- QueryMoveCost(ID,State,P)
   MarginalShares <- QueryMove(ID,State,P)
-  if(is.character(MarginalShares)) return(MarginalShares)
+  if(MarginalShares<0) return("Price already exceeds target. Sell shares or buy MuEx.")
   
   #Reduce Funds, add Shares
   if(Users[[uID]]$Cash<Cost) return("Insufficient Funds")
   Users[[uID]]$Cash <<-  Users[[uID]]$Cash - Cost 
-  OldShares <- Users[[uID]][[ID]][[State]] ; if(is.null(OldShares)) OldShares <- 0
+  OldShares <- Users[[uID]][[ID]][[paste("State",State,sep="")]] ; if(is.null(OldShares)) OldShares <- 0
   Users[[uID]][[ID]][[paste("State",State,sep="")]] <<- OldShares + MarginalShares
     
   #Credit Funds, add Shares
   Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost
   Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] + MarginalShares  
+  
+  print(paste("Bought",MarginalShares,"for",Cost,"."))
 }
 
 Sell <- function(uID,ID,State,P) {
   #Calculate Required Cost
   Cost <- QueryMoveCost(ID,State,P)
+  print(Cost)
   MarginalShares <- QueryMove(ID,State,P)
-  if(is.character(MarginalShares)) return(MarginalShares)
+  print(MarginalShares)
+  if(MarginalShares>0) return("Price already below target. Buy shares or sell MuEx.")
   
   #Reduce shares, add Funds
   OldShares <- Users[[uID]][[ID]][[paste("State",State,sep="")]]
-  if(OldShares<MarginalShares) return("Insufficient Shares")
-  Users[[uID]][[ID]][[paste("State",State,sep="")]] <<- OldShares - MarginalShares
-  Users[[uID]]$Cash <<-  Users[[uID]]$Cash + Cost
+  print(OldShares)
+  if(OldShares<(-1*MarginalShares)) return("Insufficient Shares")
+  Users[[uID]][[ID]][[paste("State",State,sep="")]] <<- OldShares + MarginalShares #Shares are negative
+  Users[[uID]]$Cash <<-  Users[[uID]]$Cash - Cost #Cost is negative
   
   #Remove Funds and Shares from Market
-  Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance - Cost 
-  Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] - MarginalShares 
+  Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost  
+  Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] + MarginalShares 
+  print(paste("Sold",-1*MarginalShares,"for",-1*Cost,"."))
 }
 
+#Tests
+DisplayTest <- function() {
+  print(Users$Alice)
+  print(ShowPrices("Obama"))
+  print(Markets$Obama$Shares)
+}
 
-Users
+DisplayTest()
+
 Buy("Alice","Obama",1,.6)
-Users
-Buy("Bob","Obama",1,.7)
-Users
+DisplayTest()
 
+Buy("Alice","Obama",1,.7)
+DisplayTest()
 
-Sell("Alice","Obama",1,.55)
+Sell("Alice","Obama",1,.6)
+DisplayTest()
 
-# 
-# Buy("Alice","Hillary",2,.35)
-# ShowPrices("Hillary")
-# Buy("Bob","Hillary",3,.60)
-# ShowPrices("Hillary")
-# 
-# Users$Alice
-# Users$Bob
+Sell("Alice","Obama",1,.5)
+DisplayTest()
 
+Sell("Alice","Obama",1,.4)
+DisplayTest()
+
+Sell("Alice","Obama",1,.4)
+DisplayTest()
+
+Buy("Alice","Obama",1,0.9000)
+DisplayTest()
+Buy("Alice","Obama",1,0.9900)
+DisplayTest()
+Buy("Alice","Obama",1,0.9990)
+DisplayTest()
+Buy("Alice","Obama",1,0.9999)
+DisplayTest()
+Buy("Alice","Obama",1,0.99999)
+DisplayTest()
 
 
 
