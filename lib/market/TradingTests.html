@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Trading Tests and Demo</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Trading Tests and Demo</h1>
+
+<p>Paul Sztorc
+Tue Dec 10 17:13:28 2013</p>
+
+<pre><code>## $Alice
+## $Alice$Cash
+## [1] 10
+## 
+## 
+## $Bob
+## $Bob$Cash
+## [1] 50
+</code></pre>
+
+<pre><code>## list()
+</code></pre>
+
+<pre><code>## $Obama
+## $Obama$Shares
+## [1] 0 0
+## 
+## $Obama$Balance
+## [1] 0.6931
+## 
+## $Obama$B
+## [1] 1
+## 
+## $Obama$State
+## [1] 0
+## 
+## 
+## $Hillary
+## $Hillary$Shares
+## [1] 0 0 0 0
+## 
+## $Hillary$Balance
+## [1] 4.852
+## 
+## $Hillary$B
+## [1] 3.5
+## 
+## $Hillary$State
+## [1] 0
+</code></pre>
+
+<p>This is an R Markdown document.</p>
+
+<pre><code class="r">
+# Tests/Demo
+ShowPrices(&quot;Obama&quot;)
+</code></pre>
+
+<pre><code>## [1] 0.5 0.5
+</code></pre>
+
+<pre><code class="r">ShowPrices(&quot;Hillary&quot;)
+</code></pre>
+
+<pre><code>## [1] 0.25 0.25 0.25 0.25
+</code></pre>
+
+<pre><code class="r">
+QueryMove(&quot;Obama&quot;, 1, 0.6)  #
+</code></pre>
+
+<pre><code>## [1] 0.4055
+</code></pre>
+
+<pre><code class="r">QueryMove(&quot;Hillary&quot;, 3, 0.3)  #higher B increases liquidity
+</code></pre>
+
+<pre><code>## [1] 0.8796
+</code></pre>
+
+<pre><code class="r">
+QueryCost(&quot;Obama&quot;, 2, 1)
+</code></pre>
+
+<pre><code>## [1] 0.6201
+</code></pre>
+
+<pre><code class="r">QueryCost(&quot;Hillary&quot;, 1, 1)
+</code></pre>
+
+<pre><code>## [1] 0.278
+</code></pre>
+
+<h2>1 Trader, 1 Contract</h2>
+
+<pre><code class="r"># Tests
+DisplayTest &lt;- function() {
+    print(Users$Alice)
+    print(ShowPrices(&quot;Obama&quot;))
+    print(Markets$Obama$Shares)
+}
+
+
+DisplayTest()
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 10
+## 
+## [1] 0.5 0.5
+## [1] 0 0
+</code></pre>
+
+<pre><code class="r">
+Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.6)
+</code></pre>
+
+<pre><code>## [1] &quot;Bought 0.405465108108164 for 0.22314355131421 .&quot;
+</code></pre>
+
+<pre><code>## [1] 0.4055 0.2231
+</code></pre>
+
+<pre><code class="r">DisplayTest()
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 9.777
+## 
+## $Obama
+## State1 
+## 0.4055 
+## 
+## [1] 0.6 0.4
+## [1] 0.4055 0.0000
+</code></pre>
+
+<pre><code class="r">
+Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.7)
+</code></pre>
+
+<pre><code>## [1] &quot;Bought 0.441832752279039 for 0.287682072451781 .&quot;
+</code></pre>
+
+<pre><code>## [1] 0.4418 0.2877
+</code></pre>
+
+<pre><code class="r">DisplayTest()
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 9.489
+## 
+## $Obama
+## State1 
+## 0.8473 
+## 
+## [1] 0.7 0.3
+## [1] 0.8473 0.0000
+</code></pre>
+
+<pre><code class="r">
+Sell(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.6)
+</code></pre>
+
+<pre><code>## [1] &quot;Sold 0.441832752279039 for 0.287682072451781 .&quot;
+</code></pre>
+
+<pre><code>## [1] -0.4418 -0.2877
+</code></pre>
+
+<pre><code class="r">DisplayTest()
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 9.777
+## 
+## $Obama
+## State1 
+## 0.4055 
+## 
+## [1] 0.6 0.4
+## [1] 0.4055 0.0000
+</code></pre>
+
+<pre><code class="r">
+Sell(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.5)  #reset
+</code></pre>
+
+<pre><code>## [1] &quot;Sold 0.405465108108164 for 0.22314355131421 .&quot;
+</code></pre>
+
+<pre><code>## [1] -0.4055 -0.2231
+</code></pre>
+
+<pre><code class="r">DisplayTest()
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 10
+## 
+## $Obama
+## State1 
+##      0 
+## 
+## [1] 0.5 0.5
+## [1] 0 0
+</code></pre>
+
+<pre><code class="r">
+Sell(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.4)
+</code></pre>
+
+<pre><code>## [1] &quot;Insufficient Shares&quot;
+</code></pre>
+
+<pre><code class="r">DisplayTest()
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 10
+## 
+## $Obama
+## State1 
+##      0 
+## 
+## [1] 0.5 0.5
+## [1] 0 0
+</code></pre>
+
+<pre><code class="r">
+# Needs Graphs.
+</code></pre>
+
+<h2>Trades Revealing Effect of LMSR</h2>
+
+<pre><code class="r">
+# Set 1
+
+Sell(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.5)  #reset
+</code></pre>
+
+<pre><code>## [1] &quot;Sold 0 for 0 .&quot;
+</code></pre>
+
+<pre><code>## [1] 0 0
+</code></pre>
+
+<pre><code class="r">DisplayTest()
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 10
+## 
+## $Obama
+## State1 
+##      0 
+## 
+## [1] 0.5 0.5
+## [1] 0 0
+</code></pre>
+
+<pre><code class="r">
+dLMSR &lt;- data.frame(rbind(c(Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.6), 0.6), c(Buy(&quot;Alice&quot;, 
+    &quot;Obama&quot;, 1, 0.7), 0.7), c(Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.8), 0.8), c(Buy(&quot;Alice&quot;, 
+    &quot;Obama&quot;, 1, 0.9), 0.9), c(Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.999), 0.999)))
+</code></pre>
+
+<pre><code>## [1] &quot;Bought 0.405465108108164 for 0.22314355131421 .&quot;
+## [1] &quot;Bought 0.441832752279039 for 0.287682072451781 .&quot;
+## [1] &quot;Bought 0.538996500732687 for 0.405465108108165 .&quot;
+## [1] &quot;Bought 0.810930216216329 for 0.693147180559945 .&quot;
+## [1] &quot;Bought 4.70953020131233 for 4.60517018598809 .&quot;
+</code></pre>
+
+<pre><code class="r">
+colnames(dLMSR) &lt;- c(&quot;Shares&quot;, &quot;Cost&quot;, &quot;mPrice&quot;)
+plot(Cost ~ mPrice, main = &quot;Cost of moving the price up by 10%&quot;, data = dLMSR)
+lines(dLMSR$mPrice, dLMSR$Cost)
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAkFBMVEX9/v0AAAAAADkAAGUAOTkAOY8AZo8AZrU5AAA5ADk5AGU5OTk5OWU5OY85j7U5j9plAABlADllAGVlOQBlOY9lZjlltbVltf2POQCPOTmPZgCPj2WPtY+P27WP2/21ZgC1jzm1tWW124+1/rW1/v3ajznatWXa24/a/rXa/tra/v39tWX924/9/rX9/tr9/v0seCb/AAAAMHRSTlP//////////////////////////////////////////////////////////////wBipdB4AAAACXBIWXMAAAsSAAALEgHS3X78AAANSklEQVR4nO3dC2PixhlG4QjHhd12C7u9wDYJtAk0jbno//+7akYSEiAbIc0MI73npO06lhnge5AQrvH+kJJkPzz7BtBzAl404EUDXjTgRQNeNOBFA1404EUDXjTgRQNeNOBFA1404EUDXjTgRQNeNOBFA1404EUDXjTgRQNeNOBFiw/+uEiSZN64abO8+sRhlkzWLVZ82b63LVvytHp/c6s1GnpnzcNsajcmydTe+HnDfQpUdPD7xDZt2LRJrod0+5kHMwu0gn+w5jU3+f3a5Hdw8/rvl+3hs/Prblds8NneME/Tnd2Rd8Wun+0aycvW7Cfl4yHfYj/z+paaR8ufVtmXZJ9enrdm882nPDV7aybxH7OKvYaX3xb2YvmS2aZfZ3aTveSyvCHFBU6ryT+SyS8L+2HS9HXb7Hjw+lZdw/nS9pPb7NbNi7v253xPf9mam7R5/e9kvZsHGettscEfZobktFoWO0Y2KXvsT17/qOCLLXX4smzO5eX2ZttxMVnn8MVn7Qc/zi7gy2NMfsm5vY7is8bO/PG/8xrnayi/7gxfXODi0rvsAbLJn45O39d7cy32f7LPmT3+t6/3n6n8FBv8/vz0fphl8zJu+WMhrQ7s5y3nz+wzjuy4sMy/vNia7aprq1/Az+2/mP0t22NrS9pN5krsFZUHafvZ7DG3zD6Y5s/x9qLZJa6+roLPL1C7tLk109phv4Cfp/kyyXzX9JQWpHjh7ZAyoqXd483sKuZiy8Vnct7Jutq6y9YyX1FusT77nPEC/rzJVuyflitbwm62a5S37fbrikN9foHq0hvzsMkOFmfdC3j7ZctN+RgMXGzw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" alt="plot of chunk LMRSEffect"/> </p>
+
+<pre><code class="r">
+# Setting the probability to 1 is always impossible (very realistic)
+Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 1)
+</code></pre>
+
+<pre><code>## [1] &quot;Insufficient Funds&quot;
+</code></pre>
+
+<pre><code class="r">QueryMoveCost(&quot;Obama&quot;, 1, 1)
+</code></pre>
+
+<pre><code>## [1] Inf
+</code></pre>
+
+<pre><code class="r">
+
+
+
+# Set 2
+
+Sell(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.5)  #reset
+</code></pre>
+
+<pre><code>## [1] &quot;Sold 6.90675477864855 for 6.21460809842219 .&quot;
+</code></pre>
+
+<pre><code>## [1] -6.907 -6.215
+</code></pre>
+
+<pre><code class="r">DisplayTest()
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 10
+## 
+## $Obama
+## State1 
+##      0 
+## 
+## [1] 0.5 0.5
+## [1] 0 0
+</code></pre>
+
+<pre><code class="r">
+Users$Alice$Cash &lt;- 1000  #lots of cash
+
+
+
+dLMSR2 &lt;- data.frame(rbind(c(Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.9), 0.9), c(Buy(&quot;Alice&quot;, 
+    &quot;Obama&quot;, 1, 0.99), 0.99), c(Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.999), 0.999), c(Buy(&quot;Alice&quot;, 
+    &quot;Obama&quot;, 1, 0.9999), 0.9999), c(Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.99999), 0.99999), 
+    c(Buy(&quot;Alice&quot;, &quot;Obama&quot;, 1, 0.999999), 0.999999)))
+</code></pre>
+
+<pre><code>## [1] &quot;Bought 2.19722457733622 for 1.6094379124341 .&quot;
+## [1] &quot;Bought 2.39789527279837 for 2.30258509299404 .&quot;
+## [1] &quot;Bought 2.31163492851396 for 2.30258509299405 .&quot;
+## [1] &quot;Bought 2.30348558832741 for 2.30258509299416 .&quot;
+## [1] &quot;Bought 2.30267509794882 for 2.30258509299849 .&quot;
+## [1] &quot;Bought 2.30259409301024 for 2.30258509296074 .&quot;
+</code></pre>
+
+<pre><code class="r">
+colnames(dLMSR2) &lt;- c(&quot;Shares&quot;, &quot;Cost&quot;, &quot;mPrice&quot;)
+dLMSR2 &lt;- dLMSR2[-1, ]
+dLMSR2$CumCost &lt;- cumsum(dLMSR2$Cost)
+
+plot(mPrice ~ CumCost, main = &quot;Price impact from spending 2.302&quot;, data = dLMSR2)
+lines(dLMSR2$CumCost, dLMSR2$mPrice)
+</code></pre>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAAilBMVEX9/v0AAAAAADkAAGUAOTkAOY8AZo8AZrU5AAA5ADk5AGU5OWU5OY85j485j9plAABlADllAGVlOQBlOY9lZjlltbVltf2POQCPOTmPZgCPj2WPtY+P27WP29qP2/21ZgC1tWW1/rW1/tq1/v3ajzna24/a/rXa/tra/v39tWX924/9/rX9/tr9/v3wWu91AAAALnRSTlP///////////////////////////////////////////////////////////8Ago9zVQAAAAlwSFlzAAALEgAACxIB0t1+/AAADvxJREFUeJztnYl6m0gWRpukM/Jk0nIyi5TZrO6xpieSxfu/3lAskqzFBurWAv85/fVnR8BF5qiq7kVA/VSCJD+lfgOQBsSLgnhREC8K4kVBvCiIFwXxoiBeFMSLgnhREC8K4kVBvCiIFwXxoiBeFMSLgnhREC8K4kVBvCiIFwXxoiBelEzFvzwWjtXxnx+f76x3Z8E1mzbY/qH48OT9Btu9f/rx1jvYFEW30P1Bi+rnYd38PF+WhLzFWxkq3YFeXfzijxP/5i6Lzq7zXRvfnP9MaT5b8e6QborlYf3hr8WHf7lm5Q5efai2p77Atbdd8Yd1tWDrXjysP/7arLVrPzfNVvWB71pc8el/ddSnOtLSrXuKUFP1CkW9xy5at8/TKy7Q39oW/+rVj7+1H4eXxw9P1b9XTcBPP5r/Pz67Lc6XpSF/8U7U74+tO3d068bifJWd+I5upcL5aH62W/3nUny9sIm0KM8jNFHPN65+Oe6zfWVRnu3ouNf21Z8fGvFOdLk5dVq7avtd3do/PF0ui0+24tuuvjqUi8avayyun66PWdXGWkVOvFtYrNpWtHQbr7qF3Vavu/om6v6hOvJuq/MIbpV9q+4Y7bjP+pVd0TTdqhs4ir94tfs7dqffN03fsjwONmfLEpC1+EpD1dU/dX6bRt42z0ZRs2BRNoffiXcfiK1b1YU4bXUp3m1eN79q5dV5hOPem66+iXbcZ72G6452zeexE3/5avtn7M6zFBftTPzOMoMZTrbi24N3Lr7Ohu+Jdx3zmXg3Sjfim616iG8i1OvUW59FOxNfvXJD/OWrza62R7dNF9/sqenit2m9T0h8240uu364Xe9S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" alt="plot of chunk LMRSEffect"/> </p>
+
+<pre><code class="r">
+Users$Alice
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 986.9
+## 
+## $Obama
+## State1 
+##  13.82
+</code></pre>
+
+<pre><code class="r">FinalSell(&quot;Alice&quot;, &quot;Obama&quot;, 1, 1, 9.21024)
+</code></pre>
+
+<pre><code>## [1] &quot;FinalSold 9.21024 for 9.21024 .&quot;
+</code></pre>
+
+<pre><code>## [1] -9.21 -9.21
+</code></pre>
+
+<pre><code class="r">Users$Alice
+</code></pre>
+
+<pre><code>## $Cash
+## [1] 996.1
+## 
+## $Obama
+## State1 
+##  4.605
+</code></pre>
+
+<pre><code class="r">Markets$Obama
+</code></pre>
+
+<pre><code>## $Shares
+## [1] 4.605 0.000
+## 
+## $Balance
+## [1] 4.605
+## 
+## $B
+## [1] 1
+## 
+## $State
+## [1] 0
+</code></pre>
+
+</body>
+
+</html>
+

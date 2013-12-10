@@ -1,0 +1,134 @@
+Trading Tests and Demo
+========================================================
+Paul Sztorc
+`r date()`
+
+```{r Load,echo=FALSE,message=FALSE}
+#Source
+source("Trading.R")
+
+#Create Test Environment
+Users <- vector("list",length=0)
+Users$Alice$Cash <- 10
+Users$Bob$Cash <- 50
+Users
+
+Markets
+CreateMarket("Obama",2,B=1)
+CreateMarket("Hillary",4,B=3.5)
+Markets
+```
+
+This is an R Markdown document.
+
+```{r Tests1}
+
+#Tests/Demo
+ShowPrices("Obama")
+ShowPrices("Hillary")
+
+QueryMove("Obama",1,.6) #
+QueryMove("Hillary",3,.30) #higher B increases liquidity
+
+QueryCost("Obama",2,1)
+QueryCost("Hillary",1,1)
+
+```
+
+1 Trader, 1 Contract
+------------------------
+```{r Simple}
+#Tests
+DisplayTest <- function() {
+  print(Users$Alice)
+  print(ShowPrices("Obama"))
+  print(Markets$Obama$Shares)
+}
+
+
+DisplayTest()
+
+Buy("Alice","Obama",1,.6)
+DisplayTest()
+
+Buy("Alice","Obama",1,.7)
+DisplayTest()
+
+Sell("Alice","Obama",1,.6)
+DisplayTest()
+
+Sell("Alice","Obama",1,.5) #reset
+DisplayTest()
+
+Sell("Alice","Obama",1,.4)
+DisplayTest()
+
+#Needs Graphs.
+
+```
+
+Trades Revealing Effect of LMSR
+-----------------------------------
+```{r LMRSEffect}
+
+#Set 1
+
+Sell("Alice","Obama",1,.5) #reset
+DisplayTest()
+
+dLMSR <- data.frame(
+              rbind(c(Buy("Alice","Obama",1,0.60),.6),
+                c(Buy("Alice","Obama",1,0.70),.70),
+                c(Buy("Alice","Obama",1,0.80),.80),
+                c(Buy("Alice","Obama",1,0.90),.90),
+                c(Buy("Alice","Obama",1,0.999),.999))
+              )
+
+colnames(dLMSR) <- c("Shares","Cost","mPrice")
+plot(Cost~mPrice,main="Cost of moving the price up by 10%",data=dLMSR)
+lines(dLMSR$mPrice,dLMSR$Cost)
+
+#Setting the probability to 1 is always impossible (very realistic)
+Buy("Alice","Obama",1,1)
+QueryMoveCost("Obama",1,1)
+
+
+
+
+#Set 2
+
+Sell("Alice","Obama",1,.5) #reset
+DisplayTest()
+
+Users$Alice$Cash <- 1000 #lots of cash
+
+
+
+dLMSR2 <- data.frame(
+              rbind(c(Buy("Alice","Obama",1,0.90000),0.90000),
+                c(Buy("Alice","Obama",1,0.99000),0.99000),
+                c(Buy("Alice","Obama",1,0.99900),0.99900),
+                c(Buy("Alice","Obama",1,0.99990),0.99990),
+                c(Buy("Alice","Obama",1,0.99999),0.99999),
+                c(Buy("Alice","Obama",1,0.999999),0.999999))
+              )
+
+colnames(dLMSR2) <- c("Shares","Cost","mPrice")
+dLMSR2 <- dLMSR2[-1,]
+dLMSR2$CumCost <- cumsum(dLMSR2$Cost)
+
+plot(mPrice~CumCost,main="Price impact from spending 2.302",data=dLMSR2)
+lines(dLMSR2$CumCost,dLMSR2$mPrice)
+
+```
+
+
+```{r FinalSell}
+
+Users$Alice
+FinalSell("Alice","Obama",1,1,9.21024)
+Users$Alice
+Markets$Obama
+
+```
+
