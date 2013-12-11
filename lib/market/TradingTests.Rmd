@@ -5,6 +5,8 @@ Paul Sztorc
 
 ```{r Load,echo=FALSE,message=FALSE}
 #Source
+rm(list=ls())
+try(setwd("~/Shared Files/DPM/Truthcoin/lib/market"))
 source("Trading.R")
 
 #Create Test Environment
@@ -19,8 +21,63 @@ CreateMarket("Hillary",4,B=3.5)
 Markets
 ```
 
-This is an R Markdown document.
+```{r Functions,echo=FALSE}
+#Tests
+DisplayTest <- function() {
+  print(Users$Alice)
+  print(ShowPrices("Obama"))
+  print(Markets$Obama$Shares)
+}
 
+Capture <- function(FUN="Buy",uID,ID,State,P) {
+  #Captures the effect of trades on variables and captures this in a data frame.
+  if(FUN=="Buy") Out <- Buy(uID,ID,State,P)
+  if(FUN=="Sell") Out <- Sell(uID,ID,State,P)
+  if(length(Out)==1) DOut <- data.frame("SharesTraded"=0,"TradeCost"=0,"MarketPrice"=ShowPrices(ID)[State],"Cash"=Users[[uID]]$Cash)
+  if(length(Out)==2) DOut <- data.frame("SharesTraded"=Out[1],"TradeCost"=Out[2],"MarketPrice"=P,"Cash"=Users[[uID]]$Cash)
+  return(DOut)
+}
+
+EmbellishRows <- function(DataIn) {
+  DataIn$Time <- 1:nrow(DataIn)
+  DataIn$SharesOwned <- cumsum(DataIn$SharesTraded)
+  DataIn$TotalPaid <- cumsum(DataIn$TradeCost)
+  DataIn$PriceChange <- c(diff(DataIn$MarketPrice),NA)
+  return(DataIn)
+}
+
+ResetAlice <- function() if(ShowPrices("Obama")[1]!=.5) Sell("Alice","Obama",1,.5)
+
+CaptureSequence <- function(Sequence) {
+  ResetAlice()
+  DataOut <- data.frame("SharesTraded"=0,"TradeCost"=0,"MarketPrice"=0,"Cash"=0)
+  for(i in 1:(length(Sequence))) {
+    if(Sequence[i]<ShowPrices("Obama")[1]) DataOut <- rbind(DataOut,Capture('Sell',"Alice","Obama",1,Sequence[i]))
+    if(Sequence[i]>=ShowPrices("Obama")[1]) DataOut <- rbind(DataOut,Capture('Buy',"Alice","Obama",1,Sequence[i]))
+    }
+  return(DataOut[-1,])
+}
+
+
+
+MarketVisual <- function(Data) {
+  library(ggplot2)
+  library(reshape)
+  
+  mData <- melt(Data[,c(2,1,8,3,6,7,5)],id.vars="Time")
+  
+  P1 <- ggplot(mData,aes(x=Time,y=value)) +
+    geom_point()+geom_line()+
+    facet_grid(variable~.,scales="free_y")
+  
+  print(P1)
+}
+
+
+```
+
+Basics
+-----------------------
 ```{r Tests1}
 
 #Tests/Demo
@@ -38,33 +95,13 @@ QueryCost("Hillary",1,1)
 1 Trader, 1 Contract
 ------------------------
 ```{r Simple}
-#Tests
-DisplayTest <- function() {
-  print(Users$Alice)
-  print(ShowPrices("Obama"))
-  print(Markets$Obama$Shares)
-}
 
+ResetAlice()
 
-DisplayTest()
+Simple <- CaptureSequence(
+  c(.6,.7,.6,.8,.6,.5,.7,seq(.7,.99,length.out=15)))
 
-Buy("Alice","Obama",1,.6)
-DisplayTest()
-
-Buy("Alice","Obama",1,.7)
-DisplayTest()
-
-Sell("Alice","Obama",1,.6)
-DisplayTest()
-
-Sell("Alice","Obama",1,.5) #reset
-DisplayTest()
-
-Sell("Alice","Obama",1,.4)
-DisplayTest()
-
-#Needs Graphs.
-
+MarketVisual(EmbellishRows(Simple))
 ```
 
 Trades Revealing Effect of LMSR
@@ -72,53 +109,65 @@ Trades Revealing Effect of LMSR
 ```{r LMRSEffect}
 
 #Set 1
+ResetAlice()
+Users$Alice$Cash <- 1000 #lots of cash
+Markets$Obama$Shares[1]  <- 10 #force possibility of lower price
+Markets$Obama$Shares[2]  <- 10 #force possibility of lower price
 
-Sell("Alice","Obama",1,.5) #reset
-DisplayTest()
+MarketVisual(EmbellishRows(CaptureSequence(seq(.5,.95,length.out=30))))
 
-dLMSR <- data.frame(
-              rbind(c(Buy("Alice","Obama",1,0.60),.6),
-                c(Buy("Alice","Obama",1,0.70),.70),
-                c(Buy("Alice","Obama",1,0.80),.80),
-                c(Buy("Alice","Obama",1,0.90),.90),
-                c(Buy("Alice","Obama",1,0.999),.999))
-              )
 
-colnames(dLMSR) <- c("Shares","Cost","mPrice")
-plot(Cost~mPrice,main="Cost of moving the price up by 10%",data=dLMSR)
-lines(dLMSR$mPrice,dLMSR$Cost)
+#Self-Financing Effect
+ResetAlice()
+SFE <- EmbellishRows(CaptureSequence(c(seq(.5,.05,length.out=25),seq(.1,.5,length.out=4),seq(.5,.95,length.out=15))))
+SFE$CostPerShare <- SFE$TradeCost/SFE$SharesTraded
+plot(TradeCost~MarketPrice , data=SFE,main="The 'Self-Financing Effect'",sub="Cost to trade s.t. MarketPrice increases by 0.01551724.",xlim=c(.55,1))
+plot(CostPerShare~MarketPrice , data=SFE,main="The 'Self-Financing Effect II'",sub="Each share eventually worth either $0 or $1, costs approximately its own price.")
 
-#Setting the probability to 1 is always impossible (very realistic)
-Buy("Alice","Obama",1,1)
+#In fact, setting the probability to 1 is always impossible (very realistic).
 QueryMoveCost("Obama",1,1)
 
-
-
-
 #Set 2
+ResetAlice()
 
-Sell("Alice","Obama",1,.5) #reset
-DisplayTest()
+dLMSR2 <- rbind(
+            Capture('Buy', "Alice","Obama",1,0.8181818),
+            Capture('Buy', "Alice","Obama",1,0.90000),
+            Capture('Buy', "Alice","Obama",1,0.99000),
+            Capture('Buy', "Alice","Obama",1,0.99900),
+            Capture('Buy', "Alice","Obama",1,0.99990))
 
-Users$Alice$Cash <- 1000 #lots of cash
+ResetAlice()
+
+dLMSR3 <- rbind(
+            Capture('Buy', "Alice","Obama",1,0.8181818),
+            Capture('Buy', "Alice","Obama",1,0.900000),
+            Capture('Buy', "Alice","Obama",1,0.940000),
+            Capture('Buy', "Alice","Obama",1,0.970000),
+            Capture('Buy', "Alice","Obama",1,0.990000),
+            Capture('Buy', "Alice","Obama",1,0.991000),
+            Capture('Buy', "Alice","Obama",1,0.992000),
+            Capture('Buy', "Alice","Obama",1,0.993000),
+            Capture('Buy', "Alice","Obama",1,0.994000),
+            Capture('Buy', "Alice","Obama",1,0.995000),
+            Capture('Buy', "Alice","Obama",1,0.996000),
+            Capture('Buy', "Alice","Obama",1,0.997000),
+            Capture('Buy', "Alice","Obama",1,0.998000),
+            Capture('Buy', "Alice","Obama",1,0.999000),
+            Capture('Buy', "Alice","Obama",1,0.999900),
+            Capture('Buy', "Alice","Obama",1,0.999999),
+            Capture('Buy', "Alice","Obama",1,0.99999999))
 
 
+dLMSR2 <- dLMSR2[-1,] # .5 to .81818 is nonrepresentative of this effect
+dLMSR3 <- dLMSR3[-1,] 
 
-dLMSR2 <- data.frame(
-              rbind(c(Buy("Alice","Obama",1,0.90000),0.90000),
-                c(Buy("Alice","Obama",1,0.99000),0.99000),
-                c(Buy("Alice","Obama",1,0.99900),0.99900),
-                c(Buy("Alice","Obama",1,0.99990),0.99990),
-                c(Buy("Alice","Obama",1,0.99999),0.99999),
-                c(Buy("Alice","Obama",1,0.999999),0.999999))
-              )
 
-colnames(dLMSR2) <- c("Shares","Cost","mPrice")
-dLMSR2 <- dLMSR2[-1,]
-dLMSR2$CumCost <- cumsum(dLMSR2$Cost)
-
-plot(mPrice~CumCost,main="Price impact from spending 2.302",data=dLMSR2)
-lines(dLMSR2$CumCost,dLMSR2$mPrice)
+plot(MarketPrice~Cash,main="Price impact from spending 2.302",data=dLMSR2,xlim=c(999,988),axes=FALSE)
+lines(dLMSR3$Cash,dLMSR3$MarketPrice)
+axis(side = 2, at = c(.9,.99,.999,.9999),las=2)
+axis(side = 1, at = seq(998,980,by=-2.302),las=2)
+box()
 
 ```
 
