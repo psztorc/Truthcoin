@@ -33,3 +33,6 @@ I threw together an Excel sheet in the docs folder for additional clarification.
 Twitter: https://twitter.com/Truthcoin
 Please share your opinion, and your questions so the FAQ can grow!
 
+<h3>Donation Address</h3>
+1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh
+
