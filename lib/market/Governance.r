@@ -9,7 +9,7 @@ BlockZero <- list(
   "Bn"=1,                #Block Number
   "h.B_1"=Sha256(""),    #Hash of previous block
   "Time"=Sys.time(),     #System Date and Time
-   "ListFee"=.01,        #Listing Fee - Fee to create a new contract and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
+  "ListFee"=.01,        #Listing Fee - Fee to create a new contract and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
   "Cnew"=NULL,                                          #New Contracts (appends to C) ?
   "Cmatrix"=data.frame(C1,stringsAsFactors=FALSE)[-1,], #Matrix of Active Contracts (will eventually be stored somewhere else for non-redundancy)
   "Vmatrix"=matrix(0,nrow=6,ncol=0),                    #Matrix of 'Votes' ...extensive attention is given to this matrix with the 'Factory' function.
@@ -26,6 +26,8 @@ BlockChain <- list(BlockZero)
 
 #Functions
 AddContract <- function(CurChain,NewContract) {
+  
+  #Calculate Cost
   
   #Declare Working Variables
   Now <- length(CurChain)
@@ -76,6 +78,17 @@ AdvanceChain <- function(BlockChain,VDuration=10) {
   Return <- c(BlockChain,New) 
   return(Return)
 }
+
+
+#Find next block
+
+
+#requires:
+#hash of previous block (previous block)
+#previous Vmatrix
+#previous Fee
+
+
 
 
 
