@@ -1,7 +1,7 @@
 Trading Tests and Demo
 ========================================================
 Paul Sztorc
-Wed Dec 11 17:21:02 2013
+Wed Dec 25 19:12:44 2013
 
 
 ```
@@ -21,8 +21,12 @@ Wed Dec 11 17:21:02 2013
 
 ```
 ## $Obama
+## $Obama$Contract
+## [1] "87aac9381639955f1d3531a2f758ba51"
+## 
 ## $Obama$Shares
-## [1] 0 0
+##  d1.No d1.Yes 
+##      0      0 
 ## 
 ## $Obama$Balance
 ## [1] 0.6931
@@ -30,22 +34,75 @@ Wed Dec 11 17:21:02 2013
 ## $Obama$B
 ## [1] 1
 ## 
+## $Obama$Size
+## [1] 610
+## 
+## $Obama$OwnerAd
+## [1] "1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+## 
+## $Obama$Title
+## [1] "Obama"
+## 
+## $Obama$Description
+## [1] "Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise."
+## 
+## $Obama$Tags
+## [1] "Politics, UnitedStates, President, Winner"
+## 
+## $Obama$EventOverBy
+## [1] 5
+## 
 ## $Obama$State
-## [1] 0
+## [1] -1
+## 
+## $Obama$D.State
+## $Obama$D.State[[1]]
+## [1] "Did Barack H Obama win the United States 2012 presidential election?"
+## 
 ## 
 ## 
 ## $Hillary
+## $Hillary$Contract
+## [1] "37a59134a222ddd9e15ce9ae15605f05"
+## 
 ## $Hillary$Shares
-## [1] 0 0 0 0
+##        d2.No d2.Yes
+## d1.No      0      0
+## d1.Yes     0      0
 ## 
 ## $Hillary$Balance
-## [1] 4.852
+## [1] 1.386
 ## 
 ## $Hillary$B
-## [1] 3.5
+## [1] 1
+## 
+## $Hillary$Size
+## [1] 635
+## 
+## $Hillary$OwnerAd
+## [1] "1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+## 
+## $Hillary$Title
+## [1] "Hillary"
+## 
+## $Hillary$Description
+## [1] "Hillary Clinton and Democratic Congress."
+## 
+## $Hillary$Tags
+## [1] "Politics, UnitedStates, President, Winner"
+## 
+## $Hillary$EventOverBy
+## [1] 5
 ## 
 ## $Hillary$State
-## [1] 0
+## [1] -1
+## 
+## $Hillary$D.State
+## $Hillary$D.State[[1]]
+## [1] "Did Hillary R Clinton win the United States 2016 presidential election?"
+## 
+## $Hillary$D.State[[2]]
+## [1] "Do registered Democrats control a majority of both the House and Senate following 2016 elections?"
 ```
 
 
@@ -62,7 +119,8 @@ ShowPrices("Obama")
 ```
 
 ```
-## [1] 0.5 0.5
+##  d1.No d1.Yes 
+##    0.5    0.5
 ```
 
 ```r
@@ -70,7 +128,9 @@ ShowPrices("Hillary")
 ```
 
 ```
-## [1] 0.25 0.25 0.25 0.25
+##        d2.No d2.Yes
+## d1.No   0.25   0.25
+## d1.Yes  0.25   0.25
 ```
 
 ```r
@@ -79,7 +139,8 @@ QueryMove("Obama", 1, 0.6)  #
 ```
 
 ```
-## [1] 0.4055
+##  d1.No 
+## 0.4055
 ```
 
 ```r
@@ -87,7 +148,7 @@ QueryMove("Hillary", 3, 0.3)  #higher B increases liquidity
 ```
 
 ```
-## [1] 0.8796
+## [1] 0.2513
 ```
 
 ```r
@@ -104,7 +165,7 @@ QueryCost("Hillary", 1, 1)
 ```
 
 ```
-## [1] 0.278
+## [1] 0.3574
 ```
 
 
@@ -154,23 +215,16 @@ MarketVisual(EmbellishRows(Simple))
 
 ```
 ## Loading required package: plyr
-```
-
-```
-## Attaching package: 'reshape'
-```
-
-```
-## The following object is masked from 'package:plyr':
 ## 
-## rename, round_any
+## Attaching package: 'reshape'
+## 
+## The following objects are masked from 'package:plyr':
+## 
+##     rename, round_any
 ```
 
 ```
 ## Warning: Removed 1 rows containing missing values (geom_point).
-```
-
-```
 ## Warning: Removed 1 rows containing missing values (geom_path).
 ```
 
@@ -191,7 +245,8 @@ ResetAlice()
 ```
 
 ```
-## [1] -4.595 -3.912
+##  d1.No        
+## -4.595 -3.912
 ```
 
 ```r
@@ -237,9 +292,6 @@ MarketVisual(EmbellishRows(CaptureSequence(seq(0.5, 0.95, length.out = 30))))
 
 ```
 ## Warning: Removed 1 rows containing missing values (geom_point).
-```
-
-```
 ## Warning: Removed 1 rows containing missing values (geom_path).
 ```
 
@@ -257,7 +309,8 @@ ResetAlice()
 ```
 
 ```
-## [1] -2.944 -2.303
+##  d1.No        
+## -2.944 -2.303
 ```
 
 ```r
@@ -323,7 +376,8 @@ ResetAlice()
 ```
 
 ```
-## [1] -2.944 -2.303
+##  d1.No        
+## -2.944 -2.303
 ```
 
 ```r
@@ -351,7 +405,8 @@ ResetAlice()
 ```
 
 ```
-## [1] -9.210 -8.517
+##  d1.No        
+## -9.210 -8.517
 ```
 
 ```r
@@ -453,8 +508,12 @@ Markets$Obama
 ```
 
 ```
+## $Contract
+## [1] "87aac9381639955f1d3531a2f758ba51"
+## 
 ## $Shares
-## [1] 19.21 10.00
+##  d1.No d1.Yes 
+##  19.21  10.00 
 ## 
 ## $Balance
 ## [1] 9.21
@@ -462,8 +521,30 @@ Markets$Obama
 ## $B
 ## [1] 1
 ## 
+## $Size
+## [1] 610
+## 
+## $OwnerAd
+## [1] "1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+## 
+## $Title
+## [1] "Obama"
+## 
+## $Description
+## [1] "Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise."
+## 
+## $Tags
+## [1] "Politics, UnitedStates, President, Winner"
+## 
+## $EventOverBy
+## [1] 5
+## 
 ## $State
-## [1] 0
+## [1] -1
+## 
+## $D.State
+## $D.State[[1]]
+## [1] "Did Barack H Obama win the United States 2012 presidential election?"
 ```
 
 

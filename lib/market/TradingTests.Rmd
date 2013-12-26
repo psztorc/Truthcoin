@@ -7,7 +7,8 @@ Paul Sztorc
 #Source
 rm(list=ls())
 try(setwd("~/Shared Files/DPM/Truthcoin/lib/market"))
-source("Trading.R")
+try(setwd("~/GitHub/Truthcoin/lib"))
+source("market/Trading.R")
 
 #Create Test Environment
 Users <- vector("list",length=0)
@@ -16,8 +17,24 @@ Users$Bob$Cash <- 50
 Users
 
 Markets
-CreateMarket("Obama",2,B=1)
-CreateMarket("Hillary",4,B=3.5)
+CreateMarket(Title="Obama",
+             B=1,
+             D.State=list(c("Did Barack H Obama win the United States 2012 presidential election?")),
+             Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
+             Tags=c("Politics, UnitedStates, President, Winner"),
+             MatureTime=5,
+             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh")
+
+CreateMarket(Title="Hillary",
+             B=3.5,
+             D.State=list(c("Did Hillary R Clinton win the United States 2016 presidential election?"),
+                          c("Do registered Democrats control a majority of both the House and Senate following 2016 elections?")),
+             Description="Hillary Clinton and Democratic Congress.",
+             Tags=c("Politics, UnitedStates, President, Winner"),
+             MatureTime=5,
+             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh")
+
+
 Markets
 ```
 

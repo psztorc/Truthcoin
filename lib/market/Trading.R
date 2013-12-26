@@ -1,18 +1,10 @@
 #Trading Protocol and Market Maker
-
+rm(list=ls())
+try(setwd("~/GitHub/Truthcoin/lib"))
+source(file="market/Contracts.r")
 
 #Create Marketplace
-Markets <- vector("list",length=0)
-
-CreateMarket <- function(ID=1,Nstates=2,B=1) {
-  #Add a new contract to the global 'Markets' variable.
-  Markets[[ID]] <<- list(
-    "Shares"=rep(0,length=Nstates),
-    "Balance"=B*log(Nstates),
-    "B"=B,
-    "State"=0)
-}
-
+Markets <- vector("list",length=0) #Critical Step...creates (blank) marketplace. Would erase the existing marketplace if called twice.
 
 ShowPrices <- function(ID) {
   #Takes a Market and ID and returns the current market price.

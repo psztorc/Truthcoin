@@ -50,7 +50,7 @@ FillContract <- function(Ctr,B=1) {
   #All other fields, such as 'size' and 'balance', are calculated from the basic contract, as are fields such as 'shares' which would change constantly and rapidly.
   CtrNew <- Ctr
   
-  CtrNew$Shares <- 0*GetSpace(C1)
+  CtrNew$Shares <- 0*GetSpace(Ctr)
   CtrNew$Size <- GetSize(Ctr)
   CtrNew$B <- B
   
@@ -155,5 +155,31 @@ MapJudgement <- function(Results,Contract) {
 }
 
 MapJudgement(Results,C2)
+
+
+#Create Marketplace
+Markets <- vector("list",length=0) #Critical Step...creates (blank) marketplace. Would erase the existing marketplace if called twice.
+
+CreateMarket <- function(Title,
+                         B=1,
+                         D.State=list(c("Did Barack H Obama win the United States 2012 presidential election?")),
+                         Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
+                         Tags=c("Politics, UnitedStates, President, Winner"),
+                         MatureTime=5,
+                         OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+                         ) {
+  
+  #Create Object
+  TempContract <- list( Contract=NA,Shares=NA,Balance=NA,B=B,Size=NA,OwnerAd=OwnerAd,Title=Title,
+                       Description=Description,Tags=Tags,EventOverBy=MatureTime,State=-1,D.State=D.State )
+  
+  #Prepare Object
+  Temp2 <- FillContract(TempContract)
+           
+  #Add a new contract to the global 'Markets' variable.
+  Markets[[Title]] <<- Temp2
+}
+
+CreateMarket("Obama2012")
 
 
