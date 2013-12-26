@@ -1,22 +1,23 @@
 
-#Contract Structure/Example
+### Contract Structure/Example ###
 
+#Load
 Use <- function(package) { if(suppressWarnings(!require(package,character.only=TRUE))) install.packages(package,repos="http://cran.case.edu/") ; require(package,character.only=TRUE) }
 options(stringsAsFactors = FALSE)
-#Objects
-
-#Judgement Object
 Use('digest')
 
+
+## Functions to Define/Set Attributes of Contracts
 LongForm <- function(Ctr) return(unlist(Ctr))
 #unlists the info - easier to hash (convienience only)
 
 GetId <- function(CtrBlank,debug=0) {
   # md5 hashes the contract, ignoring the hash field for reproduceability, and the shares/balance fields for consistency.
-  x <- LongForm(CtrBlank[-1:-3])
+  x <- LongForm(CtrBlank[-1:-4])
   if(debug==1) print(x)
   return( digest(x,"md5") )
 }
+
 
 GetSize<- function(CtrBlank,debug=0) {
   #Size of the contract in bytes. As only the contract's hash is required, and judges have an incentive to punish incoherent contracts, I dont think there is a need for this anymore, but perhaps it will still be useful.
@@ -25,6 +26,7 @@ GetSize<- function(CtrBlank,debug=0) {
   return( sum(nchar(x, type="bytes")) )
 }
 
+
 GetDim <- function(Input,Raw=TRUE) {
   #Infers, from the D.state ("decision space") the total size of this contracts.
   Dim <- unlist( lapply(Input$D.State,length) )
@@ -32,6 +34,7 @@ GetDim <- function(Input,Raw=TRUE) {
   #each question corresponds to one partition of the space, thus for each dimension N questions yeilds N+1 states
   return(Dim)
 }
+
 
 GetSpace <- function(Contract) {
   #Takes a contract, specifically its D.States, and constructs the array of possible ending states.
@@ -52,11 +55,10 @@ FillContract <- function(Ctr,B=1) {
   
   CtrNew$Shares <- 0*GetSpace(Ctr)
   CtrNew$Size <- GetSize(Ctr)
-  CtrNew$B <- B
   
   #AMM seed capital requirement is given as b*log(N), where N is the number of states the contract must support.
   Nstates <- max(GetSpace(Ctr))
-  CtrNew$Balance <- B*log(Nstates)
+  CtrNew$Balance <- CtrNew$B*log(Nstates)
   
   CtrNew$Contract <- GetId(CtrNew)
   return(CtrNew)
@@ -64,42 +66,47 @@ FillContract <- function(Ctr,B=1) {
 
 
 
-#Contract Object
-C1 <- list(Contract=NA,                                   #hash of c1[-1:-3]
-           Shares=NA,
-           Balance=NA,
-           B=NA,
-           Size=NA,                                       #size of c1[-1:-3] in bytes 
+## Sample Contracts ##
+C1 <- list(Contract=NA,     #hash of c1[-1:-4]
+           Shares=NA,       #initially, zero of course
+           Balance=NA,      #funds in escrow for this contract
+           State=-2,        # -2 indicates active (ie neither trading nor judging are finished).
+           B=NA,            #Liquidity Parameter
+           Size=NA,         #size of c1[-1:-4] in bytes 
            OwnerAd="1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T",  #the Bitcoin address of the creator of this contract
            Title="Obama2012",                             #title - not necessarily unique
            Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
            #in practice, this will probably be pretty long.
-            Tags=c("Politics, UnitedStates, President, Winner"), #ordinal descriptors
-            EventOverBy=5,             #block number, corresponds to time     
-            State=-1,                  # -1 indicates active (ie neither trading nor judging are finished)
-            D.State=list(c("Did Barack H Obama win the United States 2012 presidential election?"))
+           Tags=c("Politics, UnitedStates, President, Winner"), #ordinal descriptors
+           EventOverBy=5,             #block number, corresponds to time that this information will be widely and readily availiable.     
 
-           )
+           D.State=list(
+             c("Did Barack H Obama win the United States 2012 presidential election?"))
+           
+)
 
 C2 <- list(Contract=NA,
            Shares=NA,
            Balance=NA,
+           State=-2,
            B=NA,
            Size=NA,
            OwnerAd="1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T",
            Title="Dems2016",                 
            Description="Democratic Control of the United States federal government following 2016 election.\nThis contract ...",
            Tags=c("Politics, UnitedStates, President, Congress"),
-           EventOverBy=5,   
-           State=-1,
-           D.State=list(c("Did the Democratic Party Candidate win the United States presidential election in 2016?"),
-                        c("Did the Democratic Party win (only) a majority of Senate seats?",
-                          "Did the Democratic Party win (only) a three-fifths supermajority of Senate seats (60+)?",
-                          "Did the Democratic Party win a two-thirds supermajority of Senate seats (67+)?"),
-                        c("Did the Democratic Party win (only) a majority of House seats?",
-                          "Did the Democratic Party win a two-thirds supermajority of House seats (67+)?"))
-                        #option to also use (or always use) hash of an existing Conout
-           )
+           EventOverBy=5,
+           D.State=list(
+             c("Did the Democratic Party Candidate win the United States presidential election in 2016?"),
+             
+             c("Did the Democratic Party win (only) a majority of Senate seats?",
+               "Did the Democratic Party win (only) a three-fifths supermajority of Senate seats (60+)?",
+               "Did the Democratic Party win a two-thirds supermajority of Senate seats (67+)?"),
+             
+             c("Did the Democratic Party win (only) a majority of House seats?",
+               "Did the Democratic Party win a two-thirds supermajority of House seats (67+)?"))
+           #option to also use (or always use) hash of an existing Conout
+)
 
 C1 <- FillContract(C1)
 C2 <- FillContract(C2)
@@ -124,10 +131,8 @@ GetUJRows <- function(Contract) {
   return(DfStates)
 }
 
-
 GetUJRows(C1)
 GetUJRows(C2)
-
 
 #Assume some results
 
@@ -135,14 +140,13 @@ Results <- GetUJRows(C2)
 Results$J <- c(0,0,0,0,0,1)
 Results
 
-
 MapJudgement <- function(Results,Contract) {
   
   #Filter on correct contract.
   # (hasnt been done yet)
   
   #Contract undecided - kick out to -1
-  if(sum(Results$J==.5)>0) return(-1)
+  if(sum(Results$J==.5)>0) return(-2)
   
   #Decided Contracts ...traverse the OutComeSpace
   Results$T <- Results$IDs*Results$J + 1  # +1 for index.. R does not count from zero
@@ -157,7 +161,9 @@ MapJudgement <- function(Results,Contract) {
 MapJudgement(Results,C2)
 
 
-#Create Marketplace
+
+## Marketplace Creation ##
+# - Where shares exist. (!) replace 'Markets' with Cmatrix eventually.
 Markets <- vector("list",length=0) #Critical Step...creates (blank) marketplace. Would erase the existing marketplace if called twice.
 
 CreateMarket <- function(Title,
@@ -170,16 +176,16 @@ CreateMarket <- function(Title,
                          ) {
   
   #Create Object
-  TempContract <- list( Contract=NA,Shares=NA,Balance=NA,B=B,Size=NA,OwnerAd=OwnerAd,Title=Title,
-                       Description=Description,Tags=Tags,EventOverBy=MatureTime,State=-1,D.State=D.State )
+  TempContract <- list( Contract=NA,Shares=NA,Balance=NA,State=-2,B=B,Size=NA,OwnerAd=OwnerAd,Title=Title,
+                       Description=Description,Tags=Tags,EventOverBy=MatureTime,D.State=D.State )
   
   #Prepare Object
   Temp2 <- FillContract(TempContract)
            
   #Add a new contract to the global 'Markets' variable.
-  Markets[[Title]] <<- Temp2
+  #Use 'Title' for testing/understanding. I anticipate we will actually use the hash for uniqueness.  
+  #Markets[[Temp2$Contract]] <<- Temp2 
+  Markets[[Temp2$Title]] <<- Temp2
 }
 
 CreateMarket("Obama2012")
-
-

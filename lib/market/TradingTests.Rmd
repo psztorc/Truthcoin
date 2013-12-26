@@ -10,10 +10,8 @@ try(setwd("~/Shared Files/DPM/Truthcoin/lib/market"))
 try(setwd("~/GitHub/Truthcoin/lib"))
 source("market/Trading.R")
 
-#Create Test Environment
-Users <- vector("list",length=0)
-Users$Alice$Cash <- 10
-Users$Bob$Cash <- 50
+CreateAccount("Alice",10)
+CreateAccount("Bob",50)
 Users
 
 Markets
@@ -38,7 +36,7 @@ CreateMarket(Title="Hillary",
 Markets
 ```
 
-```{r Functions,echo=FALSE}
+```{r Functions,echo=FALSE,message=FALSE}
 #Tests
 DisplayTest <- function() {
   print(Users$Alice)
@@ -101,11 +99,11 @@ Basics
 ShowPrices("Obama")
 ShowPrices("Hillary")
 
-QueryMove("Obama",1,.6) #
-QueryMove("Hillary",3,.30) #higher B increases liquidity
+QueryMove("Obama",State=1,P=.6) #
+QueryMove("Hillary",State=3,P=.30) #higher B increases liquidity
 
-QueryCost("Obama",2,1)
-QueryCost("Hillary",1,1)
+QueryCost("Obama",State=2,S=1) #cost for 1 share
+QueryCost("Hillary",State=1,S=1)
 
 ```
 
@@ -138,8 +136,8 @@ MarketVisual(EmbellishRows(CaptureSequence(seq(.5,.95,length.out=30))))
 ResetAlice()
 SFE <- EmbellishRows(CaptureSequence(c(seq(.5,.05,length.out=25),seq(.1,.5,length.out=4),seq(.5,.95,length.out=15))))
 SFE$CostPerShare <- SFE$TradeCost/SFE$SharesTraded
-plot(TradeCost~MarketPrice , data=SFE,main="The 'Self-Financing Effect'",sub="Cost to trade s.t. MarketPrice increases by 0.01551724.",xlim=c(.55,1))
-plot(CostPerShare~MarketPrice , data=SFE,main="The 'Self-Financing Effect II'",sub="Each share eventually worth either $0 or $1, costs approximately its own price.")
+plot(TradeCost~MarketPrice , data=SFE,main="The 'Self-Financing Effect'",sub="Rising cost to increase MarketPrice by exactly 0.01551724.",xlim=c(.55,1))
+plot(CostPerShare~MarketPrice , data=SFE,main="The 'Self-Financing Effect II'",sub="Each share (eventually worth either $0 or $1) costs approximately its own price.")
 
 #In fact, setting the probability to 1 is always impossible (very realistic).
 QueryMoveCost("Obama",1,1)
@@ -153,7 +151,7 @@ dLMSR2 <- rbind(
             Capture('Buy', "Alice","Obama",1,0.99000),
             Capture('Buy', "Alice","Obama",1,0.99900),
             Capture('Buy', "Alice","Obama",1,0.99990))
-
+#Notice same cost to move for (1/10)th price change.
 ResetAlice()
 
 dLMSR3 <- rbind(

@@ -1,11 +1,11 @@
-#Trading Protocol and Market Maker
-rm(list=ls())
+
+### Trading Protocol and Market Maker ###
 try(setwd("~/GitHub/Truthcoin/lib"))
 source(file="market/Contracts.r")
 
-#Create Marketplace
-Markets <- vector("list",length=0) #Critical Step...creates (blank) marketplace. Would erase the existing marketplace if called twice.
 
+
+## Simple Market Info ##
 ShowPrices <- function(ID) {
   #Takes a Market and ID and returns the current market price.
   S <- exp(Markets[[ID]]$Shares/Markets[[ID]]$B)
@@ -44,6 +44,23 @@ QueryMoveCost <- function(ID,State,P) {
   return( QueryCost(ID,State, NewS ) )
 }
 
+
+
+## User Accounts ##
+Users <- vector("list",length=0) #Critical Step...creates (blank) marketplace. Would erase the existing marketplace if called twice.
+
+CreateAccount <- function(Name,Qfunds) {
+  #Creates an account filled with money.
+  #Obviously, this is a crucial step which will require (!) verification of Bitcoin payments, an X-confirmation delay, etc. For testing we allow unconstrained (free/infinite) cash.
+  #These accounts have simple toy names, actual accounts will probably be the bitcoin addresses themselves.
+  Users[[Name]]$Cash <<- Qfunds
+}
+
+
+
+## Buying and Selling Shares ##
+
+#I anticipate actual trading will rely on https://en.bitcoin.it/wiki/Contracts#Example_7:_Rapidly-adjusted_.28micro.29payments_to_a_pre-determined_party
 Buy <- function(uID,ID,State,P) {
   #Calculate Required Cost
   Cost <- QueryMoveCost(ID,State,P)
