@@ -20,8 +20,8 @@ GetId <- function(CtrBlank,debug=0) {
 
 
 GetSize<- function(CtrBlank,debug=0) {
-  #Size of the contract in bytes. As only the contract's hash is required, and judges have an incentive to punish incoherent contracts, I dont think there is a need for this anymore, but perhaps it will still be useful.
-  x <- deparse(CtrBlank)
+  #Size of the contract in bytes. This may be requried to prevent spam.
+  x <- deparse(CtrBlank[-1:-2])
   if(debug==1) print(x)
   return( sum(nchar(x, type="bytes")) )
 }
@@ -50,16 +50,17 @@ GetSpace <- function(Contract) {
 FillContract <- function(Ctr,B=1) {
   #Takes a basic, unfinished contract and fills out some details like the 'size', 'hash', etc. Also calulates the required seed capital for a given B level.
   #For security and simplicity the contract is hashed after the 'B' (and initial balance) are set. Then one only needs to verify that the balance was truly established.
-  #All other fields, such as 'size' and 'balance', are calculated from the basic contract, as are fields such as 'shares' which would change constantly and rapidly.
+  #Other fields, such as 'balance' and 'share', which would change constantly and rapidly, are calcualted from the base ("blank") contract.
+  #Size is calculated second-to-last on the final contract to account for exponentially increasing Share space.
   CtrNew <- Ctr
   
   CtrNew$Shares <- 0*GetSpace(Ctr)
-  CtrNew$Size <- GetSize(Ctr)
-  
+
   #AMM seed capital requirement is given as b*log(N), where N is the number of states the contract must support.
   Nstates <- max(GetSpace(Ctr))
   CtrNew$Balance <- CtrNew$B*log(Nstates)
   
+  CtrNew$Size <- GetSize(CtrNew)
   CtrNew$Contract <- GetId(CtrNew)
   return(CtrNew)
 }
@@ -68,12 +69,12 @@ FillContract <- function(Ctr,B=1) {
 
 ## Sample Contracts ##
 C1 <- list(Contract=NA,     #hash of c1[-1:-4]
+           Size=NA,         #size of c1[-1:-2] in bytes 
            Shares=NA,       #initially, zero of course
            Balance=NA,      #funds in escrow for this contract
            State=-2,        # -2 indicates active (ie neither trading nor judging are finished).
-           B=NA,            #Liquidity Parameter
-           Size=NA,         #size of c1[-1:-4] in bytes 
-           OwnerAd="1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T",  #the Bitcoin address of the creator of this contract
+           B=1,            #Liquidity Parameter
+           OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",  #the Bitcoin address of the creator of this contract
            Title="Obama2012",                             #title - not necessarily unique
            Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
            #in practice, this will probably be pretty long.
@@ -86,16 +87,16 @@ C1 <- list(Contract=NA,     #hash of c1[-1:-4]
 )
 
 C2 <- list(Contract=NA,
+           Size=NA,
            Shares=NA,
            Balance=NA,
            State=-2,
-           B=NA,
-           Size=NA,
-           OwnerAd="1JwSSubhmg6iPtRjtyqhUYYH7bZg3Lfy1T",
+           B=2,
+           OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",
            Title="Dems2016",                 
            Description="Democratic Control of the United States federal government following 2016 election.\nThis contract ...",
            Tags=c("Politics, UnitedStates, President, Congress"),
-           EventOverBy=5,
+           EventOverBy=7,
            D.State=list(
              c("Did the Democratic Party Candidate win the United States presidential election in 2016?"),
              
@@ -126,6 +127,7 @@ GetUJRows <- function(Contract) {
   DfStates <- data.frame("IDc"=Contract$Contract,
                          "IDd"=Dvec,
                          "IDs"=Svec,
+                         "T"=Contract$EventOverBy,
                          "UJ"=unlist(Contract$D.State),
                          "J"=.5)
   return(DfStates)

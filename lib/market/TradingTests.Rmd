@@ -17,7 +17,9 @@ Users
 Markets
 CreateMarket(Title="Obama",
              B=1,
-             D.State=list(c("Did Barack H Obama win the United States 2012 presidential election?")),
+             D.State=list(
+               c("Did Barack H Obama win the United States 2012 presidential election?")
+               ),
              Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
              Tags=c("Politics, UnitedStates, President, Winner"),
              MatureTime=5,
@@ -25,8 +27,10 @@ CreateMarket(Title="Obama",
 
 CreateMarket(Title="Hillary",
              B=3.5,
-             D.State=list(c("Did Hillary R Clinton win the United States 2016 presidential election?"),
-                          c("Do registered Democrats control a majority of both the House and Senate following 2016 elections?")),
+             D.State=list(
+               c("Did Hillary R Clinton win the United States 2016 presidential election?"),
+               c("Do registered Democrats control a majority of both the House and Senate following 2016 elections?")
+               ),
              Description="Hillary Clinton and Democratic Congress.",
              Tags=c("Politics, UnitedStates, President, Winner"),
              MatureTime=5,

@@ -5,78 +5,111 @@ try(setwd("~/GitHub/Truthcoin/lib"))
 source(file="market/Contracts.r")
 Sha256 <- function(x) digest(unlist(x),algo='sha256',serialize=FALSE)
 
-BlockZero <- list(
-  "Bn"=1,                #Block Number
-  "h.B_1"=Sha256(""),    #Hash of previous block
-  "Time"=Sys.time(),     #System Date and Time
+GenesisBlock <- list(
+  "Bn"=1,               #Block Number
+  "h.B_1"=Sha256(""),   #Hash of previous block
+  "Time"=Sys.time(),    #System Date and Time
   "ListFee"=.01,        #Listing Fee - Fee to create a new contract and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
   "Cnew"=NULL,                                          #New Contracts (appends to C) ?
-  "Cmatrix"=data.frame(C1,stringsAsFactors=FALSE)[-1,], #Matrix of Active Contracts (will eventually be stored somewhere else for non-redundancy)
-  "Vmatrix"=matrix(0,nrow=6,ncol=0),                    #Matrix of 'Votes' ...extensive attention is given to this matrix with the 'Factory' function.
+  "Cmatrix"=data.frame(                                 #Matrix of Active Contracts (stores only the essential information).
+    "Contract"='a',
+    "Matures"=1)[-1,], 
+  "Vmatrix"=matrix(0,nrow=6,ncol=0,dimnames=(           #Matrix of 'Votes' ...extensive attention is given to this matrix with the 'Factory' function.
+    list(paste("Voter",1:6,sep=".")) #(fake names, will be Truthcoin Addresses)
+    )),        
   "Jmatrix"=NULL,                                       #The contracts that, in this block, were ruled to have been decisivly judged (appends to H) ?
-  "h.H_1"=Sha256("")                                    #Hash of the H matrix (the H matrix refers to the 'history' of contracts and their outcomes)
+  "h.H_1"=Sha256(""),                                   #Hash of the H matrix (the H matrix refers to the 'history' of contracts and their outcomes)
+  "Nonce"=1
   )
 
 #+nonce, merkle, Bitcoin fields, etc.
-
-
-BlockChain <- list(BlockZero)
-
+BlockChain <- list(GenesisBlock)
 #Setup Complete
 
-#Functions
-AddContract <- function(CurChain,NewContract) {
+
+## Functions Involving BlockChain Information ##
+
+QueryAddContract <- function(NewContract,CurChain=BlockChain) {
   
-  #Calculate Cost
+  Now <- length(CurChain)
+  CurFee <- CurChain[[Now]]$ListFee
   
+  Out <- list("CurrentListFee"=CurFee,
+              "D"=sum(GetDim(NewContract,0)),  #Total number of decisions that must be made.
+              "S"=prod(GetDim(NewContract)),   #Size of the trading space.
+              "Cost"=sum(GetDim(NewContract,0)) * CurFee #Cost to list this contract.
+              )
+  return(Out)
+}
+
+AddContract <- function(NewContract,CurChain=BlockChain,PaymentTransaction=0) {
+  
+  #Verify Payment
+  Cost <- QueryAddContract(NewContract,CurChain)$Cost
+  #Payment <- LookUpPayment(PaymentTransaction)
+  #if(Payment<Cost) return("Payment Error")
+
   #Declare Working Variables
   Now <- length(CurChain)
   CurBlock.Old <- CurChain[[Now]]
   CurBlock.New <- CurBlock.Old
-    
+  
+  #Format the Contract's Decision-States as rows
+  C.Filled <- FillContract(NewContract)
+  if( !all.equal(C.Filled, FillContract(C.Filled)) ) { # Sanity Check
+    print("Contract Error")
+    return(all.equal(C.Filled, FillContract(C.Filled)))  
+  }
+  
+  UJRows <- GetUJRows(C.Filled) #The 'Unjudged' that need to be added as rows.
+  UJRows.Cformat <- data.frame("Contract"=paste("C",UJRows[,2],UJRows[,3],UJRows[,1], sep="."), #in the format for adding to Cmatrix
+                               "Maturity"=UJRows[,4])
   #Add the contract to Cmatrix
-  CurBlock.New$Cmatrix <- rbind(CurBlock.Old$Cmatrix,NewContract)
+  CurBlock.New$Cmatrix <- rbind(CurBlock.Old$Cmatrix,UJRows.Cformat)
   
   #Assign Output - Replace
   NewChain <- CurChain
   NewChain[[Now]] <- CurBlock.New
   return(NewChain)                                   
-}                          
+}            
 
-Now <- length(BlockChain)
-BlockChain[[Now]]$Cmatrix
+QueryAddContract(C2)
+BlockChain <- AddContract(C2)
 
-BlockChain <- AddContract(BlockChain,C1)
-BlockChain[[Now]]$Cmatrix
 
 AdvanceChain <- function(BlockChain,VDuration=10) {
-  
+    
   #Add a new link to the chain.
-  N <- length(BlockChain)
-  Old <- BlockChain[[N]] #The most recent block
+  Now <- length(BlockChain)
+  Old <- BlockChain[[Now]] #The most recent block
   New <- Old             #A copy of the most recent block.
   
   #add hash of previous block
   New$h.B_1  <- Sha256(Old)
   
   #if any contracts have matured in Cmatrix, add them to Vmatrix
-  OpenContracts <- subset(New$Cmatrix,subset=EventOverBy==N,select=Title)[,1]  #gets the title of any contracts maturing today #! change to ID after validation
-  Vn <- dim(New$Vmatrix)[1]
-  Vm1 <- dim(New$Vmatrix)[2]
-  Vm2 <- length(OpenContracts) 
-  New$Vmatrix  <- matrix(data=    c(New$Vmatrix, rep(NA,Vn*Vm2)),
-                         nrow=    Vn,
-                         ncol=    (Vm1+Vm2),
-                         dimnames=list(row.names(Old$Vmatrix), c(colnames(Old$Vmatrix),OpenContracts))
-                         )
+  OpenContracts <- New$Cmatrix[New$Cmatrix$Maturity==Now,1]  #gets the ID of any contracts maturing today #! change to ID after validation
+  Vm1 <- length(OpenContracts)
+  if(Vm1>0) {
+    Vn <- dim(New$Vmatrix)[1]
+    Vm2 <- dim(New$Vmatrix)[2]
+    
+    New$Vmatrix  <- matrix(data=    c(New$Vmatrix, rep(NA,Vn*Vm1)),
+                           nrow=    Vn,
+                           ncol=    (Vm2+Vm1),
+                           dimnames=list(row.names(Old$Vmatrix), c(colnames(Old$Vmatrix),OpenContracts)) ) 
+  }
+  New$Vmatrix
+
+  #if any contracts have expired from Vmatrix, remove them from Vmatrix
+  ExpiredContracts <- New$Cmatrix[New$Cmatrix$Maturity==(Now-VDuration),1]  #gets the ID of any contracts maturing today #! change to ID after validation
+  if(length(ExpiredContracts)>0) {
+    New$Vmatrix <- New$Vmatrix[,(colnames(New$Vmatrix)!=ExpiredContracts)]
+  }
   New$Vmatrix
   
-  #if any contracts have expired from Vmatrix, remove them from 
-  ExpiredContracts <- subset(New$Cmatrix,subset=EventOverBy==(N+VDuration),select=Title)[,1] #gets the title of any contracts maturing today #! change to ID after validation
-  New$Vmatrix <- New$Vmatrix[,(colnames(New$Vmatrix)!=ExpiredContracts)]
-  
-  Return <- c(BlockChain,New) 
-  return(Return)
+  Out <- c(BlockChain,New) 
+  return(Out)
 }
 
 
