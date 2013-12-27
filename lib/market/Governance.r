@@ -7,7 +7,7 @@ Sha256 <- function(x) digest(unlist(x),algo='sha256',serialize=FALSE)
 
 GenesisBlock <- list(
   "Bn"=1,               #Block Number
-  "h.B_1"=Sha256(""),   #Hash of previous block
+  "h.B.1"=Sha256(""),   #Hash of previous block
   "Time"=Sys.time(),    #System Date and Time
   "ListFee"=.01,        #Listing Fee - Fee to create a new contract and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
   "Cnew"=NULL,                                          #New Contracts (appends to C) ?
@@ -18,12 +18,12 @@ GenesisBlock <- list(
     list(paste("Voter",1:6,sep=".")) #(fake names, will be Truthcoin Addresses)
     )),        
   "Jmatrix"=NULL,                                       #The contracts that, in this block, were ruled to have been decisivly judged (appends to H) ?
-  "h.H_1"=Sha256(""),                                   #Hash of the H matrix (the H matrix refers to the 'history' of contracts and their outcomes)
+  "h.H.1"=Sha256(""),                                   #Hash of the H matrix (the H matrix refers to the 'history' of contracts and their outcomes)
   "Nonce"=1
   )
 
 #+nonce, merkle, Bitcoin fields, etc.
-BlockChain <- list(GenesisBlock)
+BlockChain <- list(NA,GenesisBlock)
 #Setup Complete
 
 
@@ -73,19 +73,15 @@ AddContract <- function(NewContract,CurChain=BlockChain,PaymentTransaction=0) {
   return(NewChain)                                   
 }            
 
-QueryAddContract(C2)
-BlockChain <- AddContract(C2)
-
-
-AdvanceChain <- function(BlockChain,VDuration=10) {
-    
+AdvanceChain <- function(VDuration=10) {
+ 
   #Add a new link to the chain.
   Now <- length(BlockChain)
   Old <- BlockChain[[Now]] #The most recent block
-  New <- Old             #A copy of the most recent block.
+  New <- Old               #A copy of the most recent block.
   
   #add hash of previous block
-  New$h.B_1  <- Sha256(Old)
+  New$h.B.1  <- Sha256(Old)
   
   #if any contracts have matured in Cmatrix, add them to Vmatrix
   OpenContracts <- New$Cmatrix[New$Cmatrix$Maturity==Now,1]  #gets the ID of any contracts maturing today #! change to ID after validation
@@ -98,47 +94,41 @@ AdvanceChain <- function(BlockChain,VDuration=10) {
                            nrow=    Vn,
                            ncol=    (Vm2+Vm1),
                            dimnames=list(row.names(Old$Vmatrix), c(colnames(Old$Vmatrix),OpenContracts)) ) 
+    print(paste("Added",Vm1,"rows to the Vmatrix."))
+    print(New$Vmatrix)
   }
-  New$Vmatrix
-
+  
   #if any contracts have expired from Vmatrix, remove them from Vmatrix
   ExpiredContracts <- New$Cmatrix[New$Cmatrix$Maturity==(Now-VDuration),1]  #gets the ID of any contracts maturing today #! change to ID after validation
   if(length(ExpiredContracts)>0) {
     New$Vmatrix <- New$Vmatrix[,(colnames(New$Vmatrix)!=ExpiredContracts)]
+    print(paste("Removed",length(ExpiredContracts),"rows from the Vmatrix."))
+    print(New$Vmatrix)
   }
-  New$Vmatrix
   
-  Out <- c(BlockChain,New) 
-  return(Out)
+  BlockChain[[(Now+1)]] <<- New
 }
 
+FastForward <- function(Times=2) {
+  for(i in 1:Times) AdvanceChain()
+}
 
-#Find next block
+BlockChain
 
+QueryAddContract(C2)
+BlockChain <- AddContract(C2)
 
-#requires:
-#hash of previous block (previous block)
-#previous Vmatrix
-#previous Fee
+BlockChain
 
+AdvanceChain()
 
+BlockChain
 
+FastForward(5)
 
+BlockChain
 
+FastForward(20)
 
-
-# 
-# 
-# #Get Labels
-# OldNames <- colnames(CurBlock.Old$Vmatrix)
-# NewNames <- c(OldNames, NewContract$Title)
-# print(OldNames)
-# print(NewNames)
-# 
-# 
-# #Add the contract to Vmatrix
-# CurBlock.New$Vmatrix <- cbind(CurBlock.Old$Vmatrix,NA)
-# print(CurBlock.New$Vmatrix)
-# colnames(CurBlock.New$Vmatrix) <- NewNames
-
+BlockChain
 
