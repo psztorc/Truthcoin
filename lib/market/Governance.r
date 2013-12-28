@@ -3,22 +3,34 @@ rm(list=ls())
 #Function Library
 try(setwd("~/GitHub/Truthcoin/lib"))
 source(file="market/Contracts.r")
+source(file="consensus/ConsensusMechanism.r")
 Sha256 <- function(x) digest(unlist(x),algo='sha256',serialize=FALSE)
 
 GenesisBlock <- list(
   "Bn"=1,               #Block Number
+  
   "h.B.1"=Sha256(""),   #Hash of previous block
+  
   "Time"=Sys.time(),    #System Date and Time
+  
   "ListFee"=.01,        #Listing Fee - Fee to create a new contract and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
+  
   "Cnew"=NULL,                                          #New Contracts (appends to C) ?
+  
   "Cmatrix"=data.frame(                                 #Matrix of Active Contracts (stores only the essential information).
     "Contract"='a',
     "Matures"=1)[-1,], 
+  
   "Vmatrix"=matrix(0,nrow=6,ncol=0,dimnames=(           #Matrix of 'Votes' ...extensive attention is given to this matrix with the 'Factory' function.
-    list(paste("Voter",1:6,sep=".")) #(fake names, will be Truthcoin Addresses)
-    )),        
-  "Jmatrix"=NULL,                                       #The contracts that, in this block, were ruled to have been decisivly judged (appends to H) ?
-  "h.H.1"=Sha256(""),                                   #Hash of the H matrix (the H matrix refers to the 'history' of contracts and their outcomes)
+    list(paste("Voter",1:6,sep="."))                    #(fake names, will be Truthcoin Addresses)
+    )),
+  
+  "Reputation"=c(.3,.2,.15,.15,.1,.1),   #Reputation
+  
+  "Jmatrix"=data.frame("Contract"='a',"State"=1)[-1,],  #The contracts that, in this block, were ruled to have been decisivly judged (appends to H) ?
+              
+  "h.H.1"=Sha256(""),             #Hash of the H matrix (the H matrix refers to the 'history' of contracts and their outcomes)
+  
   "Nonce"=1
   )
 
@@ -80,8 +92,64 @@ AdvanceChain <- function(VDuration=10) {
   Old <- BlockChain[[Now]] #The most recent block
   New <- Old               #A copy of the most recent block.
   
-  #add hash of previous block
+  #Add hash of previous block
   New$h.B.1  <- Sha256(Old)
+  #Add the current time
+  New$Time <- Sys.time()
+  
+  ## Construct a Vote every X=5 rounds (if there are contracts waiting##
+  if(Now%%5==0&length(Old$Vmatrix)>0) {
+    
+    #Use our big function!
+    Results <- Factory(Old$Vmatrix,Rep=Old$Reputation)
+    
+    #Set Reputations
+    New$Reputation <- Results$Agents[,"RowBonus"]
+    
+    #Adjust Entry/Authorship Fee - based on voter turnout
+    Participation.Target <- .90
+    Participation.Actual <- Results$Participation
+    New$ListFee <- Old$ListFee* (Participation.Target/Participation.Actual)
+    
+    #Set Contract State using ConoutFinal
+    ContractOutcomes <- Results$Contracts["ConoutFinal",]
+    PreReformat <- unlist(strsplit(names(ContractOutcomes),split=".",fixed=TRUE))
+    MaxX <- length(names(ContractOutcomes))*4    # (4 fields)
+    
+    Reformat <- data.frame( "IDc"=             PreReformat[1:MaxX%%4==0],
+                            "IDd"= as.numeric( PreReformat[1:MaxX%%4==2] ),
+                            "IDs"= as.numeric( PreReformat[1:MaxX%%4==3] ),
+                             "J"= ContractOutcomes)
+    
+    #Contract undecided - kick out to -1  ("contract is permanently unresolveable")
+    if(sum(Results$J==.5)>0) return(-1)  #It may be possible to improve this through some kind of marginal space.
+    
+    for(k in unique(Reformat$IDc)) {
+      Temp <- Reformat[Reformat$IDc==k,]  #Subset
+      
+      # "GetDim" lite - Take list of decisions and return vector of dimensions, Question x State
+      C.Dim <- vector("numeric",length=max(Temp$IDd))
+      for(j in 1:max(Temp$IDd)) C.Dim[j] <- max(Temp[Temp$IDd==j,"IDs"]) + 1
+      
+      # 'GetSpace' lite - Take Dimensions and return the 'State Array' of all possible states.
+      MaxN <- prod(C.Dim) #multiply dimensions to get total # of partitions
+      Names <- vector('list',length=length(C.Dim))
+      for(i in 1:length(C.Dim)) Names[[i]] <- paste("d",i,".",c("No",rep("Yes",C.Dim[i]-1)) ,sep="" )
+      JSpace <- array(data=1:MaxN,dim=C.Dim,dimnames=Names)
+      
+      # 'Format' lite - Take Judgements from Consensus and use them to navigate to the correct state.
+      Temp$T <- Temp$IDs*Temp$J + 1  # +1 for index.. R does not count from zero
+      PreState <- 1:length(C.Dim)                #For each dimension of the contract
+      for(i in 1:length(PreState)) PreState[i] <- max(Temp$T[Temp$IDd==i])  #Find the maximum value within dimension (assumes contracts have been ordered)
+      JState <- JSpace[PreState[1],PreState[2],PreState[3]]
+      
+      print(paste("Contract",k,"ended in State",JState,"."))
+      
+      #Publish Result
+      New$Jmatrix <- rbind(New$Jmatrix,data.frame("Contract"=k, "State"=JState))  
+    }    
+    
+  }  
   
   #if any contracts have matured in Cmatrix, add them to Vmatrix
   OpenContracts <- New$Cmatrix[New$Cmatrix$Maturity==Now,1]  #gets the ID of any contracts maturing today #! change to ID after validation
@@ -106,6 +174,8 @@ AdvanceChain <- function(VDuration=10) {
     print(New$Vmatrix)
   }
   
+
+  
   BlockChain[[(Now+1)]] <<- New
 }
 
@@ -126,9 +196,50 @@ BlockChain
 
 FastForward(5)
 
-BlockChain
+BlockChain[[length(BlockChain)]]
 
-FastForward(20)
+SetVote <- function(Row,Column,Vote) {
+  #Eventually this will require Message Signing, of course.
+  try( BlockChain[[length(BlockChain)]]$Vmatrix[Row,Column] <<- Vote )
+}
 
-BlockChain
+SetVote("Voter.1","C.1.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.2","C.1.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.3","C.1.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.4","C.1.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.5","C.1.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.6","C.1.1.5fa52bc3609598e28214d0e8ba47eca4",1)
 
+SetVote("Voter.1","C.2.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.2","C.2.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.3","C.2.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.4","C.2.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.5","C.2.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.6","C.2.1.5fa52bc3609598e28214d0e8ba47eca4",1)
+
+SetVote("Voter.1","C.2.2.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.2","C.2.2.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.3","C.2.2.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.4","C.2.2.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.5","C.2.2.5fa52bc3609598e28214d0e8ba47eca4",1)
+SetVote("Voter.6","C.2.2.5fa52bc3609598e28214d0e8ba47eca4",1)
+
+SetVote("Voter.1","C.2.3.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.2","C.2.3.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.3","C.2.3.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.4","C.2.3.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.5","C.2.3.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.6","C.2.3.5fa52bc3609598e28214d0e8ba47eca4",0)
+
+SetVote("Voter.1","C.3.1.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.2","C.3.1.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.3","C.3.1.5fa52bc3609598e28214d0e8ba47eca4",0)
+
+SetVote("Voter.4","C.3.2.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.5","C.3.2.5fa52bc3609598e28214d0e8ba47eca4",0)
+SetVote("Voter.6","C.3.2.5fa52bc3609598e28214d0e8ba47eca4",0)
+
+
+
+Factory(Z$Vmatrix)
+Results <- Factory(Z$Vmatrix,Rep=c(.3,.2,.15,.15,.1,.1))

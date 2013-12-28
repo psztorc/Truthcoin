@@ -202,8 +202,8 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
   ColBonus <- (NAbonusC*(PercentNA))+(ConReward*(1-PercentNA))  
   
   #Present Results
-  Output <- vector("list",4) #Declare
-  names(Output) <- c("Original","Filled","Agents","Contracts")
+  Output <- vector("list",5) #Declare
+  names(Output) <- c("Original","Filled","Agents","Contracts","Participation")
   
   Output[[1]] <- M0
   Output[[2]] <- Filled
@@ -211,6 +211,7 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
   colnames(Output[[3]]) <- c("OldRep", "ThisRep", "SmoothRep", "NArow", "ParticipationR","RelativePart","RowBonus")   
   Output[[4]] <- rbind(AdjLoadings,ConoutRAW,ConReward,Certainty,apply(NAmat,2,sum),ParticipationC,ColBonus,ConoutFinal)
   rownames(Output[[4]]) <- c("First Loading","ConoutRAW","Consensus Reward","Certainty","NAs Filled","ParticipationC","Contract Bonus","ConoutFinal")
+  Output[[5]] <- (1-PercentNA) #Using this to set inclusion fees.
   
   return(Output)
 }
