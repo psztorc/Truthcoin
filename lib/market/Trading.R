@@ -101,13 +101,14 @@ Sell <- function(uID,ID,State,P) {
   return(c(MarginalShares,Cost))
 }
 
-FinalSell <- function(uID,ID,State,ContractState,S) {
+FinalSell <- function(uID,ID,State,S) {
   #This function takes over after the event's state has been determined, and all shares are either worth zero or the unit price.
-  ContractState <- ContractState
-  #ContractState <- GetContractState() #unwritten function to determine State...probably will just lookup from Cmatrix.
-  #!!! Obviously, some check will need to be made.
+  Judged <- BlockChain[[length(BlockChain)]]$Jmatrix
+  ContractState <- -2
+  ContractState <- try(Judged[Judged$Contract==ID,2])
   
   #Which shares are valuable?
+  if(ContractState<0) return("You cannot sell using this function until there is a consensus about the outcome.") 
   if(State!=ContractState) return("Shares of this state have value 0.") 
   OldShares <- Users[[uID]][[ID]][[paste("State",State,sep="")]]
   

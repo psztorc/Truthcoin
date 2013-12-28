@@ -97,8 +97,8 @@ AdvanceChain <- function(VDuration=10) {
   #Add the current time
   New$Time <- Sys.time()
   
-  ## Construct a Vote every X=5 rounds (if there are contracts waiting##
-  if(Now%%5==0&length(Old$Vmatrix)>0) {
+  ## Construct a Vote every X=10 rounds (if there are contracts waiting) ##
+  if(Now%%VDuration==0&length(Old$Vmatrix)>0) {
     
     #Use our big function!
     Results <- Factory(Old$Vmatrix,Rep=Old$Reputation)
@@ -117,7 +117,7 @@ AdvanceChain <- function(VDuration=10) {
     MaxX <- length(names(ContractOutcomes))*4    # (4 fields)
     
     Reformat <- data.frame( "IDc"=             PreReformat[1:MaxX%%4==0],
-                            "IDd"= as.numeric( PreReformat[1:MaxX%%4==2] ),
+                            "IDd"= as.numeric( PreReformat[1:MaxX%%4==2] ), #lost the numeric formating in strsplit
                             "IDs"= as.numeric( PreReformat[1:MaxX%%4==3] ),
                              "J"= ContractOutcomes)
     
@@ -239,7 +239,4 @@ SetVote("Voter.4","C.3.2.5fa52bc3609598e28214d0e8ba47eca4",0)
 SetVote("Voter.5","C.3.2.5fa52bc3609598e28214d0e8ba47eca4",0)
 SetVote("Voter.6","C.3.2.5fa52bc3609598e28214d0e8ba47eca4",0)
 
-
-
-Factory(Z$Vmatrix)
-Results <- Factory(Z$Vmatrix,Rep=c(.3,.2,.15,.15,.1,.1))
+AdvanceChain()
