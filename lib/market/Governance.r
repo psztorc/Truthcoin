@@ -13,7 +13,9 @@ GenesisBlock <- list(
   
   "Time"=Sys.time(),    #System Date and Time
   
-  "ListFee"=.01,        #Listing Fee - Fee to create a new contract and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
+  "ListFee"=.001,       #Listing Fee - Fee to create a new contract and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
+  
+  "ListFee2"=log(8)/(8^2),                              #Second listing fee...even smaller, designed to lightly discourage low-k, high-n contracts with more than N=256 states. st f1(x) = a(x^2) = f2(x) = b (log(x)) @ x=8 
   
   "Cnew"=NULL,                                          #New Contracts (appends to C) ?
   
@@ -44,20 +46,33 @@ BlockChain <- list(NA,GenesisBlock)
 QueryAddContract <- function(NewContract,CurChain=BlockChain) {
   
   Now <- length(CurChain)
-  CurFee <- CurChain[[Now]]$ListFee
+  CurDecFee <- CurChain[[Now]]$ListFee    #get parameters for this block
+  CurStateFee <- CurChain[[Now]]$ListFee2 #get parameters for this block
   
-  Out <- list("CurrentListFee"=CurFee,
-              "D"=sum(GetDim(NewContract,0)),  #Total number of decisions that must be made.
-              "S"=prod(GetDim(NewContract)),   #Size of the trading space.
-              "Cost"=sum(GetDim(NewContract,0)) * CurFee #Cost to list this contract.
+  D.calc <- sum(GetDim(NewContract,0))  #Total number of decisions that must be made.
+  S.calc <- prod(GetDim(NewContract))   #Size of the trading space.
+  
+  Seed.Capital <- NewContract$B*log(S.calc)
+  
+  Out <- list("MarketMake"=Seed.Capital,
+              "CurrentDecisionFee"=CurDecFee,
+              "D"=D.calc, 
+              "D.cost"= D.calc*CurDecFee,
+              "CurrentStateFee"=CurStateFee,
+              "S"=S.calc, 
+              "S.cost"=  (S.calc^2) * CurStateFee,              
+              "TotalCost"= Seed.Capital + (D.calc * CurDecFee) + ((S.calc^2) * CurStateFee)  #Cost to list this contract.
               )
   return(Out)
 }
 
+QueryAddContract(C1)
+QueryAddContract(C2)
+
 AddContract <- function(NewContract,CurChain=BlockChain,PaymentTransaction=0) {
   
   #Verify Payment
-  Cost <- QueryAddContract(NewContract,CurChain)$Cost
+  Cost <- QueryAddContract(NewContract,CurChain)$TotalCost
   #Payment <- LookUpPayment(PaymentTransaction)
   #if(Payment<Cost) return("Payment Error")
 
