@@ -8,7 +8,8 @@ Code is generally in the 'lib' folder, other items generally in the 'docs' folde
 
 <h2>Frequently Asked Questions</h2>
 
-Note: A protocol whitepaper is forthcoming.
+Note: A protocol whitepaper is forthcoming. Update (Jan 10): Paper draft II is complete, should finish editing this weekend.
+
 
 <h3>Does this compete with Bitcoin as a store of value?</h3>
 No!  Truthcoins represent voting power within this system, and you use them to earn Bitcoins. So they are more similar to shares of a traded corporation. This system accepts and dispenses Bitcoin as its store of value.
