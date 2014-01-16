@@ -96,7 +96,7 @@ FillNa <- function(Mna,Rep=ReWeight( rep(1,nrow(Mna)) ), CatchP=.1, Debug=0) {
     ConoutRAW <- BuildConOut(Mna,Rep,Debug)
     
     #Fill in the predictions to the original M
-    NAmat <- is.na(Mna)   #The slice of the matrix which needs to be edited.
+    NAmat <- is.na(Mna)   #Defines the slice of the matrix which needs to be edited.
     Mna[NAmat] <- 0       #Erase the NA's
     
     if(Debug==1) {
@@ -165,7 +165,7 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
   
   #Information about missing values
   NAmat <- M0*0 
-  NAmat[is.na(NAmat)] <- 1
+  NAmat[is.na(NAmat)] <- 1 #indicator matrix for missing
   
   #Participation Within Contracts (Columns) 
   # % of reputation that answered each contract
@@ -174,7 +174,7 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Debug=0) {
   #Participation Within Agents (Rows) 
   # Many options
   
-  # 1- Democracy Option
+  # 1- Democracy Option - all contracts treated equally.
   ParticipationR  <- 1-( apply(NAmat,1,sum)/ncol(M0) )
   
 #   # 2 - Quadradic Loss
