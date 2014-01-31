@@ -1,0 +1,1 @@
+As currently programmed, adding a market requires a hash, quantity of states, payment (as stated), but also information about the dimentionality of states (1x4 is different from 2x2).
