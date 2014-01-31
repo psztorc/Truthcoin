@@ -1,7 +1,7 @@
 
 ### Trading Protocol and Market Maker ###
-try(setwd("~/GitHub/Truthcoin/lib"))
-source(file="market/Contracts.r")
+# try(setwd("~/GitHub/Truthcoin/lib"))
+source(file="market/Markets.r")
 
 
 

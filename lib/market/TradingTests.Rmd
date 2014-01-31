@@ -6,8 +6,8 @@ Paul Sztorc
 ```{r Load,echo=FALSE,message=FALSE}
 #Source
 rm(list=ls())
-try(setwd("~/Shared Files/DPM/Truthcoin/lib/market"))
-try(setwd("~/GitHub/Truthcoin/lib"))
+# try(setwd("~/Shared Files/DPM/Truthcoin/lib/market"))
+# try(setwd("~/GitHub/Truthcoin/lib"))
 source("market/Trading.R")
 
 CreateAccount("Alice",10)
@@ -194,7 +194,7 @@ box()
 ```{r FinalSell}
 
 Users$Alice
-FinalSell("Alice","Obama",1,1,9.21024)
+FinalSell("Alice","Obama",1,9.21024)
 Users$Alice
 Markets$Obama
 

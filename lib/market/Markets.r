@@ -1,5 +1,5 @@
 
-### Contract Structure/Example ###
+### Market Structure/Example ###
 
 #Load
 Use <- function(package) { if(suppressWarnings(!require(package,character.only=TRUE))) install.packages(package,repos="http://cran.case.edu/") ; require(package,character.only=TRUE) }
@@ -7,12 +7,12 @@ options(stringsAsFactors = FALSE)
 Use('digest')
 
 
-## Functions to Define/Set Attributes of Contracts
+## Functions to Define/Set Attributes of Markets
 LongForm <- function(Ctr) return(unlist(Ctr))
 #unlists the info - easier to hash (convienience only)
 
 GetId <- function(CtrBlank,debug=0) {
-  # md5 hashes the contract, ignoring the hash field for reproduceability, and the shares/balance fields for consistency.
+  # md5 hashes the Market, ignoring the hash field for reproduceability, and the shares/balance fields for consistency.
   x <- LongForm(CtrBlank[-1:-4])
   if(debug==1) print(x)
   return( digest(x,"md5") )
@@ -20,7 +20,7 @@ GetId <- function(CtrBlank,debug=0) {
 
 
 GetSize<- function(CtrBlank,debug=0) {
-  #Size of the contract in bytes. This may be requried to prevent spam.
+  #Size of the Market in bytes. This may be requried to prevent spam.
   x <- deparse(CtrBlank[-1:-2])
   if(debug==1) print(x)
   return( sum(nchar(x, type="bytes")) )
@@ -28,7 +28,7 @@ GetSize<- function(CtrBlank,debug=0) {
 
 
 GetDim <- function(Input,Raw=TRUE) {
-  #Infers, from the D.state ("decision space") the total size of this contracts.
+  #Infers, from the D.state ("decision space") the total size of this Markets.
   Dim <- unlist( lapply(Input$D.State,length) )
   if(Raw) Dim <- Dim + 1
   #each question corresponds to one partition of the space, thus for each dimension N questions yeilds N+1 states
@@ -36,9 +36,9 @@ GetDim <- function(Input,Raw=TRUE) {
 }
 
 
-GetSpace <- function(Contract) {
-  #Takes a contract, specifically its D.States, and constructs the array of possible ending states.
-  Dim <- GetDim(Contract)
+GetSpace <- function(Market) {
+  #Takes a Market, specifically its D.States, and constructs the array of possible ending states.
+  Dim <- GetDim(Market)
   MaxN <- prod(Dim) #multiply dimensions to get total # of partitions
   Names <- vector('list',length=length(Dim))
   for(i in 1:length(Dim)) Names[[i]] <- paste("d",i,".",c("No",rep("Yes",Dim[i]-1)) ,sep="" )
@@ -47,36 +47,36 @@ GetSpace <- function(Contract) {
 }
 
 
-FillContract <- function(Ctr,B=1) {
-  #Takes a basic, unfinished contract and fills out some details like the 'size', 'hash', etc. Also calulates the required seed capital for a given B level.
-  #For security and simplicity the contract is hashed after the 'B' (and initial balance) are set. Then one only needs to verify that the balance was truly established.
-  #Other fields, such as 'balance' and 'share', which would change constantly and rapidly, are calcualted from the base ("blank") contract.
-  #Size is calculated second-to-last on the final contract to account for exponentially increasing Share space.
+FillMarketInfo <- function(Ctr,B=1) {
+  #Takes a basic, unfinished Market and fills out some details like the 'size', 'hash', etc. Also calulates the required seed capital for a given B level.
+  #For security and simplicity the Market is hashed after the 'B' (and initial balance) are set. Then one only needs to verify that the balance was truly established.
+  #Other fields, such as 'balance' and 'share', which would change constantly and rapidly, are calcualted from the base ("blank") Market.
+  #Size is calculated second-to-last on the final Market to account for exponentially increasing Share space.
   CtrNew <- Ctr
   
   CtrNew$Shares <- 0*GetSpace(Ctr)
 
-  #AMM seed capital requirement is given as b*log(N), where N is the number of states the contract must support.
+  #AMM seed capital requirement is given as b*log(N), where N is the number of states the Market must support.
   Nstates <- max(GetSpace(Ctr))
   CtrNew$Balance <- CtrNew$B*log(Nstates)
   
   CtrNew$Size <- GetSize(CtrNew)
-  CtrNew$Contract <- GetId(CtrNew)
+  CtrNew$Market <- GetId(CtrNew)
   return(CtrNew)
 }
 
 
 
-## Sample Contracts ##
-C1 <- list(Contract=NA,     #hash of c1[-1:-4]
+## Sample Markets ##
+C1 <- list(Market=NA,     #hash of c1[-1:-4]
            Size=NA,         #size of c1[-1:-2] in bytes 
            Shares=NA,       #initially, zero of course
-           Balance=NA,      #funds in escrow for this contract
+           Balance=NA,      #funds in escrow for this Market
            State=-2,        # -2 indicates active (ie neither trading nor judging are finished).
            B=1,            #Liquidity Parameter
-           OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",  #the Bitcoin address of the creator of this contract
+           OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",  #the Bitcoin address of the creator of this Market
            Title="Obama2012",                             #title - not necessarily unique
-           Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
+           Description="Barack Obama to win United States President in 2012\nThis Market will expire in state 1 if the statement is true and 0 otherwise.",
            #in practice, this will probably be pretty long.
            Tags=c("Politics, UnitedStates, President, Winner"), #ordinal descriptors
            EventOverBy=5,             #block number, corresponds to time that this information will be widely and readily availiable.     
@@ -86,7 +86,7 @@ C1 <- list(Contract=NA,     #hash of c1[-1:-4]
            
 )
 
-C2 <- list(Contract=NA,
+C2 <- list(Market=NA,
            Size=NA,
            Shares=NA,
            Balance=NA,
@@ -94,7 +94,7 @@ C2 <- list(Contract=NA,
            B=2,
            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",
            Title="Dems2016",                 
-           Description="Democratic Control of the United States federal government following 2016 election.\nThis contract ...",
+           Description="Democratic Control of the United States federal government following 2016 election.\nThis Market ...",
            Tags=c("Politics, UnitedStates, President, Congress"),
            EventOverBy=7,
            D.State=list(
@@ -109,53 +109,53 @@ C2 <- list(Contract=NA,
            #option to also use (or always use) hash of an existing Conout
 )
 
-C1 <- FillContract(C1)
-C2 <- FillContract(C2)
+C1 <- FillMarketInfo(C1)
+C2 <- FillMarketInfo(C2)
 
 
-GetUJRows <- function(Contract) {
-  #Takes a contract and returns the set of judgements that will need to be made
+GetDecisionRows <- function(Market) {
+  #Takes a Market and returns the set of Decisions that will need to be made
   #Build IDs for UJ
-  Dim <- GetDim(Contract,0)
+  Dim <- GetDim(Market,0)
   UJ_ID <- vector(length=0)
   
   for(i in 1:length(Dim)) UJ_ID <- c(UJ_ID, rep(i,Dim[i]) )
 
   Dvec <- (1:length(Dim))[UJ_ID]
-  Svec <- unlist( lapply(X=GetDim(Contract,0),FUN=function(x) 1:x) )
+  Svec <- unlist( lapply(X=GetDim(Market,0),FUN=function(x) 1:x) )
 
-  DfStates <- data.frame("IDc"=Contract$Contract,
+  DfStates <- data.frame("IDc"=Market$Market,
                          "IDd"=Dvec,
                          "IDs"=Svec,
-                         "T"=Contract$EventOverBy,
-                         "UJ"=unlist(Contract$D.State),
+                         "T"=Market$EventOverBy,
+                         "UJ"=unlist(Market$D.State),
                          "J"=.5)
   return(DfStates)
 }
 
-GetUJRows(C1)
-GetUJRows(C2)
+GetDecisionRows(C1)
+GetDecisionRows(C2)
 
 #Assume some results
 
-Results <- GetUJRows(C2)
+Results <- GetDecisionRows(C2)
 Results$J <- c(0,0,0,0,0,1)
 Results
 
-MapJudgement <- function(Results,Contract) {
+MapJudgement <- function(Results,Market) {
   
-  #Filter on correct contract.
+  #Filter on correct Market.
   # (hasnt been done yet)
   
-  #Contract undecided - kick out to -1
+  #Market undecided - kick out to -1
   if(sum(Results$J==.5)>0) return(-2)
   
-  #Decided Contracts ...traverse the OutComeSpace
+  #Decided Markets ...traverse the OutComeSpace
   Results$T <- Results$IDs*Results$J + 1  # +1 for index.. R does not count from zero
-  PreState <- 1:length(GetDim(Contract))
+  PreState <- 1:length(GetDim(Market))
   for(i in 1:length(PreState)) PreState[i] <- max(Results$T[Results$IDd==i])
   
-  State <- GetSpace(Contract)[PreState[1],PreState[2],PreState[3]]
+  State <- GetSpace(Market)[PreState[1],PreState[2],PreState[3]]
   return(State)
   
 }
@@ -170,23 +170,23 @@ Markets <- vector("list",length=0) #Critical Step...creates (blank) marketplace.
 
 CreateMarket <- function(Title,
                          B=1,
-                         D.State=list(c("Did Barack H Obama win the United States 2012 presidential election?")),
-                         Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
+                         D.State=list(c("Did Barack H Obama win the United States 2012 presidential election?")), #Decisions
+                         Description="Barack Obama to win United States President in 2012\nThis Market will expire in state 1 if the statement is true and 0 otherwise.",
                          Tags=c("Politics, UnitedStates, President, Winner"),
                          MatureTime=5,
                          OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
                          ) {
   
   #Create Object
-  TempContract <- list( Contract=NA,Shares=NA,Balance=NA,State=-2,B=B,Size=NA,OwnerAd=OwnerAd,Title=Title,
+  TempMarket <- list( Market=NA,Shares=NA,Balance=NA,State=-2,B=B,Size=NA,OwnerAd=OwnerAd,Title=Title,
                        Description=Description,Tags=Tags,EventOverBy=MatureTime,D.State=D.State )
   
   #Prepare Object
-  Temp2 <- FillContract(TempContract)
+  Temp2 <- FillMarketInfo(TempMarket)
            
-  #Add a new contract to the global 'Markets' variable.
+  #Add a new Market to the global 'Markets' variable.
   #Use 'Title' for testing/understanding. I anticipate we will actually use the hash for uniqueness.  
-  #Markets[[Temp2$Contract]] <<- Temp2 
+  #Markets[[Temp2$Market]] <<- Temp2 
   Markets[[Temp2$Title]] <<- Temp2
 }
 

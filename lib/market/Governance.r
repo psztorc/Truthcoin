@@ -2,7 +2,7 @@
 rm(list=ls())
 #Function Library
 try(setwd("~/GitHub/Truthcoin/lib"))
-source(file="market/Contracts.r")
+source(file="market/Markets.r")
 source(file="consensus/ConsensusMechanism.r")
 Sha256 <- function(x) digest(unlist(x),algo='sha256',serialize=FALSE)
 
@@ -13,14 +13,14 @@ GenesisBlock <- list(
   
   "Time"=Sys.time(),    #System Date and Time
   
-  "ListFee"=.001,       #Listing Fee - Fee to create a new contract and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
+  "ListFee"=.001,       #Listing Fee - Fee to create a new Market and add a column to the V matrix. (selected to be nonzero but arbitrarily low - about 1 USD)
   
-  "ListFee2"=log(8)/(8^2),                              #Second listing fee...even smaller, designed to lightly discourage low-k, high-n contracts with more than N=256 states. st f1(x) = a(x^2) = f2(x) = b (log(x)) @ x=8 
+  "ListFee2"=log(8)/(8^2),                              #Second listing fee...even smaller, designed to lightly discourage low-k, high-n Markets with more than N=256 states. st f1(x) = a(x^2) = f2(x) = b (log(x)) @ x=8 
   
-  "Cnew"=NULL,                                          #New Contracts (appends to C) ?
+  "Cnew"=NULL,                                          #New Markets (appends to C) ?
   
-  "Cmatrix"=data.frame(                                 #Matrix of Active Contracts (stores only the essential information).
-    "Contract"='a',
+  "Cmatrix"=data.frame(                                 #Matrix of Active Markets (stores only the essential information).
+    "Market"='a',
     "Matures"=1)[-1,], 
   
   "Vmatrix"=matrix(0,nrow=6,ncol=0,dimnames=(           #Matrix of 'Votes' ...extensive attention is given to this matrix with the 'Factory' function.
@@ -29,9 +29,9 @@ GenesisBlock <- list(
   
   "Reputation"=c(.3,.2,.15,.15,.1,.1),   #Reputation
   
-  "Jmatrix"=data.frame("Contract"='a',"State"=1)[-1,],  #The contracts that, in this block, were ruled to have been decisivly judged (appends to H) ?
+  "Jmatrix"=data.frame("Market"='a',"State"=1)[-1,],  #The Markets that, in this block, were ruled to have been decisivly judged (appends to H) ?
               
-  "h.H.1"=Sha256(""),             #Hash of the H matrix (the H matrix refers to the 'history' of contracts and their outcomes)
+  "h.H.1"=Sha256(""),             #Hash of the H matrix (the H matrix refers to the 'history' of Markets and their outcomes)
   
   "Nonce"=1
   )
@@ -43,16 +43,16 @@ BlockChain <- list(NA,GenesisBlock)
 
 ## Functions Involving BlockChain Information ##
 
-QueryAddContract <- function(NewContract,CurChain=BlockChain) {
+QueryAddMarket <- function(NewMarket,CurChain=BlockChain) {
   
   Now <- length(CurChain)
   CurDecFee <- CurChain[[Now]]$ListFee    #get parameters for this block
   CurStateFee <- CurChain[[Now]]$ListFee2 #get parameters for this block
   
-  D.calc <- sum(GetDim(NewContract,0))  #Total number of decisions that must be made.
-  S.calc <- prod(GetDim(NewContract))   #Size of the trading space.
+  D.calc <- sum(GetDim(NewMarket,0))  #Total number of decisions that must be made.
+  S.calc <- prod(GetDim(NewMarket))   #Size of the trading space.
   
-  Seed.Capital <- NewContract$B*log(S.calc)
+  Seed.Capital <- NewMarket$B*log(S.calc)
   
   Out <- list("MarketMake"=Seed.Capital,
               "CurrentDecisionFee"=CurDecFee,
@@ -61,18 +61,18 @@ QueryAddContract <- function(NewContract,CurChain=BlockChain) {
               "CurrentStateFee"=CurStateFee,
               "S"=S.calc, 
               "S.cost"=  (S.calc^2) * CurStateFee,              
-              "TotalCost"= Seed.Capital + (D.calc * CurDecFee) + ((S.calc^2) * CurStateFee)  #Cost to list this contract.
+              "TotalCost"= Seed.Capital + (D.calc * CurDecFee) + ((S.calc^2) * CurStateFee)  #Cost to list this Market.
               )
   return(Out)
 }
 
-QueryAddContract(C1)
-QueryAddContract(C2)
+QueryAddMarket(C1)
+QueryAddMarket(C2)
 
-AddContract <- function(NewContract,CurChain=BlockChain,PaymentTransaction=0) {
+AddMarket <- function(NewMarket,CurChain=BlockChain,PaymentTransaction=0) {
   
   #Verify Payment
-  Cost <- QueryAddContract(NewContract,CurChain)$TotalCost
+  Cost <- QueryAddMarket(NewMarket,CurChain)$TotalCost
   #Payment <- LookUpPayment(PaymentTransaction)
   #if(Payment<Cost) return("Payment Error")
 
@@ -81,17 +81,17 @@ AddContract <- function(NewContract,CurChain=BlockChain,PaymentTransaction=0) {
   CurBlock.Old <- CurChain[[Now]]
   CurBlock.New <- CurBlock.Old
   
-  #Format the Contract's Decision-States as rows
-  C.Filled <- FillContract(NewContract)
-  if( !all.equal(C.Filled, FillContract(C.Filled)) ) { # Sanity Check
-    print("Contract Error")
-    return(all.equal(C.Filled, FillContract(C.Filled)))  
+  #Format the Market's Decision-States as rows
+  C.Filled <- FillMarketInfo(NewMarket)
+  if( !all.equal(C.Filled, FillMarketInfo(C.Filled)) ) { # Sanity Check
+    print("Market Error")
+    return(all.equal(C.Filled, FillMarketInfo(C.Filled)))  
   }
   
   UJRows <- GetUJRows(C.Filled) #The 'Unjudged' that need to be added as rows.
-  UJRows.Cformat <- data.frame("Contract"=paste("C",UJRows[,2],UJRows[,3],UJRows[,1], sep="."), #in the format for adding to Cmatrix
+  UJRows.Cformat <- data.frame("Market"=paste("C",UJRows[,2],UJRows[,3],UJRows[,1], sep="."), #in the format for adding to Cmatrix
                                "Maturity"=UJRows[,4])
-  #Add the contract to Cmatrix
+  #Add the Market to Cmatrix
   CurBlock.New$Cmatrix <- rbind(CurBlock.Old$Cmatrix,UJRows.Cformat)
   
   #Assign Output - Replace
@@ -112,7 +112,7 @@ AdvanceChain <- function(VDuration=10) {
   #Add the current time
   New$Time <- Sys.time()
   
-  ## Construct a Vote every X=10 rounds (if there are contracts waiting) ##
+  ## Construct a Vote every X=10 rounds (if there are Markets waiting) ##
   if(Now%%VDuration==0&length(Old$Vmatrix)>0) {
     
     #Use our big function!
@@ -126,17 +126,17 @@ AdvanceChain <- function(VDuration=10) {
     Participation.Actual <- Results$Participation
     New$ListFee <- Old$ListFee* (Participation.Target/Participation.Actual)
     
-    #Set Contract State using ConoutFinal
-    ContractOutcomes <- Results$Contracts["ConoutFinal",]
-    PreReformat <- unlist(strsplit(names(ContractOutcomes),split=".",fixed=TRUE))
-    MaxX <- length(names(ContractOutcomes))*4    # (4 fields)
+    #Set Market State using DecisionOutcome.Final
+    MarketOutcomes <- Results$Decisions["DecisionOutcome.Final",]
+    PreReformat <- unlist(strsplit(names(MarketOutcomes),split=".",fixed=TRUE))
+    MaxX <- length(names(MarketOutcomes))*4    # (4 fields)
     
     Reformat <- data.frame( "IDc"=             PreReformat[1:MaxX%%4==0],
                             "IDd"= as.numeric( PreReformat[1:MaxX%%4==2] ), #lost the numeric formating in strsplit
                             "IDs"= as.numeric( PreReformat[1:MaxX%%4==3] ),
-                             "J"= ContractOutcomes)
+                             "J"= MarketOutcomes)
     
-    #Contract undecided - kick out to -1  ("contract is permanently unresolveable")
+    #Market undecided - kick out to -1  ("Market is permanently unresolveable")
     if(sum(Results$J==.5)>0) return(-1)  #It may be possible to improve this through some kind of marginal space.
     
     for(k in unique(Reformat$IDc)) {
@@ -154,21 +154,21 @@ AdvanceChain <- function(VDuration=10) {
       
       # 'Format' lite - Take Judgements from Consensus and use them to navigate to the correct state.
       Temp$T <- Temp$IDs*Temp$J + 1  # +1 for index.. R does not count from zero
-      PreState <- 1:length(C.Dim)                #For each dimension of the contract
-      for(i in 1:length(PreState)) PreState[i] <- max(Temp$T[Temp$IDd==i])  #Find the maximum value within dimension (assumes contracts have been ordered)
+      PreState <- 1:length(C.Dim)                #For each dimension of the Market
+      for(i in 1:length(PreState)) PreState[i] <- max(Temp$T[Temp$IDd==i])  #Find the maximum value within dimension (assumes Markets have been ordered)
       JState <- JSpace[PreState[1],PreState[2],PreState[3]]
       
-      print(paste("Contract",k,"ended in State",JState,"."))
+      print(paste("Market",k,"ended in State",JState,"."))
       
       #Publish Result
-      New$Jmatrix <- rbind(New$Jmatrix,data.frame("Contract"=k, "State"=JState))  
+      New$Jmatrix <- rbind(New$Jmatrix,data.frame("Market"=k, "State"=JState))  
     }    
     
   }  
   
-  #if any contracts have matured in Cmatrix, add them to Vmatrix
-  OpenContracts <- New$Cmatrix[New$Cmatrix$Maturity==Now,1]  #gets the ID of any contracts maturing today #! change to ID after validation
-  Vm1 <- length(OpenContracts)
+  #if any Markets have matured in Cmatrix, add them to Vmatrix
+  OpenMarkets <- New$Cmatrix[New$Cmatrix$Maturity==Now,1]  #gets the ID of any Markets maturing today #! change to ID after validation
+  Vm1 <- length(OpenMarkets)
   if(Vm1>0) {
     Vn <- dim(New$Vmatrix)[1]
     Vm2 <- dim(New$Vmatrix)[2]
@@ -176,16 +176,16 @@ AdvanceChain <- function(VDuration=10) {
     New$Vmatrix  <- matrix(data=    c(New$Vmatrix, rep(NA,Vn*Vm1)),
                            nrow=    Vn,
                            ncol=    (Vm2+Vm1),
-                           dimnames=list(row.names(Old$Vmatrix), c(colnames(Old$Vmatrix),OpenContracts)) ) 
+                           dimnames=list(row.names(Old$Vmatrix), c(colnames(Old$Vmatrix),OpenMarkets)) ) 
     print(paste("Added",Vm1,"rows to the Vmatrix."))
     print(New$Vmatrix)
   }
   
-  #if any contracts have expired from Vmatrix, remove them from Vmatrix
-  ExpiredContracts <- New$Cmatrix[New$Cmatrix$Maturity==(Now-VDuration),1]  #gets the ID of any contracts maturing today #! change to ID after validation
-  if(length(ExpiredContracts)>0) {
-    New$Vmatrix <- New$Vmatrix[,(colnames(New$Vmatrix)!=ExpiredContracts)]
-    print(paste("Removed",length(ExpiredContracts),"rows from the Vmatrix."))
+  #if any Markets have expired from Vmatrix, remove them from Vmatrix
+  ExpiredMarkets <- New$Cmatrix[New$Cmatrix$Maturity==(Now-VDuration),1]  #gets the ID of any Markets maturing today #! change to ID after validation
+  if(length(ExpiredMarkets)>0) {
+    New$Vmatrix <- New$Vmatrix[,(colnames(New$Vmatrix)!=ExpiredMarkets)]
+    print(paste("Removed",length(ExpiredMarkets),"rows from the Vmatrix."))
     print(New$Vmatrix)
   }
   
@@ -200,8 +200,8 @@ FastForward <- function(Times=2) {
 
 BlockChain
 
-QueryAddContract(C2)
-BlockChain <- AddContract(C2)
+QueryAddMarket(C2)
+BlockChain <- AddMarket(C2)
 
 BlockChain
 
