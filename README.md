@@ -8,7 +8,7 @@ Code is generally in the 'lib' folder, other items generally in the 'docs' folde
 
 <h2>Frequently Asked Questions</h2>
 
-Note: A protocol whitepaper is forthcoming, check /docs. Update (Jan 10): Paper draft II is complete, should finish editing this weekend. Update (Jan 17): White paper is far too long, breaking it into separate documents with differing focus, scope, formality. Will definitly be 1] overview of prediction markets (90% done), 2] protocol specification (Done: Truthcoin_1.pdf), 3] motivation and practical applications (70% done), 4] commentary about potential future directions in this area (Done: BitShares and RealityKeys.pdf), and 5] Commentary on PM Manipulation (30% done).
+Note: A protocol whitepaper is forthcoming, check /docs. Update (Jan 10): Paper draft II is complete, should finish editing this weekend. Update (Jan 17): White paper is far too long, breaking it into separate documents with differing focus, scope, formality. Will definitly be 1] overview of prediction markets (CombinatorialBinaryPredictionMarkets.pdf), 2] protocol specification (Truthcoin_1.pdf), 3] motivation and practical applications (70% done), 4] commentary about potential future directions in this area (BitShares and RealityKeys.pdf), and 5] Commentary on PM Manipulation (30% done).
 
 
 <h3>Does this compete with Bitcoin as a store of value?</h3>
