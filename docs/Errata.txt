@@ -2,4 +2,6 @@ For Truthcoin 1.2:
 
 As currently programmed, adding a market requires a hash, quantity of states, payment (as stated), but also information about the dimentionality of states (1x4 is different from 2x2).
 
-Someone has pointed out that agents could simply avoid voting. This is strongly discouraged in the code through the (original) use of 'participation', but I forgot to write about it in RBCR.
+Someone has pointed out that agents could simply avoid voting. This is strongly discouraged in the code through the (original) use of 'participation', but I forgot to write about it in the RBCR section of the paper.
+
+Someone requested more explanation wrt to the timeline of a market, may require visual aid as it is so crucial.
