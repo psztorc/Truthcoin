@@ -4,7 +4,6 @@
 source(file="market/Markets.r")
 
 
-
 ## Simple Market Info ##
 ShowPrices <- function(ID) {
   #Takes a Market and ID and returns the current market price.
@@ -60,12 +59,13 @@ CreateAccount <- function(Name,Qfunds) {
 
 ## Buying and Selling Shares ##
 
-#I anticipate actual trading will rely on https://en.bitcoin.it/wiki/Contracts#Example_7:_Rapidly-adjusted_.28micro.29payments_to_a_pre-determined_party
-Buy <- function(uID,ID,State,P) {
+Buy <- function(uID,ID,State,P,Verbose=TRUE) {
+  
   #Calculate Required Cost
   Cost <- QueryMoveCost(ID,State,P)
   MarginalShares <- QueryMove(ID,State,P)
   if(MarginalShares<0) return("Price already exceeds target. Sell shares or buy a Mutually Exclusive State (MES).")
+  if(Verbose) { print("Calulating Required Shares..."); print(MarginalShares); print("Determining Cost of Trade..."); print(Cost) }
   
   #Reduce Funds, add Shares
   if(Users[[uID]]$Cash<Cost) return("Insufficient Funds")
@@ -77,15 +77,16 @@ Buy <- function(uID,ID,State,P) {
   Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost
   Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] + MarginalShares  
   
-  print(paste("Bought",MarginalShares,"for",Cost,"."))
+  if(Verbose) print(paste("Bought",MarginalShares,"for",Cost,"."))
   return(c(MarginalShares,Cost))
 }
 
-Sell <- function(uID,ID,State,P) {
+Sell <- function(uID,ID,State,P,Verbose=TRUE) {
   #Calculate Required Cost
   Cost <- QueryMoveCost(ID,State,P)
   MarginalShares <- QueryMove(ID,State,P)
   if(MarginalShares>0) return("Price already below target. Buy shares or sell a Mutually Exclusive State (MES).")
+  if(Verbose) { print("Calulating Required Shares..."); print(MarginalShares); print("Determining Cost of Trade..."); print(Cost) }
   
   #Reduce shares, add Funds
   OldShares <- Users[[uID]][[ID]][[paste("State",State,sep="")]]
@@ -97,15 +98,18 @@ Sell <- function(uID,ID,State,P) {
   Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost  
   Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] + MarginalShares 
   
-  print(paste("Sold",-1*MarginalShares,"for",-1*Cost,"."))
+  if(Verbose) print(paste("Sold",-1*MarginalShares,"for",-1*Cost,"."))
   return(c(MarginalShares,Cost))
 }
 
-FinalSell <- function(uID,ID,State,S) {
+## NOT DONE !!!
+
+FinalSell <- function(uID,ID,State,S,Verbose=TRUE) {
   #This function takes over after the event's state has been determined, and all shares are either worth zero or the unit price.
   Judged <- BlockChain[[length(BlockChain)]]$Jmatrix
   ContractState <- -2
   ContractState <- try(Judged[Judged$Contract==ID,2])
+  if(Verbose) print(paste("Determined State of this Market:", ContractState))
   
   #Which shares are valuable?
   if(ContractState<0) return("You cannot sell using this function until there is a consensus about the outcome.") 
@@ -123,6 +127,6 @@ FinalSell <- function(uID,ID,State,S) {
   Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost  
   Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] + MarginalShares 
   
-  print(paste("FinalSold",-1*MarginalShares,"for",-1*Cost,"."))
+  if(Verbose) print(paste("FinalSold",-1*MarginalShares,"for",-1*Cost,"."))
   return(c(MarginalShares,Cost))
 }  

@@ -7,22 +7,25 @@ options(stringsAsFactors = FALSE)
 Use('digest')
 
 
+# NOTE! This section was built assuming someone woult Author the Market and its Decisions separately. It will have to be slightly tweaked to comply with the final design.
+# (!) Needs an additional field for trading fees, as buys/sells make post calculation of volume impossible.
+
+
 ## Functions to Define/Set Attributes of Markets
 LongForm <- function(Ctr) return(unlist(Ctr))
 #unlists the info - easier to hash (convienience only)
 
-GetId <- function(CtrBlank,debug=0) {
+GetId <- function(CtrBlank) {
   # md5 hashes the Market, ignoring the hash field for reproduceability, and the shares/balance fields for consistency.
   x <- LongForm(CtrBlank[-1:-4])
-  if(debug==1) print(x)
   return( digest(x,"md5") )
 }
 
 
-GetSize<- function(CtrBlank,debug=0) {
+GetSize<- function(CtrBlank,Verbose=FALSE) {
   #Size of the Market in bytes. This may be requried to prevent spam.
   x <- deparse(CtrBlank[-1:-2])
-  if(debug==1) print(x)
+  if(Verbose) {print("Getting Bytes..."); print(x)}
   return( sum(nchar(x, type="bytes")) )
 }
 
@@ -36,12 +39,15 @@ GetDim <- function(Input,Raw=TRUE) {
 }
 
 
-GetSpace <- function(Market) {
+GetSpace <- function(Market, Verbose=FALSE) {
   #Takes a Market, specifically its D.States, and constructs the array of possible ending states.
   Dim <- GetDim(Market)
-  MaxN <- prod(Dim) #multiply dimensions to get total # of partitions
+  if(Verbose) { print(paste( "Market Dimention(s):", paste(Dim,collapse=",")))}
+  
   Names <- vector('list',length=length(Dim))
   for(i in 1:length(Dim)) Names[[i]] <- paste("d",i,".",c("No",rep("Yes",Dim[i]-1)) ,sep="" )
+  
+  MaxN <- prod(Dim) #multiply dimensions to get total # of partitions 
   JSpace <- array(data=1:MaxN,dim=Dim,dimnames=Names)
   return(JSpace)
 }
@@ -121,8 +127,8 @@ GetDecisionRows <- function(Market) {
   
   for(i in 1:length(Dim)) UJ_ID <- c(UJ_ID, rep(i,Dim[i]) )
 
-  Dvec <- (1:length(Dim))[UJ_ID]
-  Svec <- unlist( lapply(X=GetDim(Market,0),FUN=function(x) 1:x) )
+  Dvec <- (1:length(Dim))[UJ_ID] #Dimensions
+  Svec <- unlist( lapply(X=GetDim(Market,0),FUN=function(x) 1:x) ) #State-dividers
 
   DfStates <- data.frame("IDc"=Market$Market,
                          "IDd"=Dvec,

@@ -115,7 +115,7 @@ AdvanceChain <- function(VDuration=10) {
   ## Construct a Vote every X=10 rounds (if there are Markets waiting) ##
   if(Now%%VDuration==0&length(Old$Vmatrix)>0) {
     
-    #Use our big function!
+    #Use our big function
     Results <- Factory(Old$Vmatrix,Rep=Old$Reputation)
     
     #Set Reputations
@@ -137,7 +137,7 @@ AdvanceChain <- function(VDuration=10) {
                              "J"= MarketOutcomes)
     
     #Market undecided - kick out to -1  ("Market is permanently unresolveable")
-    if(sum(Results$J==.5)>0) return(-1)  #It may be possible to improve this through some kind of marginal space.
+    if(sum(Results$J==.5)>0) return(-1)  #It is possible to improve this through some kind of marginal space.
     
     for(k in unique(Reformat$IDc)) {
       Temp <- Reformat[Reformat$IDc==k,]  #Subset
