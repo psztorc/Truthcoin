@@ -3,6 +3,9 @@
 # try(setwd("~/GitHub/Truthcoin/lib"))
 source(file="market/Markets.r")
 
+#Global Parameter
+FeeRate <<- .01
+
 
 ## Simple Market Info ##
 ShowPrices <- function(ID) {
@@ -62,23 +65,27 @@ CreateAccount <- function(Name,Qfunds) {
 Buy <- function(uID,ID,State,P,Verbose=TRUE) {
   
   #Calculate Required Cost
-  Cost <- QueryMoveCost(ID,State,P)
+  BaseCost <- QueryMoveCost(ID,State,P) #trade cost assuming no fees
+  Fee <- BaseCost*FeeRate               #fees for buying only (global parameter set at top)
+  TotalCost <- BaseCost + Fee           #Total cost including Fee
+
   MarginalShares <- QueryMove(ID,State,P)
   if(MarginalShares<0) return("Price already exceeds target. Sell shares or buy a Mutually Exclusive State (MES).")
-  if(Verbose) { print("Calulating Required Shares..."); print(MarginalShares); print("Determining Cost of Trade..."); print(Cost) }
+  if(Verbose) { print(paste("Calulating Required Shares...",MarginalShares)); print(paste("Determining Cost of Trade...",BaseCost)); print(paste("Fee:",Fee)) }
   
   #Reduce Funds, add Shares
-  if(Users[[uID]]$Cash<Cost) return("Insufficient Funds")
-  Users[[uID]]$Cash <<-  Users[[uID]]$Cash - Cost 
+  if( Users[[uID]]$Cash < TotalCost) return("Insufficient Funds")
+  Users[[uID]]$Cash <<-  Users[[uID]]$Cash - TotalCost 
   OldShares <- Users[[uID]][[ID]][[paste("State",State,sep="")]] ; if(is.null(OldShares)) OldShares <- 0
   Users[[uID]][[ID]][[paste("State",State,sep="")]] <<- OldShares + MarginalShares
     
   #Credit Funds, add Shares
-  Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost
+  Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + BaseCost
+  Markets[[ID]]$FeeBalance <<-  Markets[[ID]]$FeeBalance + Fee
   Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] + MarginalShares  
   
-  if(Verbose) print(paste("Bought",MarginalShares,"for",Cost,"."))
-  return(c(MarginalShares,Cost))
+  if(Verbose) print(paste("Bought",MarginalShares,"for",TotalCost,"."))
+  return(c(MarginalShares,TotalCost))
 }
 
 Sell <- function(uID,ID,State,P,Verbose=TRUE) {

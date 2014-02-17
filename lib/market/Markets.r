@@ -17,7 +17,7 @@ LongForm <- function(Ctr) return(unlist(Ctr))
 
 GetId <- function(CtrBlank) {
   # md5 hashes the Market, ignoring the hash field for reproduceability, and the shares/balance fields for consistency.
-  x <- LongForm(CtrBlank[-1:-4])
+  x <- LongForm(CtrBlank[-1:-5])
   return( digest(x,"md5") )
 }
 
@@ -78,6 +78,7 @@ C1 <- list(Market=NA,     #hash of c1[-1:-4]
            Size=NA,         #size of c1[-1:-2] in bytes 
            Shares=NA,       #initially, zero of course
            Balance=NA,      #funds in escrow for this Market
+           FeeBalance=NA,   #Transaction Fees Collected
            State=-2,        # -2 indicates active (ie neither trading nor judging are finished).
            B=1,            #Liquidity Parameter
            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",  #the Bitcoin address of the creator of this Market
@@ -96,6 +97,7 @@ C2 <- list(Market=NA,
            Size=NA,
            Shares=NA,
            Balance=NA,
+           FeeBalance=NA,
            State=-2,
            B=2,
            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",
@@ -184,7 +186,7 @@ CreateMarket <- function(Title,
                          ) {
   
   #Create Object
-  TempMarket <- list( Market=NA,Shares=NA,Balance=NA,State=-2,B=B,Size=NA,OwnerAd=OwnerAd,Title=Title,
+  TempMarket <- list( Market=NA,Shares=NA,Balance=NA,FeeBalance=0,State=-2,B=B,Size=NA,OwnerAd=OwnerAd,Title=Title,
                        Description=Description,Tags=Tags,EventOverBy=MatureTime,D.State=D.State )
   
   #Prepare Object
