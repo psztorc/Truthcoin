@@ -7,7 +7,7 @@ Dec 3, 2013
 rm(list=ls())
 
 #Load everything
-try(setwd("~/GitHub/Truthcoin/lib"))
+tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'Truthcoin/lib' folder:")) )
 source(file="consensus/ConsensusMechanism.r")
 ```
 

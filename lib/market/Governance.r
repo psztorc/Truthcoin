@@ -1,7 +1,7 @@
 #Governance
 rm(list=ls())
 #Function Library
-try(setwd("~/GitHub/Truthcoin/lib"))
+tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'lib' folder:")) )
 source(file="market/Markets.r")
 source(file="consensus/ConsensusMechanism.r")
 Sha256 <- function(x) digest(unlist(x),algo='sha256',serialize=FALSE)

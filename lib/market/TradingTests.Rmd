@@ -6,8 +6,8 @@ Paul Sztorc
 ```{r Load,echo=FALSE,message=FALSE}
 #Source
 rm(list=ls())
-# try(setwd("~/Shared Files/DPM/Truthcoin/lib/market"))
-# try(setwd("~/GitHub/Truthcoin/lib"))
+
+tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'lib' folder:")) )
 source("market/Trading.R")
 
 CreateAccount("Alice",10)
