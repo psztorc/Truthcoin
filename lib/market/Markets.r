@@ -6,10 +6,7 @@ Use <- function(package) { if(suppressWarnings(!require(package,character.only=T
 options(stringsAsFactors = FALSE)
 Use('digest')
 
-
-# NOTE! This section was built assuming someone woult Author the Market and its Decisions separately. It will have to be slightly tweaked to comply with the final design.
-# (!) Needs an additional field for trading fees, as buys/sells make post calculation of volume impossible.
-
+# NOTE! This section was built assuming someone would Author the Market and its Decisions separately. It will have to be slightly tweaked to comply with the final design.
 
 ## Functions to Define/Set Attributes of Markets
 LongForm <- function(Ctr) return(unlist(Ctr))
