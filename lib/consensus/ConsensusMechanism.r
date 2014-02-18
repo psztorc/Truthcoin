@@ -12,7 +12,7 @@ source("consensus/CustomMath.r")
 AsMatrix <- function(Vec) return(matrix(Vec,nrow=length(Vec)))
 
 # #Function Library
-GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=0,Verbose=FALSE) {
+GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=FALSE) {
   #Calculates the new reputations using WPCA
   
   if(is.null(Rep)) { Rep <- ReWeight(rep(1,nrow(M)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
