@@ -1,48 +1,48 @@
 #CustomMath.r
 #A collection of relatively basic functions.
 
-MeanNA <- function(vec) {
+MeanNA <- function(Vec) {
   #Replaces NA instances with their mean instead
-  m <- mean(vec, na.rm = TRUE)
-  vec[is.na(vec)] <- m
-  return(vec)
+  m <- mean(Vec, na.rm = TRUE)
+  Vec[is.na(Vec)] <- m
+  return(Vec)
 }
 
-GetWeight <- function(vec,AddMean=FALSE) {
-  #Takes a vector, absolute value, then proportional linear deviance from 0.
-  new <- abs(vec)
+GetWeight <- function(Vec,AddMean=FALSE) {
+  #Takes a Vector, absolute value, then proportional linear deviance from 0.
+  new <- abs(Vec)
   if(AddMean==1) new  <- new + mean(new)
   if(sum(new)==0) new <- new + 1
   new <- new/sum(new)
   return(new)
 }
 
-Catch <- function(x,m=0) {
-  #x is the ConoutRAW, m is the length of the midpoint corresponding to .5 
+Catch <- function(X,Tolerance=0) {
+  #x is the ConoutRAW numeric, Tolerance is the length of the midpoint corresponding to .5 
   #The purpose here is to handle rounding for binary contracts
-  if(x<(.5-(m/2))) return(0)
-  else if(x>(.5+(m/2))) return(1)
+  if(X<(.5-(Tolerance/2))) return(0)
+  else if(X>(.5+(Tolerance/2))) return(1)
   else return(.5)
 }
 
-Influence  <- function(weight) {
-  #Takes a vector that sums to 1 and computes relative strength of the indicators above expected.
+Influence  <- function(Weight) {
+  #Takes a normalized Vector (one that sums to 1), and computes relative strength of the indicators.
   #this is because by-default the conformity of each Author and Judge is expressed relatively.
-  expected <- rep(1/length(weight),length(weight))
-  return( weight / expected)
+  Expected <- rep(1/length(Weight),length(Weight))
+  return( Weight / Expected)
 }
 
-ReWeight <- function(vec,exclude=is.na(vec)) {
+ReWeight <- function(Vec,exclude=is.na(Vec)) {
   #Get the relative influence of numbers, treat NA as influence-less
-  out <- vec
+  out <- Vec
   out[exclude] <- 0
   out <- out/sum(out)
   return(out)
 }
 
-ReverseMatrix <- function(M) {
+ReverseMatrix <- function(Mat) {
   #Inverts a binary matrix
-  return((M-1)*-1)
+  return((Mat-1)*-1)
 }
 
 WeightedPrinComp <- function(X,Weights=ReWeight(rep(1,nrow(M))) ) {

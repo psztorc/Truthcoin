@@ -180,7 +180,7 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   Avg.Certainty <- mean(Certainty)                   #How well did beliefs converge?
   
   #The Outcome Itself
-  DecisionOutcome.Final <- mapply(Catch,DecisionOutcomes.Raw,m=CatchP)  
+  DecisionOutcome.Final <- mapply(Catch,DecisionOutcomes.Raw,Tolerance=CatchP)  
  
   if(Verbose) {
     print("*Decision Outcomes Sucessfully Calculated*")
