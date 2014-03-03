@@ -1,7 +1,0 @@
-Check catch parameter adjustment
-add 1% trader fee
-add phases
-
-redo comments to use vocabulary from whitepaper
-
-make sure 'contract' has been changed to 'market' everywhere.
