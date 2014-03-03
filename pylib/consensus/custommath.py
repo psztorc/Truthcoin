@@ -15,7 +15,7 @@ def MeanNa(Vec):
     
 
 def GetWeight(Vec, AddMean=0):
-    """Takes a vector, and returns proportional distance from zero."""
+    """Takes an array (vector in practice), and returns proportional distance from zero."""
     New = abs(Vec)       #Absolute Value
     if AddMean == 1:     #Add the mean to each element of the vector
         New = New + mean(New)
@@ -57,26 +57,35 @@ def ReWeight(Vec):
 def ReverseMatrix(Mat):  #tecnically an array now, sorry about the terminology confusion
     return( (Mat-1) * -1 )
     
-
-def WeightedCov(Mat,Coins=-1):
-    """Taken from http://stats.stackexchange.com/questions/61225/correct-equation-for-weighted-unbiased-sample-covariance
-    Python does things a little differently with the weights, so lets call them what they are: Coins."""
     
-    if Coins == -1:
-        print("NOTE: No coin distribution given, assuming democracy.")
-        Coins= [[1]]*len(Mat) #Uniform weights if none were provided.
-        
-    Mean = ma.average(Mat,axis=0, weights=hstack(Coins)) # Computing the weighted sample mean (fast, efficient and precise)
+def DemocracyCoin(Mat):
+    """For testing, easier to assume uniform coin distribution."""
+    print("NOTE: No coin distribution given, assuming democracy [one row, one vote].")
+    Rep = GetWeight( array([[1]]*len(Mat) )) #Uniform weights if none were provided.
+    return( Rep )
+    
+
+def WeightedCov(Mat,Rep=-1):
+    """Takes 1] a masked array, and 2] an [n x 1] dimentional array of weights, and computes the weighted covariance
+    matrix and center of a given array.
+    Taken from http://stats.stackexchange.com/questions/61225/correct-equation-for-weighted-unbiased-sample-covariance"""
+    if type(Rep) is int:
+        Rep = DemocracyCoin(Mat)
+    
+    Coins = ma.copy(Rep)
+    for i in range(len(Rep)):
+        Coins[i] = (int( (Rep[i] * 1000000)[0] )) 
+       
+    Mean = ma.average(Mat, axis=0, weights=hstack(Coins)) # Computing the weighted sample mean (fast, efficient and precise)
     XM = matrix( Votes-Mean ) # xm = X diff to mean
     sigma2 = matrix( 1/(sum(Coins)-1) * ma.multiply(XM, Coins).T.dot(XM) ); # Compute the unbiased weighted sample covariance
 
     return( {'Cov':array(sigma2), 'Center':array(XM) } )
     
-    
-def WeightedPrinComp(Mat,Coins=-1):
-    """Manually computes the statistical procedure known as Principal Components Analysis (PCA)
+def WeightedPrinComp(Mat,Rep=-1):
+    """Takes a matrix and row-weights and manually computes the statistical procedure known as Principal Components Analysis (PCA)
     This version of the procedure is so basic, that it can also be thought of as merely a singular-value decomposition on a weighted covariance matrix."""      
-    wCVM = WeightedCov(Mat)
+    wCVM = WeightedCov(Mat,Coins)
     SVD = svd(wCVM['Cov'])
 
     L = SVD[0].T[0]                      #First loading
@@ -151,7 +160,9 @@ def CustomMathTest():
                    [1,1,0,0],
                    [1,1,1,0],
                    [0,0,1,1],
-                   [0,0,1,1]]) 
+                   [0,0,1,1]])
+                   
+    Votes = ma.masked_array(Votes,isnan(Votes))
                 
     print("Testing ReverseMatrix...")
     Expected = array([[0, 0, 1, 1],
