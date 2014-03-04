@@ -131,14 +131,14 @@ FillNa <- function(Mna,Rep=NULL, CatchP=.1, Verbose=FALSE) {
     
     #Fill in the predictions to the original M
     NAmat <- is.na(Mna)   #Defines the slice of the matrix which needs to be edited.
-    Mna[NAmat] <- 0       #Erase the NA's
+    Mnew[NAmat] <- 0       #Erase the NA's
        
     #Slightly complicated:
     NAsToFill <- ( NAmat%*%diag(as.vector(DecisionOutcomes.Raw)) )
     #   This builds a matrix whose columns j:
         #          NAmat was false (the observation wasn't missing)     ...  have a value of Zero
         #          NAmat was true (the observation was missing)         ...  have a value of the jth element of DecisionOutcomes.Raw (the 'current best guess') 
-    Mnew <- Mna + NAsToFill
+    Mnew <- Mnew + NAsToFill
     #This replaces the NAs, which were zeros, with the predicted Decision outcome.
     
     
