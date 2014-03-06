@@ -85,7 +85,7 @@ def WeightedCov(Mat,Rep=-1):
 def WeightedPrinComp(Mat,Rep=-1):
     """Takes a matrix and row-weights and manually computes the statistical procedure known as Principal Components Analysis (PCA)
     This version of the procedure is so basic, that it can also be thought of as merely a singular-value decomposition on a weighted covariance matrix."""      
-    wCVM = WeightedCov(Mat,Coins)
+    wCVM = WeightedCov(Mat,Rep)
     SVD = svd(wCVM['Cov'])
 
     L = SVD[0].T[0]                      #First loading

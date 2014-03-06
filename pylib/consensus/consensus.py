@@ -20,7 +20,7 @@ def GetRewardWeights(M, Rep=-1, Alpha=.1, Verbose=False):
     """Calculates the new reputations using Weighted Principal Components Analysis"""
     
     if type(Rep) is int:
-        Rep = DemocracyCoin(Mat)     
+        Rep = DemocracyCoin(M)     
     
     if Verbose:
         print("****************************************************")
@@ -94,19 +94,7 @@ def GetRewardWeights(M, Rep=-1, Alpha=.1, Verbose=False):
     #Keep the factors and time information along for the ride, they are interesting.
     
     return(Out)
-    
-VotesUM = array([[1,1,0,0], 
-               [1,0,0,0],
-               [1,1,0,0],
-               [1,1,1,0],
-               [0,0,1,1],
-               [0,0,1,1]])
-Votes = ma.masked_array(VotesUM, isnan(VotesUM))
-#
-#x = GetRewardWeights(Votes)
-#print(x)
-#print("")
-#print(vstack([x["OldRep"],x["ThisRep"],x["SmoothRep"]]))
+
 
 def GetDecisionOutcomes(Mtemp, Rep=-1, Verbose=False):
     """Determines the Outcomes of Decisions based on the provided reputation (weighted vote)."""
@@ -133,14 +121,6 @@ def GetDecisionOutcomes(Mtemp, Rep=-1, Verbose=False):
     #Output
     return( array(DecisionOutcomes_Raw).T )
     
-
-#a = GetDecisionOutcomes(Votes)
-#print(a)
-#
-#M3 = ma.masked_array(Votes,isnan(Votes))
-#M3.mask[1,1] = True
-#
-#print(GetDecisionOutcomes(M3,Verbose=True))
 
 def FillNa(Mna, Rep=-1, CatchP=.1, Verbose=False):
     """Uses exisiting data and reputations to fill missing observations.
@@ -186,8 +166,6 @@ def FillNa(Mna, Rep=-1, CatchP=.1, Verbose=False):
             
     return(Mnew)
         
-#q = FillNa(M3,Verbose=True)
-        
         
 ##Putting it all together:
 def Factory(M0, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
@@ -195,7 +173,7 @@ def Factory(M0, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
     #Main Routine
     #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
     if type(Rep) is int:
-        Rep = DemocracyCoin(Mat) 
+        Rep = DemocracyCoin(M0) 
         
     #Handle Missing Values
     Filled = FillNa(M0, Rep, CatchP, Verbose)
@@ -223,8 +201,7 @@ def Factory(M0, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
     if(Verbose):
         print("*Decision Outcomes Sucessfully Calculated*")
         print("Raw Outcomes, Certainty, AuthorPayoutFactor"); print( hstack([DecisionOutcomes_Raw,Certainty,ConReward]))
-  
-  
+
     ## Participation
   
     #Information about missing values
@@ -260,15 +237,15 @@ def Factory(M0, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
     ColBonus = (NAbonusC*(PercentNA))+(ConReward*(1-PercentNA))  
   
     #Present Results
-    Output = {"Original": M0, "Filled": Filled,
+    Output = {"Original": M0.base, "Filled": Filled.base,
         "Agents": {
-            "OldRep": PlayerInfo['OldRep'],
-            "ThisRep": PlayerInfo['ThisRep'],
-            "SmoothRep": PlayerInfo['SmoothRep'],
-            "NArow": NAmat.sum(axis=1),
-            "ParticipationR": ParticipationR,
-            "RelativePart": NAbonusR,
-            "RowBonus": RowBonus
+            "OldRep": PlayerInfo['OldRep'][0],
+            "ThisRep": PlayerInfo['ThisRep'][0],
+            "SmoothRep": PlayerInfo['SmoothRep'][0],
+            "NArow": NAmat.sum(axis=1).base,
+            "ParticipationR": ParticipationR.base,
+            "RelativePart": NAbonusR.base,
+            "RowBonus": RowBonus.base
             },
         "Decisions": {
             "First Loading": AdjLoadings,
@@ -287,16 +264,11 @@ def Factory(M0, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
     return(Output)
   
 
-q = Factory(Votes)
-print(q)
-z = q['Agents']['RowBonus']
-print(z)
-
 #Long-Term
 def Chain(X,N=2,ThisRep=-1):
     #Repeats factory process N times
     if type(ThisRep) is int:
-        ThisRep = DemocracyCoin(Mat) 
+        ThisRep = DemocracyCoin(X) 
      
     Output = []
     for i in range(N):
@@ -304,20 +276,140 @@ def Chain(X,N=2,ThisRep=-1):
         print(ThisRep) 
         Output.append( Factory(X,Rep=ThisRep) )
         ThisRep = (Output[i]['Agents']['RowBonus']).T
-               
-        
+    
     return(Output)
 
-q = Chain(Votes)
-print(q)
-print(len(q))
 
-#Notes
+def DisplayResults(FactorObject):
+    """Prints the results in a more-readable format. Requires pandas."""
+    
+    import pandas
+    
+    q=FactorObject #shorten for convenience
+    
+    print("")
+    print(" Original V.Matrix: ")
+    print(q['Original'])
+    
+    print("")
+    print(" Filled V.Matrix: ")
+    print(q['Filled'])
+    
+    print("")
+    print("Agents:")
+    qA = q['Agents']
+    ALabels = qA.keys()
+    AData = vstack([ qA["OldRep"],
+                   qA["ThisRep"],
+                   qA["SmoothRep"],
+                   qA["NArow"],
+                   qA["ParticipationR"],
+                   qA["RelativePart"],
+                   qA["RowBonus"]])
+    print( pandas.DataFrame(AData,ALabels).T )
+    
+    print("")
+    print("Decisions: ")
+    qD = q['Decisions']
+    DLabels = qD.keys()
+    DData = vstack([ qD["ParticipationC"],
+                   qD["First Loading"],
+                   qD["Consensus Reward"],
+                   qD["DecisionOutcomes_Raw"],
+                   qD["Author Bonus"],
+                   qD["Certainty"],
+                   qD["NAs Filled"],
+                   qD["DecisionOutcome_Final"]])             
+    print( pandas.DataFrame(DData,DLabels) )
+    
+    print("")
+    print(" Participation: ",end='')
+    print(q["Participation"])
+    
+    print("")
+    print(" Participation: ",end='')
+    print(q["Certainty"])
+    
+    return( q["Participation"] ) #simple estimate of sucess 
 
-#Voting Across Time
-#Later Votes could count more
-#! ...simple change = DecisionOutcome.Final becomes exponentially smoothed result of previous chains.
-#! require X number of chains (blocks) before the outcome is officially determined .. or, continue next round if ~ .5, or Decisions.Raw is within a threshold ( .2 to .8)
-# Would need:
-# 1] Percent Voted
-# 2] Time Dimension of blocks.
+
+
+
+
+###TEST
+
+def TestConsensus():
+    """Verifies function works as required. If False, check comments below for full expected results."""
+    
+    VotesUM = array([[1,1,0,0], 
+               [1,0,0,0],
+               [1,1,0,0],
+               [1,1,1,0],
+               [0,0,1,1],
+               [0,0,1,1]])            
+    Votes = ma.masked_array(VotesUM, isnan(VotesUM))
+    
+    Actual = DisplayResults(Factory(Votes))
+    Expected = 0.228237569613
+
+    return( round(Actual, 11) == round(Expected, 11) )
+    
+TestConsensus()
+    
+    
+    
+# "Official" Answers
+    
+#NOTE: No coin distribution given, assuming democracy [one row, one vote].
+#
+# Original V.Matrix: 
+#[[1 1 0 0]
+# [1 0 0 0]
+# [1 1 0 0]
+# [1 1 1 0]
+# [0 0 1 1]
+# [0 0 1 1]]
+#
+# Filled V.Matrix: 
+#[[1 1 0 0]
+# [1 0 0 0]
+# [1 1 0 0]
+# [1 1 1 0]
+# [0 0 1 1]
+# [0 0 1 1]]
+#
+#Agents:
+#   ParticipationR  RowBonus    OldRep  SmoothRep  NArow   ThisRep  \
+#0        0.166667  0.282376  0.178238          0      1  0.166667   
+#1        0.166667  0.217624  0.171762          0      1  0.166667   
+#2        0.166667  0.282376  0.178238          0      1  0.166667   
+#3        0.166667  0.217624  0.171762          0      1  0.166667   
+#4        0.166667  0.000000  0.150000          0      1  0.166667   
+#5        0.166667  0.000000  0.150000          0      1  0.166667   
+#
+#   RelativePart  
+#0      0.178238  
+#1      0.171762  
+#2      0.178238  
+#3      0.171762  
+#4      0.150000  
+#5      0.150000  
+#
+#[6 rows x 7 columns]
+#
+#Decisions: 
+#                              0         1         2         3
+#ParticipationC         1.000000  1.000000  1.000000  1.000000
+#First Loading         -0.539537 -0.457056  0.457056  0.539537
+#Consensus Reward       0.438140  0.061860  0.061860  0.438140
+#DecisionOutcomes_Raw   0.700000  0.528238  0.471762  0.300000
+#Author Bonus           0.438140  0.061860  0.061860  0.438140
+#Certainty              0.400000  0.056475  0.056475  0.400000
+#NAs Filled             0.000000  0.000000  0.000000  0.000000
+#DecisionOutcome_Final  1.000000  0.500000  0.500000  0.000000
+#
+#[8 rows x 4 columns]
+#
+# Participation: 1.0
+#
+# Participation: 0.228237569613    
