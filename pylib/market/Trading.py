@@ -27,6 +27,7 @@ def ShowPrices(ID):
 
 def QueryMove(ID,State,P):
     """How many shares would I need to buy of'ID'-'State' to move the probability to 'P'?"""
+    
     State = State - 1  #Python counting from zero
     S = exp(Markets[ID]['Shares']/Markets[ID]['B'])
     
@@ -35,7 +36,7 @@ def QueryMove(ID,State,P):
     Temp.mask[State] = True
     
     Sstar = Markets[ID]['B']* ( log(P/(1-P)) + log(sum(Temp)) )
-    Marginal = Sstar -Markets[ID]['Shares'][State]
+    Marginal = Sstar - Markets[ID]['Shares'][State]
     return(Marginal)
 
 
@@ -47,11 +48,11 @@ def QueryCost(ID,State,S):
     B = Markets[ID]['B']
   
     #Original Case
-    S0 = Markets[ID]['Shares']
+    S0 = copy( Markets[ID]['Shares'] )
     LMSR = B*log(sum(exp(S0/B)))
   
     #Proposed Adjustment
-    S1 = S0
+    S1 = copy(S0)
     S1[State] = S1[State] + S
     LMSR2 = B*log(sum(exp(S1/B)))
   
@@ -70,20 +71,19 @@ def QueryMoveCost(ID,State,P):
 QueryMoveCost('Obama2012',1,.7)
 
 
-## Need to incorporate copy as python is doing speedups via reference, exactly the opposite of the way I am using it.
-
-
 
 
 ## User Accounts ##
-Users <- vector("list",length=0) #Critical Step...creates (blank) marketplace. Would erase the existing marketplace if called twice.
+global Users
 
-CreateAccount <- function(Name,Qfunds) {
-  #Creates an account filled with money.
-  #Obviously, this is a crucial step which will require (!) verification of Bitcoin payments, an X-confirmation delay, etc. For testing we allow unconstrained (free/infinite) cash.
-  #These accounts have simple toy names, actual accounts will probably be the bitcoin addresses themselves.
-  Users[[Name]]$Cash <<- Qfunds
-}
+Users = {} #Critical Step...creates (blank) user-space.
+
+def CreateAccount(Name,Qfunds):
+    """Creates an account filled with money.
+    Obviously, this is a crucial step which will require (!) verification of Bitcoin payments, an X-confirmation delay, etc. For testing we allow unconstrained (free/infinite) cash.
+    These accounts have simple toy names, actual accounts will probably be the bitcoin addresses themselves."""
+    Users.update( {Name : Qfunds})
+
 
 
 
