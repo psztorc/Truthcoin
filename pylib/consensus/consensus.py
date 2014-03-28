@@ -327,7 +327,7 @@ def DisplayResults(FactorObject):
     print(q["Participation"])
     
     print("")
-    print(" Participation: ",end='')
+    print(" Certainty: ",end='')
     print(q["Certainty"])
     
     return( q["Participation"] ) #simple estimate of sucess 
@@ -337,6 +337,15 @@ def DisplayResults(FactorObject):
 
 
 ###TEST
+
+global Votes
+VotesUM = array([[1,1,0,0], 
+               [1,0,0,0],
+               [1,1,0,0],
+               [1,1,1,0],
+               [0,0,1,1],
+               [0,0,1,1]])            
+Votes = ma.masked_array(VotesUM, isnan(VotesUM))
 
 def TestConsensus():
     """Verifies function works as required. If False, check comments below for full expected results."""
@@ -356,6 +365,8 @@ def TestConsensus():
     
 TestConsensus()
     
+    
+
     
     
 # "Official" Answers
@@ -412,4 +423,26 @@ TestConsensus()
 #
 # Participation: 1.0
 #
-# Participation: 0.228237569613    
+# Certainty: 0.228237569613    
+    
+    
+    
+    
+    
+## Speed Test
+#
+#import time
+#
+#print(time.asctime())
+#InitVotesL = random_integers(0,1,(10000*100)).reshape(10000,100)
+#VotesL = ma.masked_array(InitVotesL, isnan(InitVotesL))
+#print(time.asctime())
+#
+#print(time.asctime())
+#DisplayResults(Factory(Votes))
+#print(time.asctime())
+#
+#print(time.asctime())
+#DisplayResults(Factory(VotesL))
+#print(time.asctime())
+
