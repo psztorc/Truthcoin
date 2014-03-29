@@ -10,7 +10,9 @@ R code is generally in the 'lib' folder, Python code is in the 'pylib' folder, o
 The open design question (transaction signing), preliminary survey of experts has not been promising. Two working solutions have been eliminated, so I have temporarily retreated to the most-conservative 'BothCoin' strategy (where this blockchain would actually track two assets, representing "money" and "reputation"). I remain hopeful that a crypto expert will allow this system to work more directly with Bitcoin, but perhaps it is best to test everything on a completely new currency first anyway. My personal development activities are on schedule.
 
 <h2>Pipeline</h2>
-Finish python re-code: market transactions, block items. Project Management: More clearly state development goals and requirements, timeline, dependencies.
+Now: Project Management (More clearly state development goals and requirements [needs], timeline, dependencies).
+
+Up Next: Re-publish update to bitcointalk and reddit.
 
 <h2>Frequently Asked Questions</h2>
 <h4>Reading:</h4>
