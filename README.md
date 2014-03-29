@@ -16,7 +16,7 @@ Up Next: Re-publish update to bitcointalk and reddit.
 
 <h2>Frequently Asked Questions</h2>
 <h4>Reading:</h4>
-In addition to my whitepaper describing the logical protocol which creates and manages decentrailed prediction markets (Truthcoin_1.1.pdf), I wrote many papers on Prediction Markets, including and overview of what they are [1], how they can be assembled into different types for maximum impact [2], how they can be used to improve our lives [3], some myths about PMs which I still hear [4], and a comment on manipulation and why it  is mostly impossible [5].
+In addition to my whitepaper describing the logical protocol which creates and manages decentralized prediction markets (Truthcoin_1.1.pdf), I wrote many papers on Prediction Markets, including an overview of what they are [1], how they can be assembled into different types for maximum impact [2], how they can be used to improve our lives [3], some myths about PMs which I still hear [4], and a comment on manipulation and why it is mostly impossible [5].
 
 These files can all be found in the /docs folder.
 
