@@ -13,25 +13,29 @@ The open design question (transaction signing), preliminary survey of experts ha
 Finish python re-code: market transactions, block items. Project Management: More clearly state development goals and requirements, timeline, dependencies.
 
 <h2>Frequently Asked Questions</h2>
-<h3>Reading:</h3>
-1] overview of prediction markets (CombinatorialBinaryPredictionMarkets.pdf, PM_Misunderstandings.pdf), 2] protocol specification (Truthcoin_1.pdf), 3] Applications (PM_Applications.pdf), and 4 Commentary on PM Manipulation (PM_Manipulation.pdf).
+<h4>Reading:</h4>
+In addition to my whitepaper describing the logical protocol which creates and manages decentrailed prediction markets (Truthcoin_1.1.pdf), I wrote many papers on Prediction Markets, including and overview of what they are [1], how they can be assembled into different types for maximum impact [2], how they can be used to improve our lives [3], some myths about PMs which I still hear [4], and a comment on manipulation and why it  is mostly impossible [5].
+
+These files can all be found in the /docs folder.
+
+<h4>I can't open these pdfs!</h4>
+Click on the filename, then click on the small central box labeled 'Raw', which can be found in the trio of boxes to the right of the file size.
 
 
-<h3>If you have votes, how do you know that people wont just lie and claim the outcome was whatever will benefit them personally?</h3>
+<h4>If you have votes, how do you know that people wont just lie and claim the outcome was whatever will benefit them personally?</h4>
 Check 'voting strategy' in the Whitepaper (docs folder). The code/function library which prevents this has been finished in both R and Python flavors.
 
 
-<h3>What about a 'decentralized feed' for stocks/bonds/other markets I'd like to replace with cryptocurrency magic?</h3>
+<h4>What about a 'decentralized feed' for stocks/bonds/other markets I'd like to replace with cryptocurrency magic?</h4>
 Although I failed to generalize this project from discrete Yes/No events to continuous variables, it is a trivial application of the binomial option pricing model to use PMs to generate a portfolio whose return will equal that of an underlying asset. This is possible even with just a single PM. I sketched together an example of such a replicating portfolio (ContinuousEstimation.xlsx) in docs/Notes.
 
-<h3>Prediction markets are a waste of time because no one uses them, drying up the liquidity and punishing the few who dared to try to make the market work.</h3>
+<h4>Prediction markets are a waste of time because no one uses them, drying up the liquidity and punishing the few who dared to try to make the market work.</h4>
 The liquidity problem has been solved, even if the solution is widely ignored: http://hanson.gmu.edu/mktscore.pdf
 I threw together an Excel sheet in the docs folder (LogMSR_Demo.xlsx) for additional clarification. Feedback is appreciated.
 
-<h3>How do I contact you?</h3>
+<h4>How do I contact you?</h4>
 truthcoin@gmail.com
 Please share your opinion, and your questions so the FAQ can grow!
 
-<h3>Donation Address</h3>
+<h4>Donation Address</h4>
 1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8
-
