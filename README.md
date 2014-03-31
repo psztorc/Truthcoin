@@ -14,22 +14,17 @@ R code ='lib' folder, Python code = 'pylib' folder, other items (documentation, 
 The 'lib' folder also has html files which describe the outcome of function tests and demonstrations. These files were automatically generated from R code using R-markdown, and the .rmd files are included alongside the html files for reproducibility.
 
 <h4>Reading:</h4>
-Truthcoin_1.1.pdf - My whitepaper describing the logical protocol which creates and manages decentralized prediction markets.  
+Truthcoin_1.1.pdf - My whitepaper describing a software protocol which creates and manages decentralized prediction markets.  
 
 Other Papers on Prediction Markets:  
 
-1 - What they are.  
+1. What they are.  
+2. How they can be assembled into different types (for maximum impact).  
+3. How they can be used in ways other than simply predicting the future.  
+4. Some myths about PMs which I still hear.  
+5. A comment on PM manipulation and why it actually is helpful (by providing profit opportunities).  
 
-2 - How they can be assembled into different types for maximum impact.  
-
-3 - How they can be used to improve our lives.  
-
-4 - Some myths about PMs which I still hear.  
-
-5 - A comment on manipulation and why it is mostly impossible.  
-
-
-These files can all be found in the /docs folder.
+These files can all be found in the /docs folder, prefixed with their number.
 
 <h4>I can't open these pdfs!</h4>
 Click on the filename, then click on the small central box labeled 'Raw', which can be found in the trio of boxes to the right of the file size. Do not click on 'View Raw'.
