@@ -3,26 +3,31 @@ Truthcoin is my ambitious project to create a trustless P2P prediction-marketpla
 
 Traditional PMs have been persecuted much in the same way as e-cash systems, and current Bitcoin alternatives require the user to trust the operator to 1] keep funds safe, 2] create desirable markets, and 3] correctly determine the outcome of markets.  
 
-Contract outcomes are determined in a trustless and decentralized way, through a weighted vote based on present and past consensus with a unique Nash Equilibrium where all voters place 'matured contracts' (contracts for events that have already happened) into the correct state. Incentives are such that only the contracts anticipated to generate sufficiently-high transaction volume, and be unambiguous in their outcome, are created at all. Additionally, market liquidity (a frequent problem on sites such as InTrade.com) is guaranteed to be permanently nonzero thanks to the LMSR, an invention of Dr. Robin Hanson. The LMSR's use of an update rule instead of actual Buy/Ask trading greatly simplifies implementation.
+Contract outcomes are determined in a trustless and decentralized way, through a weighted vote based on present and past consensus with a unique Nash Equilibrium where all voters report accurately on the sate of markets. Incentives are such that contracts are only created if they are anticipated to generate sufficiently-high transaction volume and be unambiguous in their outcome. Additionally, market liquidity (a frequent problem) is guaranteed to be permanently nonzero thanks to the LMSR, an invention of Dr. Robin Hanson. The LMSR's use of an update rule instead of actual Buy/Ask trading greatly simplifies implementation, while allowing for realtime buying and selling.
 
 <h3>Pipeline</h3>
-Now: Project Management (More clearly state development goals and requirements [needs], timeline, dependencies).  
-Up Next: Future progress will likely require community support.
+Now: Transaction Types and Data Structures (for implementation planning)
+Up Next: FAQ
+Up Next: Other cleanup, LMSR/Continuous .xls file-readability.
+Up Next: Seek funding / development team.
+
+<h4>What's going on!?</h4>
+Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important".
 
 <h4>Where is Everything?</h4>
 R code ='lib' folder, Python code = 'pylib' folder, other items (documentation, purpose, applications) = 'docs' folder.  
 The 'lib' folder also has html files which describe the outcome of function tests and demonstrations. These files were automatically generated from R code using R-markdown, and the .rmd files are included alongside the html files for reproducibility.
 
 <h4>Reading:</h4>
-Truthcoin_1.1.pdf - My whitepaper describing a software protocol which creates and manages decentralized prediction markets.  
+[Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) - My whitepaper describing a software protocol which creates and manages decentralized prediction markets.  
 
 Other Papers on Prediction Markets:  
 
-1. What they are.  
-2. How they can be assembled into different types (for maximum impact).  
-3. How they can be used in ways other than simply predicting the future.  
-4. Some myths about PMs which I still hear.  
-5. A comment on PM manipulation and why it actually is helpful (by providing profit opportunities).  
+1. [What they are.](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf)  
+2. [How they can be assembled into different types (for maximum impact).](https://github.com/psztorc/Truthcoin/raw/master/docs/2_PM_Types.pdf)  
+3. [How they can be used in ways other than simply predicting the future.](https://github.com/psztorc/Truthcoin/raw/master/docs/3_PM_Applications.pdf)  
+4. [Some myths about PMs which I still hear.](https://github.com/psztorc/Truthcoin/raw/master/docs/4_PM_Myths.pdf)  
+5. [A comment on PM manipulation and why it actually is helpful (by providing profit opportunities).](https://github.com/psztorc/Truthcoin/raw/master/docs/5_PM_Manipulation.pdf)
 
 These files can all be found in the /docs folder, prefixed with their number.
 
@@ -35,11 +40,11 @@ Check 'voting strategy' in the Whitepaper (docs folder). The code/function libra
 
 
 <h4>What about a 'decentralized feed' for stocks/bonds/other markets (...that I'd like to replace with cryptocurrency magic)?</h4>
-Although I failed to generalize this project from discrete Yes/No events to continuous variables, it is a trivial application of the binomial option pricing model to use PMs to generate a portfolio whose return will equal that of an underlying asset. This is possible even with just a single PM. I sketched together an example of such a replicating portfolio (ContinuousEstimation.xlsx) in docs/Notes.
+Although I failed to generalize this project from discrete Yes/No events to continuous variables, it is a trivial application of the binomial option pricing model to use PMs to generate a portfolio whose return will equal that of an underlying asset. This is possible even with just a single PM. I sketched together an example of such a replicating portfolio [ContinuousEstimation.xlsx](https://github.com/psztorc/Truthcoin/raw/master/docs/Notes/ContinuousEstimation.xlsx) in docs/Notes.
 
 <h4>Prediction markets are a waste of time because no one uses them, drying up the liquidity and punishing the few who dared to try to make the market work.</h4>
 The liquidity problem has been solved, even if the solution is widely ignored: http://hanson.gmu.edu/mktscore.pdf
-I threw together an Excel sheet in the docs folder (LogMSR_Demo.xlsx) for additional clarification. Feedback is appreciated.
+I threw together an Excel sheet in the docs folder [LogMSR_Demo.xlsx](https://github.com/psztorc/Truthcoin/raw/master/docs/LogMSR_Demo.xlsx) for additional clarification. Feedback is appreciated.
 
 <h4>How do I contact you?</h4>
 truthcoin@gmail.com
