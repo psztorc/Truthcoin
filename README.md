@@ -31,9 +31,8 @@ Other Papers on Prediction Markets:
 
 These files can all be found in the /docs folder, prefixed with their number.
 
-<h4>I can't open these pdfs!</h4>
-Click on the filename, then click on the small central box labeled 'Raw', which can be found in the trio of boxes to the right of the file size. Do not click on 'View Raw'.
 
+<h3>FAQ</h3>
 
 <h4>If you have votes, how do you know that people wont just lie and claim the outcome was whatever will benefit them personally?</h4>
 Check 'voting strategy' in the Whitepaper (docs folder). The code/function library which prevents this has been finished in both R and Python flavors.
