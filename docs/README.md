@@ -5,7 +5,7 @@ Documents
 
 Other papers which describe the overall purposes and goals of this endeavour:  
 
-1. [What PMs are.](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf)  
+1. [What PMs are and why they're important.](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf)  
 2. [How PMs can be assembled into different types (for maximum impact).](https://github.com/psztorc/Truthcoin/raw/master/docs/2_PM_Types.pdf)  
 3. [How PMs can be used in ways other than simply predicting the future.](https://github.com/psztorc/Truthcoin/raw/master/docs/3_PM_Applications.pdf)  
 4. [Some myths about PMs which I still hear.](https://github.com/psztorc/Truthcoin/raw/master/docs/4_PM_Myths.pdf)  
@@ -19,11 +19,11 @@ FAQ
 
 #### What does this project aim to accomplish?
 Traditional PMs have many problems:  
-1. Counterparty risk (must trust whoever is holding the money to use it as promised). CR is why one can't make bets with certain friends.
-2. The trustworthy PM-administrator must (coincidentally) share your taste in PM topics. 
-3. The PM-administrator would have to be expected to provide service for a length of time (and not be interrupted by an executive's death or regulatory interference).
+1. Counterparty risk (must trust whoever is holding the money to use it as promised). CR is why one can't make bets with certain friends.  
+2. The trustworthy PM-administrator must (coincidentally) share your taste in PM topics.  
+3. The PM-administrator would have to be expected to provide service for a length of time (and not be interrupted by an executive's death or regulatory interference).  
 4. PM-administrator would have to offer competitive prices, be economically viable, not go out of business, etc.  
-This project aims to solve all of these problems.
+This project aims to solve all of these problems.  
 
 
 #### How do I contact you?
