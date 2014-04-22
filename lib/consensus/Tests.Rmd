@@ -438,6 +438,71 @@ Factory(Scenarios$Missing5)
 Factory(Scenarios$Riven)
 Factory(Scenarios$Riven2)
 
+```
+
+```{r ScaledClaims}
+
+#add a new row
+MS <- cbind(M1,  rbind(233,
+                       199,
+                       233,
+                       250,
+                       435,
+                       435))
+colnames(MS) <- c( colnames(MS)[-5], "C5.233")
+
+#build non-default scales
+Scales <- matrix( c( rep(FALSE,ncol(MS)),
+                     rep(0,ncol(MS)),
+                     rep(1,ncol(MS))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(MS)) )
+Scales["Scaled",5] <- 1
+Scales["Max",5] <- 435
+
+Rescale <- function(UnscaledMatrix, ScalingData) {
+  #Calulate multiplicative factors
+  Scales <- rbind( ScalingData, "InvSpan" = ( 1/ ( ScalingData["Max",] - ScalingData["Min",]) ) )
+  
+  #Recenter
+  OutMatrix <- UnscaledMatrix - Scales["Min",]
+  #Rescale
+  OutMatrix <- UnscaledMatrix %*% diag(Scales["InvSpan",])
+  
+  #Relabel
+  row.names(OutMatrix) <- row.names(UnscaledMatrix)
+  colnames(OutMatrix) <- colnames(UnscaledMatrix)
+  
+  return(OutMatrix)
+}
+
+MS
+Scales
+
+
+
+MS2 <- MS
+MS2[,5] <- c(233,233,233,199,2, 433)
+Mrs2 <- Rescale(MS2, Scales)
+Mrs2
+
+MS3 <- MS
+MS3[,5] <- c(233,250,233,199,2, 433)
+Mrs3 <- Rescale(MS3, Scales)
+Mrs3
+
+Scales
+Factory(Mrs3,Scales)
+
+
+
+#Edit catch to choose most-likely values (modal)
+
+
+
+```
+
+
+```{r Other}
+
 # !!! Must FillNa with .5 FIRST, then average in, to prevent monopoly voting on brand-new contracts. (Actually, if it will eventually be ruled .5).
 
 #Voting Across Time
