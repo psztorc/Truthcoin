@@ -25,7 +25,6 @@ Traditional PMs have many problems:
 4. PM-administrator would have to offer competitive prices, be economically viable, not go out of business, etc.  
 This project aims to solve all of these problems.  
 
-
 #### How do I contact you?
 truthcoin@gmail.com  
 Please share your opinion, and your questions so the FAQ can grow!
@@ -33,15 +32,23 @@ Please share your opinion, and your questions so the FAQ can grow!
 #### Donation Address
 1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8
 
+### PM-Questions
+
+#### Can't PMs be driven by people who are oblivious to who little they know?
+Yes, at first. However, these people will quickly start losing large quantities of money, and thereby lose their ability to influence the market. Moreover, the existence of these ignorant "sheep" will attract "wolves" who profit by correcting the mistakes of the sheep.
+
+#### How do you address the problem of low liquidity?
+For PMs which are bounded (ie, will be worth between 0 and $1), tt is possible to design them such that traders can always update the market price, by trading with an automated market maker powered by a market scoring rule. http://hanson.gmu.edu/mktscore.pdf
+I threw together an Excel sheet in the docs folder [LogMSR_Demo.xlsx](https://github.com/psztorc/Truthcoin/raw/master/docs/LogMSR_Demo.xlsx) for additional clarification. Feedback is appreciated.
+
+
+
 
 ### Incentives
 #### How do you know that people wont claim an outcome was whatever will benefit them personally?
+Voters have a strong incentive to vote "the way they believe other will vote". Coupled with a desire to collect trading fees (which are higher in a useful marketplace vs. a useless one), voters all have an incentive to vote accurately on all outcomes.
 Check 'voting strategy' in the Whitepaper (docs folder). The code/function library which prevents this has been finished in both R and Python flavors.
 
-
-#### Prediction markets are a waste of time because no one uses them, drying up the liquidity and punishing the few who dared to try to make the market work.
-The liquidity problem has been solved, even if the solution is widely ignored: http://hanson.gmu.edu/mktscore.pdf
-I threw together an Excel sheet in the docs folder [LogMSR_Demo.xlsx](https://github.com/psztorc/Truthcoin/raw/master/docs/LogMSR_Demo.xlsx) for additional clarification. Feedback is appreciated.
 
 
 
