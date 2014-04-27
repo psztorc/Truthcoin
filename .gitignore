@@ -214,3 +214,7 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 *.Rhistory
+<<<<<<< HEAD
+=======
+*.Rhistory
+>>>>>>> 3969b35b46b8eac918090fcc491fad76301d17b1
