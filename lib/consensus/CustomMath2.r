@@ -137,12 +137,16 @@ weighted.median <- function(x, w, na.rm=TRUE, ties=NULL) {
 
 Rescale <- function(UnscaledMatrix, ScalingData) {
   #Calulate multiplicative factors
-  Scales <- rbind( ScalingData, "InvSpan" = ( 1/ ( ScalingData["Max",] - ScalingData["Min",]) ) )
+  InvSpan = ( 1/ ( ScalingData["Max",] - ScalingData["Min",]) )
   
   #Recenter
-  OutMatrix <- UnscaledMatrix - Scales["Min",]
+  OutMatrix <- sweep(UnscaledMatrix, 2, ScalingData["Min",])
+  
   #Rescale
-  OutMatrix <- UnscaledMatrix %*% diag(Scales["InvSpan",])
+  NaIndex <- is.na(OutMatrix) #NA-Preempt
+  OutMatrix[NaIndex] <- 0
+  OutMatrix <- OutMatrix %*% diag(InvSpan)
+  OutMatrix[NaIndex] <- NA #Restore NA's
   
   #Relabel
   row.names(OutMatrix) <- row.names(UnscaledMatrix)

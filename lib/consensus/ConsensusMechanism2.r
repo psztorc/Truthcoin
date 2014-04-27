@@ -202,16 +202,26 @@ Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
     if(ScaledIndex[i]) DecisionOutcomes.Raw[i] <- weighted.median(Filled[,i], w=PlayerInfo$SmoothRep)  #Our Current best-guess for this Scaled Decision (weighted median)
   }
   
-  # Quality of Outcomes - is there confusion?
-  Certainty <- abs(2*(DecisionOutcomes.Raw-.5))      # .5 is obviously undesireable, this function travels from 0 to 1 with a minimum at .5
-  ConReward <- GetWeight(Certainty)                  #Grading Authors on a curve.
-  Avg.Certainty <- mean(Certainty)                   #How well did beliefs converge?
-  
   #The Outcome Itself
   #Discriminate Based on Contract Type
   DecisionOutcome.Final <- mapply(Catch,DecisionOutcomes.Raw,Tolerance=CatchP) #Declare first (assumes all binary) 
   DecisionOutcome.Final[ScaledIndex] <- DecisionOutcomes.Raw[ScaledIndex]      #Replace Scaled with raw (weighted-median)
-
+  DecisionOutcome.Final <- t( Scales["Max",] - Scales["Min",] ) %*% diag( DecisionOutcome.Final )    #Rescale these back up.
+  DecisionOutcome.Final <- DecisionOutcome.Final + Scales["Min",]                                        #Recenter these back up.
+  
+  # Quality of Outcomes - is there confusion?
+  Certainty <- vector("numeric",ncol(Filled))
+  #Discriminate Based on Contract Type
+  # Scaled first:
+  DecisionOutcome.Final
+  for(i in 1:ncol(Filled)) { #For each Decision
+    Certainty[i] <- sum( PlayerInfo$SmoothRep [ DecisionOutcomes.Raw[i] == Filled[,i] ] )  # Sum of, the reputations which, met the condition that they voted for the outcome which was selected for this Decision.
+  }
+  # Overwrite Binary:
+  Certainty[!ScaledIndex] <- abs(2*(DecisionOutcomes.Raw[!ScaledIndex]-.5))    # .5 is obviously undesireable for binaries, this function travels from 0 to 1 with a minimum at .5
+  ConReward <- GetWeight(Certainty)                  #Grading Authors on a curve. -not necessarily the best idea? may just use Certainty instead
+  Avg.Certainty <- mean(Certainty)                   #How well did beliefs converge?
+  
  
   if(Verbose) {
     print("*Decision Outcomes Sucessfully Calculated*")
@@ -271,13 +281,18 @@ Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
 }
 
 #Long-Term
-Chain <- function(X,N=2,ThisRep) {
+Chain <- function(X,Scales,N=2,ThisRep) {
   #Repeats factory process N times
-  if (missing(ThisRep)) ThisRep <- ReWeight(rep(1,nrow(X)))
+  if(missing(ThisRep)) ThisRep <- ReWeight(rep(1,nrow(X)))
+  
+  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(X)),
+                                             rep(0,ncol(X)),
+                                             rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M1)) )
+  }
   
   Output <- vector("list")
   for(i in 1:N) {
-    Output[[i]] <- Factory(X,Rep=ThisRep)
+    Output[[i]] <- Factory(X,Scales,Rep=ThisRep)
     ThisRep <- Output[[i]]$Agents[,"RowBonus"]
   }
   

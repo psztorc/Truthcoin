@@ -442,6 +442,9 @@ Factory(Scenarios$Riven2)
 
 ```{r ScaledClaims}
 
+
+#HoR party seats example
+
 #add a new row
 MS <- cbind(M1,  rbind(233,
                        199,
@@ -458,40 +461,21 @@ Scales <- matrix( c( rep(FALSE,ncol(MS)),
 Scales["Scaled",5] <- 1
 Scales["Max",5] <- 435
 
-Rescale <- function(UnscaledMatrix, ScalingData) {
-  #Calulate multiplicative factors
-  Scales <- rbind( ScalingData, "InvSpan" = ( 1/ ( ScalingData["Max",] - ScalingData["Min",]) ) )
-  
-  #Recenter
-  OutMatrix <- UnscaledMatrix - Scales["Min",]
-  #Rescale
-  OutMatrix <- UnscaledMatrix %*% diag(Scales["InvSpan",])
-  
-  #Relabel
-  row.names(OutMatrix) <- row.names(UnscaledMatrix)
-  colnames(OutMatrix) <- colnames(UnscaledMatrix)
-  
-  return(OutMatrix)
-}
-
-MS
-Scales
 
 
+#DJIA example
 
-MS2 <- MS
-MS2[,5] <- c(233,233,233,199,2, 433)
-Mrs2 <- Rescale(MS2, Scales)
-Mrs2
+MS2 <- cbind(MS,  rbind(16027.59,
+                       NA,
+                       16027.59,
+                       NA,
+                       8001,
+                       19999))
 
-MS3 <- MS
-MS3[,5] <- c(233,250,233,199,2, 433)
-Mrs3 <- Rescale(MS3, Scales)
-Mrs3
+Scales2 <- cbind(Scales,rbind(1,8000,20000))
 
-Scales
-Factory(Mrs3,Scales)
-
+colnames(MS2) <- c( colnames(MS2)[-6], "C6.1602759")
+colnames(Scales2) <- colnames(MS2)
 
 
 #Edit catch to choose most-likely values (modal)
