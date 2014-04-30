@@ -88,10 +88,10 @@ GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=FALSE) {
   return(Out)
 }
 
-GetDecisionOutcomes <- function(Mtemp, Rep=NULL, Verbose=FALSE) {
+GetDecisionOutcomes <- function(Mtemp, Rep, ScaledIndex, Verbose=FALSE) {
   #Determines the Outcomes of Decisions based on the provided reputation (weighted vote)
   
-  if(is.null(Rep)) { Rep <- ReWeight(rep(1,nrow(Mtemp)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
+  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(Mtemp)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
   
   if(Verbose) { print("****************************************************") ; print("Begin 'GetDecisionOutcomes'")}
   
@@ -104,7 +104,10 @@ GetDecisionOutcomes <- function(Mtemp, Rep=NULL, Verbose=FALSE) {
     Row <- ReWeight(RewardWeightsNA[!is.na(Mtemp[,i])]) #The Reputation of the row-players who DID provide judgements, rescaled to sum to 1.
     Col <- Mtemp[!is.na(Mtemp[,i]),i]                   #The relevant Decision with NAs removed. ("What these row-players had to say about the Decisions they DID judge.")
     
-    DecisionOutcomes.Raw[i] <- Row%*%Col                           #Our Current best-guess for this Decision (weighted average)  
+    #Discriminate Based on Contract Type
+    if(!ScaledIndex[i]) DecisionOutcomes.Raw[i] <- Row%*%Col                     #Our Current best-guess for this Binary Decision (weighted average) 
+    if(ScaledIndex[i]) DecisionOutcomes.Raw[i] <- weighted.median(w=Row, x=Col)  #Our Current best-guess for this Scaled Decision (weighted median)
+   
     if(Verbose) { print("** **"); print("Column:"); print(i); print(AsMatrix(Row)); print(Col); print("Consensus:"); print(DecisionOutcomes.Raw[i])}
   }
   
@@ -112,14 +115,15 @@ GetDecisionOutcomes <- function(Mtemp, Rep=NULL, Verbose=FALSE) {
   return(DecisionOutcomes.Raw)
 }
 
-FillNa <- function(Mna,Rep=NULL, CatchP=.1, Verbose=FALSE) { 
+FillNa <- function(Mna, Rep, ScaledIndex, CatchP=.1, Verbose=FALSE) { 
   #Uses exisiting data and reputations to fill missing observations.
   #Essentially a weighted average using all availiable non-NA data.
   #How much should slackers who arent voting suffer? I decided this would depend on the global percentage of slacking.
   
-  if(is.null(Rep)) { Rep <- ReWeight(rep(1,nrow(Mna)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
+  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(Mna)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
   
-  Mnew <- Mna #Declare (in case no Missing values, Mnew and Mna will be the same)
+  Mnew <- Mna #Declare (in case no Missing values, Mnew, MnewC, and Mna will be the same)
+  MnewC <- Mna
   
   if(sum(is.na(Mna))>0) {
     #Of course, only do this process if there ARE missing values.
@@ -127,7 +131,7 @@ FillNa <- function(Mna,Rep=NULL, CatchP=.1, Verbose=FALSE) {
     if(Verbose) print("Missing Values Detected. Beginning presolve using availiable values.")
     
     #Decision Outcome - Our best guess for the Decision state (FALSE=0, Ambiguous=.5, TRUE=1) so far (ie, using the present, non-missing, values).
-    DecisionOutcomes.Raw <- GetDecisionOutcomes(Mna,Rep,Verbose)
+    DecisionOutcomes.Raw <- GetDecisionOutcomes(Mna,Rep,ScaledIndex,Verbose)
     
     #Fill in the predictions to the original M
     NAmat <- is.na(Mna)   #Defines the slice of the matrix which needs to be edited.
@@ -143,11 +147,16 @@ FillNa <- function(Mna,Rep=NULL, CatchP=.1, Verbose=FALSE) {
     
     
     if(Verbose) { print("Missing Values:"); print(NAmat) ; print("Imputed Values:"); print(NAsToFill)}
+    
+    #Declare Output
+    MnewC <- Mnew
+    ## Discriminate based on contract type
+    #Fill ONLY Binary contracts by appropriately forcing predictions into their discrete (0,.5,1) slot. (reveals .5 coordination, continuous variables are more gameable).
+    MnewC[,!ScaledIndex] <- apply(Mnew[,!ScaledIndex], c(1,2), function(x) Catch(x,CatchP) )
+    #
+    
   
   }
-  
-  #Appropriately force the predictions into their discrete (0,.5,1) slot. (continuous variables can be gamed).
-  MnewC <- apply(Mnew, c(1,2), function(x) Catch(x,CatchP) )
   
   if(Verbose) { print("Raw Results:"); print(Mnew) ; print("Binned:"); print(MnewC) ; print("*** ** Missing Values Filled ** ***") }
   
@@ -156,13 +165,28 @@ FillNa <- function(Mna,Rep=NULL, CatchP=.1, Verbose=FALSE) {
 
 
 #Putting it all together:
-Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
+Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   #Main Routine
   #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
-  if(is.null(Rep)) { Rep <- ReWeight(rep(1,nrow(M0)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
+  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(M0)))
+                     if(Verbose) print("Reputation not provided...assuming equal influence.")
+  }
+  
+  #******************
+  #Fill the default scales (binary) if none are provided. In practice, this would also never be used.
+  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(M0)),
+                                             rep(0,ncol(M0)),
+                                             rep(1,ncol(M0))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M1)) )
+                        if(Verbose) print("Scales not provided...assuming binary (0,1).")
+  }
+  ScaledIndex=as.logical( Scales["Scaled",] )
+  
+  MScaled <- Rescale(M0, Scales)
+
+  #******************
   
   #Handle Missing Values  
-  Filled <- FillNa(M0, Rep, CatchP, Verbose)
+  Filled <- FillNa(MScaled, Rep, ScaledIndex, CatchP, Verbose)
 
   ## Consensus - Row Players 
   #New Consensus Reward
@@ -170,17 +194,34 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   AdjLoadings <- PlayerInfo$FirstL
   
   ##Column Players (The Decision Creators)
-  #Calculation of Reward for Decision Authors
+  # Calculation of Reward for Decision Authors
   # Consensus - "Who won?" Decision Outcome 
-  DecisionOutcomes.Raw <- PlayerInfo$SmoothRep %*% Filled #Simple matrix multiplication ... highest information density at RowBonus, but need DecisionOutcomes.Raw to get to that
-  
-  # Quality of Outcomes - is there confusion?
-  Certainty <- abs(2*(DecisionOutcomes.Raw-.5))      # .5 is obviously undesireable, this function travels from 0 to 1 with a minimum at .5
-  ConReward <- GetWeight(Certainty)                  #Grading Authors on a curve.
-  Avg.Certainty <- mean(Certainty)                   #How well did beliefs converge?
+  DecisionOutcomes.Raw <- PlayerInfo$SmoothRep %*% Filled #Declare (all binary), Simple matrix multiplication ... highest information density at RowBonus, but need DecisionOutcomes.Raw to get to that
+  for(i in 1:ncol(Filled)) {    #slow implementation.. 'for loop' bad on R, much faster on python
+    #Discriminate Based on Contract Type
+    if(ScaledIndex[i]) DecisionOutcomes.Raw[i] <- weighted.median(Filled[,i], w=PlayerInfo$SmoothRep)  #Our Current best-guess for this Scaled Decision (weighted median)
+  }
   
   #The Outcome Itself
-  DecisionOutcome.Final <- mapply(Catch,DecisionOutcomes.Raw,Tolerance=CatchP)  
+  #Discriminate Based on Contract Type
+  DecisionOutcome.Final <- mapply(Catch,DecisionOutcomes.Raw,Tolerance=CatchP) #Declare first (assumes all binary) 
+  DecisionOutcome.Final[ScaledIndex] <- DecisionOutcomes.Raw[ScaledIndex]      #Replace Scaled with raw (weighted-median)
+  DecisionOutcome.Final <- t( Scales["Max",] - Scales["Min",] ) %*% diag( DecisionOutcome.Final )    #Rescale these back up.
+  DecisionOutcome.Final <- DecisionOutcome.Final + Scales["Min",]                                        #Recenter these back up.
+  
+  # Quality of Outcomes - is there confusion?
+  Certainty <- vector("numeric",ncol(Filled))
+  #Discriminate Based on Contract Type
+  # Scaled first:
+  DecisionOutcome.Final
+  for(i in 1:ncol(Filled)) { #For each Decision
+    Certainty[i] <- sum( PlayerInfo$SmoothRep [ DecisionOutcomes.Raw[i] == Filled[,i] ] )  # Sum of, the reputations which, met the condition that they voted for the outcome which was selected for this Decision.
+  }
+  # Overwrite Binary:
+  Certainty[!ScaledIndex] <- abs(2*(DecisionOutcomes.Raw[!ScaledIndex]-.5))    # .5 is obviously undesireable for binaries, this function travels from 0 to 1 with a minimum at .5
+  ConReward <- GetWeight(Certainty)                  #Grading Authors on a curve. -not necessarily the best idea? may just use Certainty instead
+  Avg.Certainty <- mean(Certainty)                   #How well did beliefs converge?
+  
  
   if(Verbose) {
     print("*Decision Outcomes Sucessfully Calculated*")
@@ -240,13 +281,18 @@ Factory <- function(M0,Rep=NULL,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
 }
 
 #Long-Term
-Chain <- function(X,N=2,ThisRep=NULL) {
+Chain <- function(X,Scales,N=2,ThisRep) {
   #Repeats factory process N times
-  if(is.null(ThisRep)) ThisRep <- ReWeight(rep(1,nrow(X)))
+  if(missing(ThisRep)) ThisRep <- ReWeight(rep(1,nrow(X)))
+  
+  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(X)),
+                                             rep(0,ncol(X)),
+                                             rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M1)) )
+  }
   
   Output <- vector("list")
   for(i in 1:N) {
-    Output[[i]] <- Factory(X,Rep=ThisRep)
+    Output[[i]] <- Factory(X,Scales,Rep=ThisRep)
     ThisRep <- Output[[i]]$Agents[,"RowBonus"]
   }
   
