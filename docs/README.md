@@ -34,7 +34,7 @@ Please share your opinion, and your questions so the FAQ can grow!
 
 ### PM-Questions
 
-#### Can't PMs be driven by people who are oblivious to who little they know?
+#### Can't PMs be driven by people who are oblivious to how little they know?
 Yes, at first. However, these people will quickly start losing large quantities of money, and thereby lose their ability to influence the market. Moreover, the existence of these ignorant "sheep" will attract "wolves" who profit by correcting the mistakes of the sheep.
 
 #### How do you address the problem of low liquidity?
