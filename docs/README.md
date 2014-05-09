@@ -21,7 +21,7 @@ Other papers which describe the overall purposes and goals of this endeavour:
 Wall of Shame
 =====================================
 
-I worked hard to explain my point of view. Here I chronicle the disrespectful attempts to criticize my point of view without even reading it! (Those who **used a question mark or otherwise sought information** were spared).
+I worked hard to explain my point of view. Here I chronicle the disrespectful attempts to criticize my point of view without even reading it! (Those who **used a question mark or otherwise sought information** were spared).::
 
 
 | ID        |  Did Not Read| Shame  |
@@ -91,7 +91,7 @@ I've thought about this in the past and never considered it to be realistic prob
 
 6. All even before we consider the fact that law enforcement has-always/will-continue-to evolve with new technology. Law enforcement would literally know who was most at risk and when. 
 
-7. Finally, I just don't see PMs as encouraging this behavior, as most murders are for extremely personal reasons (sexual jealousy, religious/political extremism, mental instability) and not economic ones (rich people have way more to lose by going to prison). 
+7. Finally, I just don't see PMs as encouraging this behavior, as most murders are for extremely personal reasons (sexual jealousy, religious/political extremism, mental instability) and not economic ones (rich people have way more to lose by going to prison). ::
 
 
 |Item|	Normally Would Involve|	Criminal Problems|
