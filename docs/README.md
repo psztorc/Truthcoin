@@ -25,7 +25,7 @@ I worked hard to explain my point of view. Here I chronicle the disrespectful at
 
 
 | ID        |  Did Not Read| Shame  |
-| :-------- | : ---: |
+| :-------- | : ---: | : ---: |
 |[maaku](https://news.ycombinator.com/item?id=7692848) | Anything|"There seems to be some code here but absolutely no description of what it is doing." |
 | [maaku](https://news.ycombinator.com/item?id=7691919)  | [Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) I.a.ii.2.b |  "Except that analysis only holds when you assume participants are honest, or there are no derivatives." | 
 | [freshhawk](https://news.ycombinator.com/item?id=7691289)    |    [Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) I.a.ii.2.b [Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) II.b   | "The defence here is the assumption that the usefulness of the market long term will motivate people to vote "fairly"."|
@@ -95,7 +95,7 @@ I've thought about this in the past and never considered it to be realistic prob
 
 
 |Item|	Normally Would Involve|	Criminal Problems|
-| :-------- | : ---: |
+| :--------:| : ---: | : ---: |
 |Provider redeems shares for money (gets paid).|Provider distributes money to organization/ partners, as he contracted to do.|Must trust partner to share post-hoc, or do job alone.|
 |Voters accurately reproduce reality.|	Voters reaching consensus.|	Voters may instead coordinate in deciding that market is un-resolvable (for ethical reasons).|
 |Provider manipulates reality to create publically-available information about the good (Schelling Indicator, used by Voters).	|Something very easy, such as a large poster or official press release. Police don’t care.	|Provider must commit a crime (itself difficult and risky), in the precise way of their public trade (whatever the SI was), when the police/victim are now aware of the SI (through the public trade). (Although, one could possibly mitigate this by doing all of them very quickly).|
