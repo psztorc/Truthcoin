@@ -21,10 +21,10 @@ Other papers which describe the overall purposes and goals of this endeavour:
 Wall of Shame
 =====================================
 
-I worked hard to explain my point of view. Here I chronicle the disrespectful attempts to criticize my point of view without even reading it! (Those who **used a question mark or otherwise sought information** were spared).    
+I worked hard to explain my point of view. Here I chronicle the disrespectful attempts to criticize my point of view without even reading it! (Those who **used a question mark or otherwise sought information** were spared).
 
-|ID|Did Not Read|Shame|
-| :-------- | : ---: | : ---: |
+|   ID     |   Did Not Read |Shame|
+|:----------|:---------------------:|:---------:|
 |[maaku](https://news.ycombinator.com/item?id=7692848) | Anything|"There seems to be some code here but absolutely no description of what it is doing." |
 |[maaku](https://news.ycombinator.com/item?id=7691919)|[Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) I.a.ii.2.b |"Except that analysis only holds when you assume participants are honest, or there are no derivatives." | 
 |[freshhawk](https://news.ycombinator.com/item?id=7691289)|[Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) I.a.ii.2.b [Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) II.b|"The defence here is the assumption that the usefulness of the market long term will motivate people to vote "fairly"."|
@@ -90,18 +90,17 @@ I've thought about this in the past and never considered it to be realistic prob
 
 6. All even before we consider the fact that law enforcement has-always/will-continue-to evolve with new technology. Law enforcement would literally know who was most at risk and when. 
 
-7. Finally, I just don't see PMs as encouraging this behavior, as most murders are for extremely personal reasons (sexual jealousy, religious/political extremism, mental instability) and not economic ones (rich people have way more to lose by going to prison). ::
+7. Finally, I just don't see PMs as encouraging this behaviour, as most murders are for extremely personal reasons (sexual jealousy, religious/political extremism, mental instability) and not economic ones (rich people have way more to lose by going to prison). ::
     
-|Item|	Normally Would Involve|	Criminal Problems|
-| :--------:| : ---: | : ---: |
+|Item    |Normally Would Involve   |  Criminal Problems|
+|:--------:|:----------------------------------:|:---------------------------:|
 |Provider redeems shares for money (gets paid).|Provider distributes money to organization/ partners, as he contracted to do.|Must trust partner to share post-hoc, or do job alone.|
 |Voters accurately reproduce reality.|Voters reaching consensus.|Voters may instead coordinate in deciding that market is un-resolvable (for ethical reasons).|
 |Provider manipulates reality to create publically-available information about the good (Schelling Indicator, used by Voters).|Something very easy, such as a large poster or official press release. Police don’t care.|Provider must commit a crime (itself difficult and risky), in the precise way of their public trade (whatever the SI was), when the police/victim are now aware of the SI (through the public trade). (Although, one could possibly mitigate this by doing all of them very quickly).|
 |Provider places a large trade on a chosen Schelling Indicator.|If the trade is front-run, simply switches to another Indicator. Can switch as many times as desired.|If the trade is front-run, might catastrophically interfere with time-sensitive crime plans. (Could create contingency plans for this).|
-|Provider takes out a loan otherwise ties up capital for a huge upcoming trade.|Borrowing at the risk-free rate.|	Criminals probably can’t borrow at all (what bank would want anything to do with this, and what lender would trust an anonymous murderer [they’ll just kill you instead of paying you back...]) and have to self-finance (very expensive).|
+|Provider takes out a loan otherwise ties up capital for a huge upcoming trade.|Borrowing at the risk-free rate.| Criminals probably can’t borrow at all (what bank would want anything to do with this, and what lender would trust an anonymous murderer [they’ll just kill you instead of paying you back...]) and have to self-finance (very expensive).|
 |Provider assembles team and begins working on good.|Everyone can probably see that someone has started working on this project. Competitors shelve their plans for now.|Might get caught preparing. Criminal (working privately) has no idea if others are working on the same ‘job’, creating risk.|
 |Provider examines marketplace, budgets carefully, and decides that it is possible for him to provide a desired public good at acceptable risk/reward.|Costs are stable.|Target may change behavior as a result of market’s creation, including hiring bodyguards, entering witness protection, flee the country, etc.|
-
 
 Other thoughts: http://www.sirc.org/articles/policy_analysis.shtml
 
