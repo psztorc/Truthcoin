@@ -121,11 +121,11 @@ The idea I published was not my **first** idea for a Trustless PM, it was my **b
 
 Prompts:
 
-1. Have a few 'trusted feeds', where the outcome is determined as the median feed, or outcome is a draw if feeds disagree too much.
-2. Publish a hash of every event description combined with the outcome "true" or "false" and sign the real outcome. Thus we can build up reputations and predictions can be placed completely independent.
-3. With No. 1 bet amounts can be stored in a 2 out of 3 multi sign address. That would make it impossible for the central PM to run away with the money - just to choose the winning side.
-4. One solution would be that both sides put 10% more money in a multi-sign address. No the person that loses the bet can admit the loss and sign the transaction to the winner but he gets back the 10%. If none of both admits to be the looser we sign a transaction to the winner but take the 10% of the looser.
-5. Having a preselected Judge decide, but allowing users to force an audit of the Judge.
+1. ...have a few 'trusted feeds', where the outcome is determined as the median feed, or outcome is a draw if feeds disagree too much?
+2. ...publish a hash of every event description combined with the outcome "true" or "false" and sign the real outcome? Thus we can build up reputations and predictions can be placed completely independent.
+3. ...store bets in a 2 out of 3 multi sign address? That would make it impossible for the central PM to run away with the money - just to choose the winning side.
+4. ...have both sides put 10% more money in a multi-sign address? No the person that loses the bet can admit the loss and sign the transaction to the winner but he gets back the 10%. If none of both admits to be the looser we sign a transaction to the winner but take the 10% of the looser.
+5. ...have a preselected Judge decide, but allowing users to force an audit of the Judge if they disagree with his ruling?
 
 Responses:
 
@@ -151,7 +151,8 @@ I probably did. I don't think any of my core building-block ideas are that compl
 
 Actually it is necessary. Firstly the concern you mentioned later is mitigated by (and one of the main benefits of) Branching, where voters stay only on the branches/trees where they are interested and knowledgeable. More importantly, however, if we assume voting is costly (which it certainly is), then the assumption I made on page 2 that voters are lazy implies that theoretically none of them will vote, in a sort of 'tragedy of the commons'. Realistically, some might care enough to vote, but this would weaken the confidence in the coordination-ballot, as it takes a smaller % of votes to throw off. Thirdly, voters are not just contributing their point of view when they vote, they are also securing the network by validating the point of view of all other voters (via the coordination game). Notice that an individual's penalty for not-voting is only high when many other individuals have also not-voted. You can miss a vote every once in a while, and as long as everyone else is voting it won't really be a big deal for you.
 
-
+####Do strategic decisions change if one node started publishing (potentially biased) votes immediately upon noticing them? One could publish 10% attack-votes, and the 11th % user would be tempted to conform, leading to a cascading failure.
+Excellent question. Ballots are encrypted, and contain a new destination (public key), for this reason. Votes are cast in one period, and unsealed in a later period (during which no new votes are cast). Because private keys are required to decrypt, it is always impossible to prove that you've voted a certain way (and recall that you have an incentive to vote honestly yet say that you are voting dishonestly).
 
 
 ### Other
