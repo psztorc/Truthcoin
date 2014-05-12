@@ -176,7 +176,7 @@ Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   #Fill the default scales (binary) if none are provided. In practice, this would also never be used.
   if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(M0)),
                                              rep(0,ncol(M0)),
-                                             rep(1,ncol(M0))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M1)) )
+                                             rep(1,ncol(M0))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M0)) )
                         if(Verbose) print("Scales not provided...assuming binary (0,1).")
   }
   ScaledIndex=as.logical( Scales["Scaled",] )
@@ -287,7 +287,7 @@ Chain <- function(X,Scales,N=2,ThisRep) {
   
   if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(X)),
                                              rep(0,ncol(X)),
-                                             rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M1)) )
+                                             rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(X)) )
   }
   
   Output <- vector("list")

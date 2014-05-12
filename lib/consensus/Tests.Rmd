@@ -304,7 +304,7 @@ Factory(Scenarios$CoalitionalDeviance2)
   
   CompareIncentives(X=Scenarios$CoalitionalDeviance4)
   Ss <- Chain(Scenarios$CoalitionalDeviance4,N=70)[[70]]$Agents
-  Ss <- data.frame(NewRep=as.numeric(Ss[,"NewRep"]),Group=row.names(Ss))
+  Ss <- data.frame(NewRep=as.numeric(Ss[,"RowBonus"]),Group=row.names(Ss))
   aggregate(.~Group,data=Ss, FUN=sum)
 
   Scenarios$CoalitionalDeviance5 <- Scenarios$CoalitionalDeviance2
@@ -313,7 +313,7 @@ Factory(Scenarios$CoalitionalDeviance2)
 
   CompareIncentives(X=Scenarios$CoalitionalDeviance5)
   Ss <- Chain(Scenarios$CoalitionalDeviance5,N=50)[[50]]$Agents
-  Ss <- data.frame(NewRep=as.numeric(Ss[,"NewRep"]),Group=row.names(Ss))
+  Ss <- data.frame(NewRep=as.numeric(Ss[,"RowBonus"]),Group=row.names(Ss))
   aggregate(.~Group,data=Ss, FUN=sum)
   #Notice after 50 rounds, the devil [=King of Liars] has actually become the two bottommost liars, as they represent the most significant source of confusion.
   #Team 'True' wins via stoicism
@@ -350,6 +350,7 @@ Factory(Scenarios$CoalitionalDeviance2)
                                           c(1,1,0,1,1)) #4 (16%)
 
   row.names(Scenarios$CoalitionalDeviance6) <- c(rep('Truth',15),rep('Lie 1',6),rep('Lie 2',4))
+  colnames(Scenarios$CoalitionalDeviance6) <- c("C1.1","C2.1","C3.0","C4.0","C5.1")
   Factory(Scenarios$CoalitionalDeviance6)
   CompareIncentives(Scenarios$CoalitionalDeviance6)
   #fantastic sucess...Lie 2 loses less
@@ -440,6 +441,8 @@ Factory(Scenarios$Riven2)
 
 ```
 
+Scaled Claims
+----------------------------
 ```{r ScaledClaims}
 
 
@@ -480,8 +483,7 @@ colnames(Scales2) <- colnames(MS2)
 
 #Edit catch to choose most-likely values (modal)
 
-
-
+Factory(MS2,Scales2)
 ```
 
 
@@ -556,7 +558,7 @@ Scalability
 What are the computational limits?
 Largely irrelevant because of forking, this is important for setting parameters correctly (and in general).
 
-```{r Scalability,cache=TRUE}
+```{r Scalability,cache=FALSE}
 
 TestLimit <- function(n1,n2,AddNa=1) {
   M_huge <- matrix(round(runif(n1*n2)),n1,n2)
@@ -591,48 +593,6 @@ system.time(TestLimit(1000,100))
   # can add the slow retarget to make this grow over the next thousand years (every 4 years?)
 
 #after simply listing the specifics of this solution I realize it is the best candidate
+
+#Actually all of this is irrelevant because code runs 100x faster on python
 ```
-
-Other Notes
---------------
-
-```{r FinalNotes}
-
-#Steps
-
-# [1] [CANCEL - BAD IDEA] Reward later factors (Comp.2, 3)? Seems risky...lets square the loadings or something to truly emphasize the first factor.
-# [2] [DONE] Build R (reward matrix) as a proportion.
-# [3] [DONE] What if the guy has no idea? NAs
-# [4] [DONE] Fix 'perfect consensus' bug.
-# [5] Reward function: a% of current reserve pool? [yes], payouts over time ? [this is whats happening, not finished yet]
-# [6] Scale Cost By Funds availiable [????]
-# [7] Add payment functionality (pay-per-vote)
-# [8] Functionality for new arrivals..old contracts missing data.
-# [9] [DONE] Remove incentive to create contracts where consensus is @.5 !
-# [10.a] [DONE] Univariate fill missing data in an incentive-consistent way.
-# [10.b] [part-DONE] Multivariate fill missing data (recursive? bootstrapped?) [chose simultaneous prediction, and ignore]
-# [10.c  - FillNa should faithfully reproduce .5s] 
-
-# [adding a NA to a contract can wipe out the validations there, ONLY when filling NA, - fix by using exponential smoothing to calc Rewards] [Fixed!]
-# [11] Ask - Ask people the outcomes of contracts...how to maximize (contract reward? d(Cr)?)
-
-#
-
-# [20 - Discourage "Obvious Outcome" Contracts by fee for open interest (more disagreement)]
-
-### 
-
-
-
-
-
-# [14] Subsidized Events - Principals paying Agents to influence the outcome of contracts.
-
-
-# [14a] A market for an event will allow it's occurance to be noted by the Factory after it's occurance.
-# [14b] Partition a 'Verification Space' (private information known only to the agent: date, time, colour, etc).
-# [14c] Allow private bets within the Verification Space - possibly a second set of Colored Coins "specical coin".
-# [14d] At EoC, people collect proportional to their holdings of insider-information coins.
-# [14e] Assurance contracts to allow anyone to fund a 'club good' event.
-
-

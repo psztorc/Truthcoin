@@ -1,193 +1,29 @@
-<!DOCTYPE html>
-<!-- saved from url=(0014)about:internet -->
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-<title>Tests, Results, and Commentary</title>
-
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 12px;
-   margin: 8px;
-}
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-
-h1 { 
-   font-size:2.2em; 
-}
-
-h2 { 
-   font-size:1.8em; 
-}
-
-h3 { 
-   font-size:1.4em; 
-}
-
-h4 { 
-   font-size:1.0em; 
-}
-
-h5 { 
-   font-size:0.9em; 
-}
-
-h6 { 
-   font-size:0.8em; 
-}
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
-}
-
-pre {	
-   margin-top: 0;
-   max-width: 95%;
-   border: 1px solid #ccc;
-   white-space: pre-wrap;
-}
-
-pre code {
-   display: block; padding: 0.5em;
-}
-
-code.r, code.cpp {
-   background-color: #F8F8F8;
-}
-
-table, td, th {
-  border: none;
-}
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
-}
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
-}
-
-@media print {
-   * { 
-      background: transparent !important; 
-      color: black !important; 
-      filter:none !important; 
-      -ms-filter: none !important; 
-   }
-
-   body { 
-      font-size:12pt; 
-      max-width:100%; 
-   }
-       
-   a, a:visited { 
-      text-decoration: underline; 
-   }
-
-   hr { 
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote { 
-      padding-right: 1em; 
-      page-break-inside: avoid; 
-   }
-
-   tr, img { 
-      page-break-inside: avoid; 
-   }
-
-   img { 
-      max-width: 100% !important; 
-   }
-
-   @page :left { 
-      margin: 15mm 20mm 15mm 10mm; 
-   }
-     
-   @page :right { 
-      margin: 15mm 10mm 15mm 20mm; 
-   }
-
-   p, h2, h3 { 
-      orphans: 3; widows: 3; 
-   }
-
-   h2, h3 { 
-      page-break-after: avoid; 
-   }
-}
-
-</style>
-
-<!-- Styles for R syntax highlighter -->
-<style type="text/css">
-   pre .operator,
-   pre .paren {
-     color: rgb(104, 118, 135)
-   }
-
-   pre .literal {
-     color: rgb(88, 72, 246)
-   }
-
-   pre .number {
-     color: rgb(0, 0, 205);
-   }
-
-   pre .comment {
-     color: rgb(76, 136, 107);
-   }
-
-   pre .keyword {
-     color: rgb(0, 0, 255);
-   }
-
-   pre .identifier {
-     color: rgb(0, 0, 0);
-   }
-
-   pre .string {
-     color: rgb(3, 106, 7);
-   }
-</style>
-
-<!-- R syntax highlighter -->
-<script type="text/javascript">
-var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
-hljs.initHighlightingOnLoad();
-</script>
+Tests, Results, and Commentary
+========================================================
+Dec 3, 2013
 
 
 
 
-</head>
 
-<body>
-<h1>Tests, Results, and Commentary</h1>
 
-<p>Dec 3, 2013</p>
 
-<h2>Base</h2>
 
-<pre><code class="r">Factory(Scenarios$Base)
-</code></pre>
 
-<pre><code>## $Original
+
+
+
+
+Base
+---------------
+
+
+```r
+Factory(Scenarios$Base)
+```
+
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0
 ## True         1    1    0    0
 ## Distort 1    1    0    0    0
@@ -237,12 +73,14 @@ hljs.initHighlightingOnLoad();
 ## 
 ## $Certainty
 ## [1] 0.2282
-</code></pre>
+```
 
-<pre><code class="r">CompareIncentives(Scenarios$Base)
-</code></pre>
+```r
+CompareIncentives(Scenarios$Base)
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##       Group OldRep SmoothRep      Drep
 ## 1      True 0.1667    0.1782  0.011571
 ## 2 Distort 1 0.1667    0.1718  0.005096
@@ -257,13 +95,15 @@ hljs.initHighlightingOnLoad();
 ## 1 Distort 1 0.1667    0.1718  0.005096
 ## 2 Distort 2 0.1667    0.1718  0.005096
 ## 3      Liar 0.3333    0.3000 -0.033333
-</code></pre>
+```
 
-<pre><code class="r"># Good.
+```r
+# Good.
 Chain(X = Scenarios$Base)
-</code></pre>
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ## [[1]]$Original
 ##           C1.1 C2.1 C3.0 C4.0
 ## True         1    1    0    0
@@ -367,31 +207,38 @@ Chain(X = Scenarios$Base)
 ## 
 ## [[2]]$Certainty
 ## [1] 0.2841
-</code></pre>
+```
 
-<pre><code class="r">PlotJ(M = Scenarios$Base)
-</code></pre>
+```r
+PlotJ(M = Scenarios$Base)
+```
 
-<pre><code>## Loading required package: plyr
+```
+## Loading required package: plyr
 ## 
-## Attaching package: &#39;reshape&#39;
+## Attaching package: 'reshape'
 ## 
-## The following objects are masked from &#39;package:plyr&#39;:
+## The following objects are masked from 'package:plyr':
 ## 
 ##     rename, round_any
-</code></pre>
+```
 
-<p><img src="data:image/png;base64,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" alt="plot of chunk Base"/> </p>
+![plot of chunk Base](figure/Base.png) 
 
-<p>Very good. Conforms quickly to a correct prediction.
-I&#39;m thinking one block per day, or something, assuming we smooth difficulty correctly.</p>
 
-<h2>Reversed</h2>
+Very good. Conforms quickly to a correct prediction.
+I'm thinking one block per day, or something, assuming we smooth difficulty correctly.
 
-<pre><code class="r">Factory(Scenarios$Reversed)
-</code></pre>
+Reversed
+---------------
 
-<pre><code>## $Original
+
+```r
+Factory(Scenarios$Reversed)
+```
+
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0
 ## True         0    0    1    1
 ## Distort 1    0    1    1    1
@@ -441,23 +288,28 @@ I&#39;m thinking one block per day, or something, assuming we smooth difficulty 
 ## 
 ## $Certainty
 ## [1] 0.2282
-</code></pre>
+```
 
-<pre><code class="r">all.equal(Factory(Scenarios$Reversed)$Agents, Factory(Scenarios$Base)$Agents)  #TRUE
-</code></pre>
+```r
+all.equal(Factory(Scenarios$Reversed)$Agents, Factory(Scenarios$Base)$Agents)  #TRUE
+```
 
-<pre><code>## [1] TRUE
-</code></pre>
+```
+## [1] TRUE
+```
 
-<p>Identical incentive structure, despite reversed inputs and outputs.
-Good.</p>
+Identical incentive structure, despite reversed inputs and outputs.
+Good.
 
-<h2>One Liar</h2>
+One Liar
+------------------
 
-<pre><code class="r">Factory(Scenarios$Deviance)
-</code></pre>
+```r
+Factory(Scenarios$Deviance)
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##      C1.1 C2.1 C3.0 C4.0
 ## True    1    1    0    0
 ## True    1    1    0    0
@@ -497,18 +349,22 @@ Good.</p>
 ## 
 ## $Certainty
 ## [1] 0.64
-</code></pre>
+```
 
-<p>Biggest Deviator gets CRUSHED to zero. High-Stakes!
-Good.</p>
+Biggest Deviator gets CRUSHED to zero. High-Stakes!
+Good.
 
-<h2>Many Liars</h2>
+Many Liars
+-------------------
 
-<pre><code class="r">
+
+```r
+
 Factory(Scenarios$CoalitionalDeviance)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##       [,1] [,2] [,3] [,4]
 ## True     1    1    0    0
 ## True     1    1    0    0
@@ -566,14 +422,16 @@ Factory(Scenarios$CoalitionalDeviance)
 ## 
 ## $Certainty
 ## [1] 0.6579
-</code></pre>
+```
 
-<pre><code class="r"># Success: An attempted &lt;51% attack which failed.
+```r
+# Success: An attempted <51% attack which failed.
 
 Factory(Scenarios$CoalitionalDeviance2)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##       [,1] [,2] [,3] [,4]
 ## True     1    1    0    0
 ## True     1    1    0    0
@@ -631,16 +489,18 @@ Factory(Scenarios$CoalitionalDeviance2)
 ## 
 ## $Certainty
 ## [1] 0.6886
-</code></pre>
+```
 
-<pre><code class="r"># Oh, no: A Sucessful &lt;51% attack &#39;Friendly Fire&#39; ...will have to address
+```r
+# Oh, no: A Sucessful <51% attack 'Friendly Fire' ...will have to address
 # this.
 
 # Pre-Analytics
 CompareIncentives(X = Scenarios$CoalitionalDeviance2)
-</code></pre>
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##    Group  OldRep SmoothRep       Drep
 ## 1   True 0.09091   0.09015 -0.0007576
 ## 2   True 0.09091   0.09015 -0.0007576
@@ -659,14 +519,16 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance2)
 ## 2  Liar 0.36364   0.37727  0.013636
 ## 3  True 0.54545   0.54091 -0.004545
 ## 1 Diver 0.09091   0.08182 -0.009091
-</code></pre>
+```
 
-<pre><code class="r">
-row.names(Scenarios$CoalitionalDeviance2)[7] &lt;- &quot;Liar&quot;
+```r
+
+row.names(Scenarios$CoalitionalDeviance2)[7] <- "Liar"
 CompareIncentives(X = Scenarios$CoalitionalDeviance2)
-</code></pre>
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##    Group  OldRep SmoothRep       Drep
 ## 1   True 0.09091   0.09015 -0.0007576
 ## 2   True 0.09091   0.09015 -0.0007576
@@ -684,18 +546,20 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance2)
 ##   Group OldRep SmoothRep      Drep
 ## 1  Liar 0.4545    0.4591  0.004545
 ## 2  True 0.5455    0.5409 -0.004545
-</code></pre>
+```
 
-<pre><code class="r">
-# [1] Success: &#39;Symmetric Friendly Fire&#39; (ie Team truth forms a coalition of
+```r
+
+# [1] Success: 'Symmetric Friendly Fire' (ie Team truth forms a coalition of
 # their own)
-Scenarios$CoalitionalDeviance3 &lt;- Scenarios$CoalitionalDeviance2
-Scenarios$CoalitionalDeviance3[6, ] &lt;- c(0, 0, 1, 1)
+Scenarios$CoalitionalDeviance3 <- Scenarios$CoalitionalDeviance2
+Scenarios$CoalitionalDeviance3[6, ] <- c(0, 0, 1, 1)
 
 CompareIncentives(X = Scenarios$CoalitionalDeviance3)
-</code></pre>
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##    Group  OldRep SmoothRep      Drep
 ## 1   True 0.09091   0.09308  0.002170
 ## 2   True 0.09091   0.09308  0.002170
@@ -713,19 +577,21 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ##   Group OldRep SmoothRep      Drep
 ## 2  True 0.5455    0.5472  0.001757
 ## 1  Liar 0.4545    0.4528 -0.001757
-</code></pre>
+```
 
-<p>#Chain(Scenarios$CoalitionalDeviance3,N=100)
-  #Team &#39;True&#39; wins via symmetry-exploitation</p>
+  #Chain(Scenarios$CoalitionalDeviance3,N=100)
+  #Team 'True' wins via symmetry-exploitation
 
-<pre><code class="r">  # [2] Success: &#39;Cold Feet 1&#39; (a single player abandons the coalition)
-  Scenarios$CoalitionalDeviance4 &lt;- Scenarios$CoalitionalDeviance2
-  Scenarios$CoalitionalDeviance4[8,] &lt;- c(1,1,0,0)
-
+```r
+  # [2] Success: 'Cold Feet 1' (a single player abandons the coalition)
+  Scenarios$CoalitionalDeviance4 <- Scenarios$CoalitionalDeviance2
+  Scenarios$CoalitionalDeviance4[8,] <- c(1,1,0,0)
+  
   CompareIncentives(X=Scenarios$CoalitionalDeviance4)
-</code></pre>
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##    Group  OldRep SmoothRep      Drep
 ## 1   True 0.09091   0.09091  0.000000
 ## 2   True 0.09091   0.09091  0.000000
@@ -743,27 +609,31 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ##   Group OldRep SmoothRep      Drep
 ## 1  Liar 0.4545    0.4545 1.388e-17
 ## 2  True 0.5455    0.5455 0.000e+00
-</code></pre>
+```
 
-<pre><code class="r">  Ss &lt;- Chain(Scenarios$CoalitionalDeviance4,N=70)[[70]]$Agents
-  Ss &lt;- data.frame(NewRep=as.numeric(Ss[,&quot;RowBonus&quot;]),Group=row.names(Ss))
+```r
+  Ss <- Chain(Scenarios$CoalitionalDeviance4,N=70)[[70]]$Agents
+  Ss <- data.frame(NewRep=as.numeric(Ss[,"RowBonus"]),Group=row.names(Ss))
   aggregate(.~Group,data=Ss, FUN=sum)
-</code></pre>
+```
 
-<pre><code>##   Group NewRep
+```
+##   Group NewRep
 ## 1  Liar 0.2555
 ## 2  True 0.7445
-</code></pre>
+```
 
-<pre><code class="r">
-  Scenarios$CoalitionalDeviance5 &lt;- Scenarios$CoalitionalDeviance2
-  Scenarios$CoalitionalDeviance5[8,] &lt;- c(1,1,0,0)
-  Scenarios$CoalitionalDeviance5[9,] &lt;- c(1,1,0,0)
+```r
+
+  Scenarios$CoalitionalDeviance5 <- Scenarios$CoalitionalDeviance2
+  Scenarios$CoalitionalDeviance5[8,] <- c(1,1,0,0)
+  Scenarios$CoalitionalDeviance5[9,] <- c(1,1,0,0)
 
   CompareIncentives(X=Scenarios$CoalitionalDeviance5)
-</code></pre>
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##    Group  OldRep SmoothRep      Drep
 ## 1   True 0.09091   0.09152  0.000609
 ## 2   True 0.09091   0.09152  0.000609
@@ -781,23 +651,26 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ##   Group OldRep SmoothRep      Drep
 ## 2  True 0.5455    0.5491  0.003654
 ## 1  Liar 0.4545    0.4509 -0.003654
-</code></pre>
+```
 
-<pre><code class="r">  Ss &lt;- Chain(Scenarios$CoalitionalDeviance5,N=50)[[50]]$Agents
-  Ss &lt;- data.frame(NewRep=as.numeric(Ss[,&quot;RowBonus&quot;]),Group=row.names(Ss))
+```r
+  Ss <- Chain(Scenarios$CoalitionalDeviance5,N=50)[[50]]$Agents
+  Ss <- data.frame(NewRep=as.numeric(Ss[,"RowBonus"]),Group=row.names(Ss))
   aggregate(.~Group,data=Ss, FUN=sum)
-</code></pre>
+```
 
-<pre><code>##   Group NewRep
+```
+##   Group NewRep
 ## 1  Liar 0.3383
 ## 2  True 0.6617
-</code></pre>
+```
 
-<pre><code class="r">  #Notice after 50 rounds, the devil [=King of Liars] has actually become the two bottommost liars, as they represent the most significant source of confusion.
-  #Team &#39;True&#39; wins via stoicism
+```r
+  #Notice after 50 rounds, the devil [=King of Liars] has actually become the two bottommost liars, as they represent the most significant source of confusion.
+  #Team 'True' wins via stoicism
 
   #[3] Recursive Friendly Fire - a sub-coalition forms to defect, but a sub-coalition of this coalition forms to defect again.
-  Scenarios$CoalitionalDeviance6 &lt;- rbind(c(1,1,0,0,1),
+  Scenarios$CoalitionalDeviance6 <- rbind(c(1,1,0,0,1),
                                           c(1,1,0,0,1),
                                           c(1,1,0,0,1),
                                           c(1,1,0,0,1),
@@ -812,7 +685,7 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
                                           c(1,1,0,0,1),
                                           c(1,1,0,0,1),
                                           c(1,1,0,0,1), #15 (60%)
-
+                                          
                                           #Coalition 1, backstabbing Truth to game contract 3
                                           c(0,0,0,1,0), #1 - Friendly Fire
                                           c(1,1,1,0,1),
@@ -820,19 +693,20 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
                                           c(1,1,1,0,1),
                                           c(1,1,1,0,1),
                                           c(1,1,1,0,1), #6 (24%)
-
-                                          #Coalition 2, &#39;backstabbing&#39; Coalition 1 to game contract 4
+                                          
+                                          #Coalition 2, 'backstabbing' Coalition 1 to game contract 4
                                           c(0,0,1,0,0), #1 - Friendly Fire
                                           c(1,1,0,1,1),
                                           c(1,1,0,1,1),
                                           c(1,1,0,1,1)) #4 (16%)
 
-  row.names(Scenarios$CoalitionalDeviance6) &lt;- c(rep(&#39;Truth&#39;,15),rep(&#39;Lie 1&#39;,6),rep(&#39;Lie 2&#39;,4))
-  colnames(Scenarios$CoalitionalDeviance6) &lt;- c(&quot;C1.1&quot;,&quot;C2.1&quot;,&quot;C3.0&quot;,&quot;C4.0&quot;,&quot;C5.1&quot;)
+  row.names(Scenarios$CoalitionalDeviance6) <- c(rep('Truth',15),rep('Lie 1',6),rep('Lie 2',4))
+  colnames(Scenarios$CoalitionalDeviance6) <- c("C1.1","C2.1","C3.0","C4.0","C5.1")
   Factory(Scenarios$CoalitionalDeviance6)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##       C1.1 C2.1 C3.0 C4.0 C5.1
 ## Truth    1    1    0    0    1
 ## Truth    1    1    0    0    1
@@ -932,12 +806,14 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ## 
 ## $Certainty
 ## [1] 0.757
-</code></pre>
+```
 
-<pre><code class="r">  CompareIncentives(Scenarios$CoalitionalDeviance6)
-</code></pre>
+```r
+  CompareIncentives(Scenarios$CoalitionalDeviance6)
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##    Group OldRep SmoothRep       Drep
 ## 1  Truth   0.04   0.04060  6.005e-04
 ## 2  Truth   0.04   0.04060  6.005e-04
@@ -970,21 +846,23 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ## 3 Truth   0.60    0.6090  0.009007
 ## 2 Lie 2   0.16    0.1559 -0.004063
 ## 1 Lie 1   0.24    0.2351 -0.004944
-</code></pre>
+```
 
-<pre><code class="r">  #fantastic sucess...Lie 2 loses less
+```r
+  #fantastic sucess...Lie 2 loses less
 
   #clearly, the Nash Equilibrium
-  Scenarios$CoalitionalDeviance7 &lt;- Scenarios$CoalitionalDeviance6[1:21,]
-  Scenarios$CoalitionalDeviance7 &lt;- rbind(Scenarios$CoalitionalDeviance7, rbind(
-                                                                              &#39;Truth 2&#39;=c(1,1,0,0,1),
-                                                                              &#39;Truth 2&#39;=c(1,1,0,0,1),
-                                                                              &#39;Truth 2&#39;=c(1,1,0,0,1),
-                                                                              &#39;Truth 2&#39;=c(1,1,0,0,1)))
+  Scenarios$CoalitionalDeviance7 <- Scenarios$CoalitionalDeviance6[1:21,]
+  Scenarios$CoalitionalDeviance7 <- rbind(Scenarios$CoalitionalDeviance7, rbind(
+                                                                              'Truth 2'=c(1,1,0,0,1),
+                                                                              'Truth 2'=c(1,1,0,0,1),
+                                                                              'Truth 2'=c(1,1,0,0,1),
+                                                                              'Truth 2'=c(1,1,0,0,1)))
   Factory(Scenarios$CoalitionalDeviance7)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##         C1.1 C2.1 C3.0 C4.0 C5.1
 ## Truth      1    1    0    0    1
 ## Truth      1    1    0    0    1
@@ -1110,12 +988,14 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ## 
 ## $Certainty
 ## [1] 0.8509
-</code></pre>
+```
 
-<pre><code class="r">  CompareIncentives(Scenarios$CoalitionalDeviance7)
-</code></pre>
+```r
+  CompareIncentives(Scenarios$CoalitionalDeviance7)
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##      Group OldRep SmoothRep       Drep
 ## 1    Truth   0.04   0.04062  0.0006212
 ## 2    Truth   0.04   0.04062  0.0006212
@@ -1148,15 +1028,17 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ## 2   Truth   0.60    0.6093  0.009317
 ## 3 Truth 2   0.16    0.1625  0.002485
 ## 1   Lie 1   0.24    0.2282 -0.011802
-</code></pre>
+```
 
-<pre><code class="r">
+```r
+
   # [4] Passive - Sideways expansion by 2 contracts
-  Scenarios$CoalitionalDeviance8 &lt;- cbind(Scenarios$CoalitionalDeviance2,Scenarios$CoalitionalDeviance2[,1:2])
+  Scenarios$CoalitionalDeviance8 <- cbind(Scenarios$CoalitionalDeviance2,Scenarios$CoalitionalDeviance2[,1:2])
   Factory(Scenarios$CoalitionalDeviance8)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##      [,1] [,2] [,3] [,4] [,5] [,6]
 ## True    1    1    0    0    1    1
 ## True    1    1    0    0    1    1
@@ -1214,12 +1096,14 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ## 
 ## $Certainty
 ## [1] 0.74
-</code></pre>
+```
 
-<pre><code class="r">  CompareIncentives(Scenarios$CoalitionalDeviance8)   
-</code></pre>
+```r
+  CompareIncentives(Scenarios$CoalitionalDeviance8)   
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##    Group  OldRep SmoothRep       Drep
 ## 1   True 0.09091   0.09122  0.0003116
 ## 2   True 0.09091   0.09122  0.0003116
@@ -1237,18 +1121,20 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ##   Group OldRep SmoothRep      Drep
 ## 2  True 0.5455    0.5473  0.001869
 ## 1  Liar 0.4545    0.4527 -0.001869
-</code></pre>
+```
 
-<pre><code class="r">  #Success, larger number of contracts makes this attack improbable.
+```r
+  #Success, larger number of contracts makes this attack improbable.
 
-  Scenarios$CoalitionalDeviance9 &lt;- cbind(Scenarios$CoalitionalDeviance2,
+  Scenarios$CoalitionalDeviance9 <- cbind(Scenarios$CoalitionalDeviance2,
                                           Scenarios$CoalitionalDeviance2,
                                           Scenarios$CoalitionalDeviance2,
                                           Scenarios$CoalitionalDeviance2[,-3])
   Factory(Scenarios$CoalitionalDeviance9)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]
 ## True    1    1    0    0    1    1    0    0    1     1     0     0     1
 ## True    1    1    0    0    1    1    0    0    1     1     0     0     1
@@ -1348,12 +1234,14 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ## 
 ## $Certainty
 ## [1] 0.72
-</code></pre>
+```
 
-<pre><code class="r">  CompareIncentives(Scenarios$CoalitionalDeviance9)
-</code></pre>
+```r
+  CompareIncentives(Scenarios$CoalitionalDeviance9)
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##    Group  OldRep SmoothRep      Drep
 ## 1   True 0.09091   0.09091  0.000000
 ## 2   True 0.09091   0.09091  0.000000
@@ -1371,17 +1259,24 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ##   Group OldRep SmoothRep Drep
 ## 1  Liar 0.4545    0.4545    0
 ## 2  True 0.5455    0.5455    0
-</code></pre>
+```
 
-<pre><code class="r">  #The attack must expand proportionally.
-</code></pre>
+```r
+  #The attack must expand proportionally.
+```
 
-<h2>Uninformed People</h2>
 
-<pre><code class="r">Factory(Scenarios$CluelessControl)
-</code></pre>
 
-<pre><code>## $Original
+Uninformed People
+------------------
+
+
+```r
+Factory(Scenarios$CluelessControl)
+```
+
+```
+## $Original
 ##      C1.1 C2.1 C3.0 C4.0
 ## True    1    1    0    0
 ## True    1    1    0    0
@@ -1427,12 +1322,14 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ## 
 ## $Certainty
 ## [1] 1
-</code></pre>
+```
 
-<pre><code class="r">Factory(Scenarios$CluelessTest)
-</code></pre>
+```r
+Factory(Scenarios$CluelessTest)
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##      C1.1 C2.1 C3.0 C4.0
 ## True    1    1    0    0
 ## True    1   NA    0    0
@@ -1478,20 +1375,23 @@ CompareIncentives(X = Scenarios$CoalitionalDeviance3)
 ## 
 ## $Certainty
 ## [1] 1
-</code></pre>
+```
 
-<p>Finding: 2 falls from tie at 5th .11 to a tie at 7th with .07; no impact on other results: success.</p>
+Finding: 2 falls from tie at 5th .11 to a tie at 7th with .07; no impact on other results: success.
 
-<p>Note: Must be a discrete set of options: c(1,0,NA,.5)    &mdash;- !!! by extention, Catch must be implemented in FillNA. Indeed, in this example our lazy character is punished twice.
-otherwise there will likely be pragmatic individuals who rationally deviate to answers like ~.85 or ~.92 or some nonsense. [obviously]</p>
+Note: Must be a discrete set of options: c(1,0,NA,.5)    ---- !!! by extention, Catch must be implemented in FillNA. Indeed, in this example our lazy character is punished twice.
+otherwise there will likely be pragmatic individuals who rationally deviate to answers like ~.85 or ~.92 or some nonsense. [obviously]
 
-<h2>Overwhelming Incoherence</h2>
+Overwhelming Incoherence
+--------------------------
 
-<pre><code class="r">
+```r
+
 Factory(Scenarios$Incoherence)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##      C1.1 C2.1 C3.0 C4.0
 ## True    1  0.5    0    0
 ## True    1  0.5    0    0
@@ -1537,12 +1437,14 @@ Factory(Scenarios$Incoherence)
 ## 
 ## $Certainty
 ## [1] 0.7821
-</code></pre>
+```
 
-<pre><code class="r">Factory(Scenarios$Incoherence2)
-</code></pre>
+```r
+Factory(Scenarios$Incoherence2)
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##      C1.1 C2.1 C3.0 C4.0
 ## True    1  0.5    0    0
 ## True    1  0.5    0    0
@@ -1588,17 +1490,20 @@ Factory(Scenarios$Incoherence)
 ## 
 ## $Certainty
 ## [1] 0.7571
-</code></pre>
+```
 
-<p>Interesting behavior, but incentive compatible, particularly given low Schelling Salience
-Incentive to switch to the consensus .5</p>
+Interesting behavior, but incentive compatible, particularly given low Schelling Salience
+Incentive to switch to the consensus .5
 
-<h2>Perfect Consensus</h2>
+Perfect Consensus
+--------------------
 
-<pre><code class="r">Factory(Scenarios$PerCon)
-</code></pre>
+```r
+Factory(Scenarios$PerCon)
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##      C1.1 C2.1 C3.0 C4.0
 ## [1,]    1    1    0    0
 ## [2,]    1    1    0    0
@@ -1635,18 +1540,23 @@ Incentive to switch to the consensus .5</p>
 ## 
 ## $Certainty
 ## [1] 1
-</code></pre>
+```
 
-<pre><code class="r"># No problems.
-</code></pre>
+```r
+# No problems.
+```
 
-<h2>Gaming</h2>
 
-<pre><code class="r">
+Gaming
+----------------
+
+```r
+
 Factory(Scenarios$Gaming)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0 C0.5 C0.5 C0.5 C0.5 C0.5 C0.5 C0.5 C0.5
 ## True         1    1    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
 ## Distort 1    1    0    0    0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5
@@ -1777,12 +1687,14 @@ Factory(Scenarios$Gaming)
 ## 
 ## $Certainty
 ## [1] 0.07608
-</code></pre>
+```
 
-<pre><code class="r">CompareIncentives(Scenarios$Gaming)
-</code></pre>
+```r
+CompareIncentives(Scenarios$Gaming)
+```
 
-<pre><code>## [[1]]
+```
+## [[1]]
 ##        Group  OldRep SmoothRep      Drep
 ## 1       True 0.04167   0.04456  0.002893
 ## 2  Distort 1 0.04167   0.04294  0.001274
@@ -1815,18 +1727,25 @@ Factory(Scenarios$Gaming)
 ## 1 Distort 1 0.1667    0.1718  0.005096
 ## 2 Distort 2 0.1667    0.1718  0.005096
 ## 3      Liar 0.3333    0.3000 -0.033333
-</code></pre>
+```
 
-<pre><code class="r"># more or less what i expected
-</code></pre>
+```r
+# more or less what i expected
+```
 
-<h2>Missing Values</h2>
 
-<pre><code class="r">
+
+Missing Values
+-----------------
+
+
+```r
+
 Factory(Scenarios$Missing1)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0 C0
 ## True         1    1    0    0  0
 ## Distort 1    1    0    0    0 NA
@@ -1876,12 +1795,14 @@ Factory(Scenarios$Missing1)
 ## 
 ## $Certainty
 ## [1] 0.195
-</code></pre>
+```
 
-<pre><code class="r">Factory(Scenarios$Missing2)
-</code></pre>
+```r
+Factory(Scenarios$Missing2)
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0 C0 C1 C1
 ## True         1    1    0    0  0  1 NA
 ## Distort 1    1    0    0    0 NA  1 NA
@@ -1964,12 +1885,14 @@ Factory(Scenarios$Missing1)
 ## 
 ## $Certainty
 ## [1] 0.289
-</code></pre>
+```
 
-<pre><code class="r">Factory(Scenarios$Missing3)
-</code></pre>
+```r
+Factory(Scenarios$Missing3)
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0 C0 C1 C1
 ## True         1    1    0    0  0  1 NA
 ## Distort 1    1    0    0    0 NA  1 NA
@@ -2052,19 +1975,22 @@ Factory(Scenarios$Missing1)
 ## 
 ## $Certainty
 ## [1] 0.3736
-</code></pre>
+```
 
-<pre><code class="r">
+```r
+
 PlotJ(M = Scenarios$Missing3)
-</code></pre>
+```
 
-<p><img src="data:image/png;base64,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" alt="plot of chunk MissingValues"/> </p>
+![plot of chunk MissingValues](figure/MissingValues.png) 
 
-<pre><code class="r">
+```r
+
 Factory(Scenarios$Missing4)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0 C0 C1 C1
 ## True         1    1    0    0  0  1 NA
 ## Distort 1    1   NA   NA    0 NA  1 NA
@@ -2139,12 +2065,14 @@ Factory(Scenarios$Missing4)
 ## 
 ## $Certainty
 ## [1] 0.6971
-</code></pre>
+```
 
-<pre><code class="r">Factory(Scenarios$Missing5)
-</code></pre>
+```r
+Factory(Scenarios$Missing5)
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##              C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0
 ## True      NA   NA   NA   NA   NA    1    1    0    0
 ## Distort 1  1   NA   NA   NA   NA   NA    0    0    0
@@ -2227,15 +2155,17 @@ Factory(Scenarios$Missing4)
 ## 
 ## $Certainty
 ## [1] 0.4179
-</code></pre>
+```
 
-<pre><code class="r"># Works
+```r
+# Works
 
 
 Factory(Scenarios$Riven)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0
 ## True         1    1    0    0   NA   NA   NA   NA   NA   NA   NA   NA
 ## Distort 1    1    0    0    0   NA   NA   NA   NA   NA   NA   NA   NA
@@ -2351,12 +2281,14 @@ Factory(Scenarios$Riven)
 ## 
 ## $Certainty
 ## [1] 0.3935
-</code></pre>
+```
 
-<pre><code class="r">Factory(Scenarios$Riven2)
-</code></pre>
+```r
+Factory(Scenarios$Riven2)
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0 C1.1 C2.1 C3.0 C4.0
 ## True         1    1    0    0   NA   NA   NA   NA   NA   NA   NA   NA
 ## Distort 1    1    0    0    0   NA   NA   NA   NA   NA   NA   NA   NA
@@ -2472,42 +2404,46 @@ Factory(Scenarios$Riven)
 ## 
 ## $Certainty
 ## [1] 0.3935
-</code></pre>
+```
 
-<h2>Scaled Claims</h2>
 
-<pre><code class="r">
+Scaled Claims
+----------------------------
+
+```r
+
 
 # HoR party seats example
 
 # add a new row
-MS &lt;- cbind(M1, rbind(233, 199, 233, 250, 435, 435))
-colnames(MS) &lt;- c(colnames(MS)[-5], &quot;C5.233&quot;)
+MS <- cbind(M1, rbind(233, 199, 233, 250, 435, 435))
+colnames(MS) <- c(colnames(MS)[-5], "C5.233")
 
 # build non-default scales
-Scales &lt;- matrix(c(rep(FALSE, ncol(MS)), rep(0, ncol(MS)), rep(1, ncol(MS))), 
-    3, byrow = TRUE, dimnames = list(c(&quot;Scaled&quot;, &quot;Min&quot;, &quot;Max&quot;), colnames(MS)))
-Scales[&quot;Scaled&quot;, 5] &lt;- 1
-Scales[&quot;Max&quot;, 5] &lt;- 435
+Scales <- matrix(c(rep(FALSE, ncol(MS)), rep(0, ncol(MS)), rep(1, ncol(MS))), 
+    3, byrow = TRUE, dimnames = list(c("Scaled", "Min", "Max"), colnames(MS)))
+Scales["Scaled", 5] <- 1
+Scales["Max", 5] <- 435
 
 
 
 # DJIA example
 
-MS2 &lt;- cbind(MS, rbind(16027.59, NA, 16027.59, NA, 8001, 19999))
+MS2 <- cbind(MS, rbind(16027.59, NA, 16027.59, NA, 8001, 19999))
 
-Scales2 &lt;- cbind(Scales, rbind(1, 8000, 20000))
+Scales2 <- cbind(Scales, rbind(1, 8000, 20000))
 
-colnames(MS2) &lt;- c(colnames(MS2)[-6], &quot;C6.1602759&quot;)
-colnames(Scales2) &lt;- colnames(MS2)
+colnames(MS2) <- c(colnames(MS2)[-6], "C6.1602759")
+colnames(Scales2) <- colnames(MS2)
 
 
 # Edit catch to choose most-likely values (modal)
 
 Factory(MS2, Scales2)
-</code></pre>
+```
 
-<pre><code>## $Original
+```
+## $Original
 ##           C1.1 C2.1 C3.0 C4.0 C5.233 C6.1602759
 ## True         1    1    0    0    233      16028
 ## Distort 1    1    0    0    0    199         NA
@@ -2557,9 +2493,13 @@ Factory(MS2, Scales2)
 ## 
 ## $Certainty
 ## [1] 0.326
-</code></pre>
+```
 
-<pre><code class="r">
+
+
+
+```r
+
 # !!! Must FillNa with .5 FIRST, then average in, to prevent monopoly voting
 # on brand-new contracts. (Actually, if it will eventually be ruled .5).
 
@@ -2572,36 +2512,41 @@ Factory(MS2, Scales2)
 
 # Possible solutions: 1 - sequential filling of NAs (sequential removal of
 # columns) - pre-processing replace with average?  2 - what about the
-# &#39;expert factor&#39; idea? what happened to that?  3 - Completely replace
+# 'expert factor' idea? what happened to that?  3 - Completely replace
 # FillNa with Reputations (lots of positives here)
 
 # TO-DO Cascading reputation .6,.5,.3.,2., etc = dexp(nrow(Mg))
 
 # Mysterious behavior - loading only on first factor solutions 1- ignore.
-# incentives will encourage filling out of contracts on &#39;obvious&#39; events 2 -
+# incentives will encourage filling out of contracts on 'obvious' events 2 -
 # use later factors. Unknown what behavior could result from this
-</code></pre>
+```
 
-<h2>Additive Reputation</h2>
 
-<p>Is reputation completely additive? - Yes, now.</p>
 
-<pre><code class="r">Mar1 &lt;- M1
-r1 &lt;- rep(1/6, 6)
+Additive Reputation
+-------------------------------------
+Is reputation completely additive? - Yes, now.
 
-Mar2 &lt;- M1[-6, ]
-r2 &lt;- c(1/6, 1/6, 1/6, 1/6, 2/6)
 
-Mar3 &lt;- M1[c(1, 2, 4, 5), ]
-r3 &lt;- c(2/6, 1/6, 1/6, 2/6)
+```r
+Mar1 <- M1
+r1 <- rep(1/6, 6)
 
-Mar4 &lt;- M1[c(1, 2, 4, 5, 6), ]
-r4 &lt;- c(2/6, 1/6, 1/6, 1/6, 1/6)
+Mar2 <- M1[-6, ]
+r2 <- c(1/6, 1/6, 1/6, 1/6, 2/6)
+
+Mar3 <- M1[c(1, 2, 4, 5), ]
+r3 <- c(2/6, 1/6, 1/6, 2/6)
+
+Mar4 <- M1[c(1, 2, 4, 5, 6), ]
+r4 <- c(2/6, 1/6, 1/6, 1/6, 1/6)
 
 Factory(Mar1, Rep = r1)$Agents
-</code></pre>
+```
 
-<pre><code>##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+```
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
 ## True      0.1667  0.2824    0.1782     0              1       0.1667
 ## Distort 1 0.1667  0.2176    0.1718     0              1       0.1667
 ## True      0.1667  0.2824    0.1782     0              1       0.1667
@@ -2615,12 +2560,14 @@ Factory(Mar1, Rep = r1)$Agents
 ## Distort 2   0.1718
 ## Liar        0.1500
 ## Liar        0.1500
-</code></pre>
+```
 
-<pre><code class="r">Factory(Mar2, Rep = r2)$Agents
-</code></pre>
+```r
+Factory(Mar2, Rep = r2)$Agents
+```
 
-<pre><code>##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+```
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
 ## True      0.1667  0.2824    0.1782     0              1          0.2
 ## Distort 1 0.1667  0.2176    0.1718     0              1          0.2
 ## True      0.1667  0.2824    0.1782     0              1          0.2
@@ -2632,12 +2579,14 @@ Factory(Mar1, Rep = r1)$Agents
 ## True        0.1782
 ## Distort 2   0.1718
 ## Liar        0.3000
-</code></pre>
+```
 
-<pre><code class="r">Factory(Mar3, Rep = r3)$Agents
-</code></pre>
+```r
+Factory(Mar3, Rep = r3)$Agents
+```
 
-<pre><code>##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+```
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
 ## True      0.3333  0.5648    0.3565     0              1         0.25
 ## Distort 1 0.1667  0.2176    0.1718     0              1         0.25
 ## Distort 2 0.1667  0.2176    0.1718     0              1         0.25
@@ -2647,12 +2596,14 @@ Factory(Mar1, Rep = r1)$Agents
 ## Distort 1   0.1718
 ## Distort 2   0.1718
 ## Liar        0.3000
-</code></pre>
+```
 
-<pre><code class="r">Factory(Mar4, Rep = r4)$Agents
-</code></pre>
+```r
+Factory(Mar4, Rep = r4)$Agents
+```
 
-<pre><code>##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
+```
+##           OldRep ThisRep SmoothRep NArow ParticipationR RelativePart
 ## True      0.3333  0.5648    0.3565     0              1          0.2
 ## Distort 1 0.1667  0.2176    0.1718     0              1          0.2
 ## Distort 2 0.1667  0.2176    0.1718     0              1          0.2
@@ -2664,18 +2615,24 @@ Factory(Mar1, Rep = r1)$Agents
 ## Distort 2   0.1718
 ## Liar        0.1500
 ## Liar        0.1500
-</code></pre>
+```
 
-<pre><code class="r">
+```r
+
 # Is reputation additive? Yes (excluding NA-born effects, we could correct
 # with Rep/mean(Rep) but NA is not part of equilibrium so it shouldnt
 # matter).
-</code></pre>
+```
 
-<pre><code class="r">Factory(Mg)$Agents[, c(&quot;OldRep&quot;, &quot;ThisRep&quot;, &quot;SmoothRep&quot;)]
-</code></pre>
 
-<pre><code>##            OldRep ThisRep SmoothRep
+
+
+```r
+Factory(Mg)$Agents[, c("OldRep", "ThisRep", "SmoothRep")]
+```
+
+```
+##            OldRep ThisRep SmoothRep
 ## True      0.05556 0.05556   0.05556
 ## Distort 1 0.05556 0.05556   0.05556
 ## True      0.05556 0.05556   0.05556
@@ -2694,12 +2651,14 @@ Factory(Mar1, Rep = r1)$Agents
 ## Distort 2 0.05556 0.05556   0.05556
 ## Liar      0.05556 0.00000   0.05000
 ## Liar      0.05556 0.00000   0.05000
-</code></pre>
+```
 
-<pre><code class="r">Factory(Mg2)$Agents[, c(&quot;OldRep&quot;, &quot;ThisRep&quot;, &quot;SmoothRep&quot;)]
-</code></pre>
+```r
+Factory(Mg2)$Agents[, c("OldRep", "ThisRep", "SmoothRep")]
+```
 
-<pre><code>##            OldRep ThisRep SmoothRep
+```
+##            OldRep ThisRep SmoothRep
 ## True      0.05556 0.05556   0.05556
 ## Distort 1 0.05556 0.05556   0.05556
 ## True      0.05556 0.05556   0.05556
@@ -2718,52 +2677,66 @@ Factory(Mar1, Rep = r1)$Agents
 ## Distort 2 0.05556 0.05556   0.05556
 ## Liar      0.05556 0.00000   0.05000
 ## Liar      0.05556 0.00000   0.05000
-</code></pre>
+```
 
-<pre><code class="r"># True 1 of group 2 skyrockets ahead, as desired.
+```r
+# True 1 of group 2 skyrockets ahead, as desired.
 
-# upon reflection, I dont think this &#39;problem&#39; is particularly bad.
-</code></pre>
+# upon reflection, I dont think this 'problem' is particularly bad.
+```
 
-<h2>Scalability</h2>
 
-<p>What are the computational limits?
-Largely irrelevant because of forking, this is important for setting parameters correctly (and in general).</p>
 
-<pre><code class="r">
-TestLimit &lt;- function(n1, n2, AddNa = 1) {
-    M_huge &lt;- matrix(round(runif(n1 * n2)), n1, n2)
+
+
+Scalability
+------------------
+What are the computational limits?
+Largely irrelevant because of forking, this is important for setting parameters correctly (and in general).
+
+
+```r
+
+TestLimit <- function(n1, n2, AddNa = 1) {
+    M_huge <- matrix(round(runif(n1 * n2)), n1, n2)
     if (AddNa == 1) 
-        M_huge[sample(1:(n1 * n2), size = (n1 * n2)/3)] &lt;- NA
+        M_huge[sample(1:(n1 * n2), size = (n1 * n2)/3)] <- NA
     Factory(M_huge)
 }
 
 
-system.time(print(&quot;1&quot;))
-</code></pre>
+system.time(print("1"))
+```
 
-<pre><code>## [1] &quot;1&quot;
-</code></pre>
+```
+## [1] "1"
+```
 
-<pre><code>##    user  system elapsed 
+```
+##    user  system elapsed 
 ##       0       0       0
-</code></pre>
+```
 
-<pre><code class="r">system.time(TestLimit(100, 10))
-</code></pre>
+```r
+system.time(TestLimit(100, 10))
+```
 
-<pre><code>##    user  system elapsed 
+```
+##    user  system elapsed 
 ##       0       0       0
-</code></pre>
+```
 
-<pre><code class="r">system.time(TestLimit(1000, 100))
-</code></pre>
+```r
+system.time(TestLimit(1000, 100))
+```
 
-<pre><code>##    user  system elapsed 
+```
+##    user  system elapsed 
 ##    0.78    0.02    0.79
-</code></pre>
+```
 
-<pre><code class="r"># user system elapsed 0.66 0.00 0.65
+```r
+# user system elapsed 0.66 0.00 0.65
 
 # system.time(TestLimit(100000,10)) user system elapsed 9.50 0.02 9.53
 
@@ -2777,7 +2750,7 @@ system.time(print(&quot;1&quot;))
 # unlimited - unrealistic the first 100,000 votes are probably decentralized
 # enough ...how low should this number go? (can be a f[ncol(Vmatrix)]) given
 # that reputation is fully additive, this would discourage the spreading of
-# reputations this would also solve the &#39;dust bust&#39; question (ie suck up any
+# reputations this would also solve the 'dust bust' question (ie suck up any
 # accounts with tiny dust amounts of reputation) can add the slow retarget
 # to make this grow over the next thousand years (every 4 years?)
 
@@ -2785,9 +2758,5 @@ system.time(print(&quot;1&quot;))
 # best candidate
 
 # Actually all of this is irrelevant because code runs 100x faster on python
-</code></pre>
-
-</body>
-
-</html>
+```
 

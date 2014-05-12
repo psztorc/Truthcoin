@@ -1,12 +1,6 @@
 base
-datasets
 ggplot2
 ggthemes
-graphics
-grDevices
 knitr
-methods
 plyr
 reshape
-stats
-utils
