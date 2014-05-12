@@ -17,7 +17,7 @@ Up Next:  Rewrite new R items in python.
 Up Next: Seek development collaborators, and/or funding (for development). Anyone, anyone?  
 
 <h3>You Might Help By</h3>
-Creating a forum (getting hard to coordinate everyone).  
+~~Creating a forum (getting hard to coordinate everyone).~~ BG has created http://truthcoin.ghabs.com/ 
 Asking questions to grow the FAQ.  
 Telling your friends (especially developers/investors).  
 Operationalizing "Sequential Intra-Block Trading", my protocol for near-instant-speed trades (easier than it sounds, just select 0-confirmed outputs, timestamp entire set, see Whitepaper and ctrl+f for why this works, email me to collaborate).  

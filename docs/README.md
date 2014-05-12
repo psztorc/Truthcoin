@@ -90,7 +90,7 @@ I've thought about this in the past and never considered it to be realistic prob
 
 6. All even before we consider the fact that law enforcement has-always/will-continue-to evolve with new technology. Law enforcement would literally know who was most at risk and when. 
 
-7. Finally, I just don't see PMs as encouraging this behaviour, as most murders are for extremely personal reasons (sexual jealousy, religious/political extremism, mental instability) and not economic ones (rich people have way more to lose by going to prison). ::
+7. Finally, I just don't see PMs as encouraging this behaviour, as most murders are for extremely personal reasons (sexual jealousy, religious/political extremism, mental instability) and not economic ones (rich people have way more to lose by going to prison).
     
 |Item    |Normally Would Involve   |  Criminal Problems|
 |:--------:|:----------------------------------:|:---------------------------:|
