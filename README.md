@@ -12,15 +12,18 @@ Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) 
 
 **Please be aware that this project exists only as a design with some proof of concept code for the novel parts. There is no useable version, no website/forum, no mailing list.** In fact all the code/writing here was created solely by one guy (although we all stand on the shoulders of giants). If you have the time/ability to create a bitcointalk-style forum (I don't), it will become 'the official forum'.  
 
-I'm Working on Now: Edit whitepaper to describe Scaled claims and clarify fees/economics of authorship.  
-Up Next:  Rewrite new R items in python.  
+I'm Working on Now: Rewrite new R items in python.  
+I'm Working on Now: Evangelize via forum posts, FAQ improvements, etc.  
 Up Next: Seek development collaborators, and/or funding (for development). Anyone, anyone?  
 
 <h3>You Might Help By</h3>
 ~~Creating a forum (getting hard to coordinate everyone).~~ BG has created http://truthcoin.ghabs.com/  
 Asking questions to grow the FAQ.  
+Posting to the forum (I'll be adding some posts soon).  
 Telling your friends (especially developers/investors).  
+I'm interested in starting a website where I can test the Event Consensus Mechanism in various ways.  This probably involves some web design/php. Need a way of keeping score / displaying the score, and having users supply a simple number or boolean.  
 Operationalizing "Sequential Intra-Block Trading", my protocol for near-instant-speed trades (easier than it sounds, just select 0-confirmed outputs, timestamp entire set, see Whitepaper and ctrl+f for why this works, email me to collaborate).  
+
 
 
 <h4>Where is Everything?</h4>
