@@ -6,20 +6,20 @@ Traditional PMs have been persecuted much in the same way as e-cash systems, and
 Contract outcomes are determined in a trustless and decentralized way, through a weighted vote based on present and past consensus with a unique Nash Equilibrium where all voters report accurately on the state of markets. Incentives are to only create contracts which are useful (measured by trading volume), and unambiguous (measured by vote-similarity). Additionally, market liquidity (a frequent problem) is guaranteed to be permanently nonzero thanks to the LMSR, an invention of Dr. Robin Hanson. The LMSR's use of an update rule instead of actual Buy/Ask trading greatly simplifies implementation, while allowing for realtime buying and selling.
 
 <h4>What's going on!?</h4>
-Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important".
+Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important".  
+Visit our new forum: http://forum.truthcoin.info/  
 
 <h3>My Pipeline</h3>
 
-**Please be aware that this project exists only as a design with some proof of concept code for the novel parts. There is no useable version, no website/forum, no mailing list.** In fact all the code/writing here was created solely by one guy (although we all stand on the shoulders of giants). If you have the time/ability to create a bitcointalk-style forum (I don't), it will become 'the official forum'.  
+**Please be aware that this project exists only as a design with some proof of concept code for the novel parts. There is no useable version yet, although I expect it to be very easy to build.** In fact all the code/writing here was created solely by one guy (although we all stand on the shoulders of giants).  
 
 I'm Working on Now: Rewrite new R items in python.  
 I'm Working on Now: Evangelize via forum posts, FAQ improvements, etc.  
 Up Next: Seek development collaborators, and/or funding (for development). Anyone, anyone?  
 
-<h3>You Might Help By</h3>
-~~Creating a forum (getting hard to coordinate everyone).~~ BG has created http://truthcoin.ghabs.com/  
+<h3>You Might Help By</h3> 
 Asking questions to grow the FAQ.  
-Posting to the forum (I'll be adding some posts soon).  
+Posting to the forum (I'll be adding more posts soon).  
 Telling your friends (especially developers/investors).  
 I'm interested in starting a website where I can test the Event Consensus Mechanism in various ways.  This probably involves some web design/php. Need a way of keeping score / displaying the score, and having users supply a simple number or boolean.  
 Operationalizing "Sequential Intra-Block Trading", my protocol for near-instant-speed trades (easier than it sounds, just select 0-confirmed outputs, timestamp entire set, see Whitepaper and ctrl+f for why this works, email me to collaborate).  
@@ -28,6 +28,7 @@ Operationalizing "Sequential Intra-Block Trading", my protocol for near-instant-
 
 <h4>Where is Everything?</h4>
 Readings/Documentation/Purpose/Applications/Tech = 'docs' folder  
+Details about tx types:  docs/Development Plans/  
 R code = 'lib' folder  
 Python code = 'pylib' folder  
 
