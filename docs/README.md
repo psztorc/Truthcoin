@@ -19,7 +19,7 @@ Other papers which describe the overall purposes and goals of this endeavour:
 
 
 Wall of Shame
-=====================================
+-------------------------------------------------
 
 I worked hard to explain my point of view. Here I chronicle the disrespectful attempts to criticize my point of view without even reading it! (Those who **used a question mark or otherwise sought information** were spared).
 
