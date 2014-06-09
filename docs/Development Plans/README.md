@@ -1,3 +1,8 @@
+
+<h2>Helpful Forum Posts</h2>
+
+[Timeline comments](http://forum.truthcoin.info/index.php/topic,14.msg103.html#msg103)
+
 <h2>Block Validation Requirements</h2>
 <h3>Data Sets</h3>
 

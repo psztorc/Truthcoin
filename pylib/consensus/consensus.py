@@ -431,18 +431,18 @@ TestConsensus()
     
 ## Speed Test
 #
-#import time
-#
-#print(time.asctime())
-#InitVotesL = random_integers(0,1,(10000*100)).reshape(10000,100)
-#VotesL = ma.masked_array(InitVotesL, isnan(InitVotesL))
-#print(time.asctime())
-#
-#print(time.asctime())
-#DisplayResults(Factory(Votes))
-#print(time.asctime())
-#
-#print(time.asctime())
-#DisplayResults(Factory(VotesL))
-#print(time.asctime())
+import time
+
+print(time.asctime())
+InitVotesL = random_integers(0,1,(10000*100)).reshape(10000,100)
+VotesL = ma.masked_array(InitVotesL, isnan(InitVotesL))
+print(time.asctime())
+
+print(time.asctime())
+DisplayResults(Factory(Votes))
+print(time.asctime())
+
+print(time.asctime())
+DisplayResults(Factory(VotesL))
+print(time.asctime())
 
