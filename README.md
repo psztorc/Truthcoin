@@ -9,6 +9,28 @@ Contract outcomes are determined in a trustless and decentralized way, through a
 Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important".  
 Visit our new forum: http://forum.truthcoin.info/  
 
+<h3>Rough Comparison to Popular CryptoProjects</h3>
+
+| Concept   | P2P Coin| "Old" PoW Mining   | PMs - Trust 3rd Party (Administrator) | PMs - Trust 2nd Party (Traders) | Low-Trust PMs | Can Solve Computations | Score (X,*,.) |
+| :-------- | :------:| :--: | :--------:| :--: | :--------:| :--: | :--------:| :--: |
+| Truthcoin  ?  | X | X | * | * | X | *?| 3, 2, 1 |
+| Bitcoin       | X | X | * | * | . | *?| 2, 2, 2 |
+| BitsharesX ?  | X | . | * | X | . | . | 2, 1, 3 |
+| Counterparty  | X | X | X | * | . | . | 3, 1, 2 |
+| Etherium ?    | * | . | * | * | * | X | 1, 4, 1 |
+| Mastercoin    | X | X | X | * | . | . | 3, 1, 2 |
+| NXT Coin      | X | . | * | * | . | . | 1, 2, 3 |
+| USD           | . | . | * | * | . | . | 0, 2, 4 |
+
+Legend: X = "Yes (Inherently Supported)", . = "No (Inherently Unsupported)", * = "Can Build on Top of / Third-Party"
+
+Table Notes:
+1. Compiled on a best-effort basis. Mistake? Pull-request / email me.
+2. Emphasis is on differences across coins, so many similarities were ignored (token issuance).
+3. The question marks indicate some unproven claims, or vague theories, which have yet to be fully explored, tested, and resolved (these score as 'No'). When used after a concept name, they indicate that the concept does not yet exist.
+4. Given that 3 of the columns are about PMs, and even somewhat mutually-exclusive, the score column really isn't very meaningful.
+
+
 <h3>My Pipeline</h3>
 
 **Please be aware that this project exists only as a design with some proof of concept code for the novel parts. There is no useable version yet, although I expect it to be very easy to build.** In fact all the code/writing here was created solely by one guy (although we all stand on the shoulders of giants).  
@@ -33,6 +55,8 @@ R code = 'lib' folder
 Python code = 'pylib' folder  
 
 The 'lib' folder also has html files which describe the outcome of function tests and demonstrations. These files were automatically generated from R code using R-markdown, and the .rmd files are included alongside the html files for reproducibility.
+
+
 
 <h4>Contact</h4>
 truthcoin@gmail.com  
