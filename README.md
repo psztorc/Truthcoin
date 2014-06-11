@@ -1,4 +1,6 @@
 <h2>Truthcoin: Decentralized Bitcoin Prediction Markets</h2>
+
+<h4>Summary</h4>  
 Truthcoin is my ambitious project to create a trustless P2P prediction-marketplace. This is possible because, unlike most marketplaces, the end product of a prediction market (PM) is information. Bitcoin adds the second piece of the puzzle: the exchange of value. The end result is the first of its kind: a market for actual prediction-commodities, which have a value based on their accuracy and not based on the behaviour of any administrator, rival trader, or counterparty.
 
 Traditional PMs have been persecuted much in the same way as e-cash systems, and current Bitcoin alternatives require the user to trust the operator to 1] keep funds safe, 2] create desirable markets, and 3] correctly determine the outcome of markets.  
@@ -10,7 +12,7 @@ Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) 
 Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) to understand "how it works".  
 Visit our new forum: http://forum.truthcoin.info/  
 
-<h3>Rough Comparison to Popular CryptoProjects</h3>
+<h4>Rough Comparison to Popular CryptoProjects</h4>
 
 | Concept   | P2P Coin| "Old" PoW Mining   | PMs - Trust 3rd Party (Administrator) | PMs - Trust 2nd Party (Traders) | Low-Trust PMs | Can Solve Computations | Score (X,*,.) |
 | :-------- | :------:| :--: | :--------:| :--: | :--------:| :--: | :--------:| :--: |
@@ -32,7 +34,7 @@ Table Notes:
 4. Given that 3 of the columns are about PMs, and even somewhat mutually-exclusive, the score column really isn't very meaningful.
 
 
-<h3>My Pipeline</h3>
+<h4>My Pipeline</h4>
 
 **Please be aware that this project exists only as a design with some proof of concept code for the novel parts. There is no useable version yet, although I expect it to be very easy to build.** In fact all the code/writing here was created solely by one guy (although we all stand on the shoulders of giants).  
 
@@ -40,7 +42,7 @@ I'm Working on Now: Rewrite new R items in python.
 I'm Working on Now: Evangelize via forum posts, FAQ improvements, etc.  
 Up Next: Seek development collaborators, and/or funding (for development). Anyone, anyone?  
 
-<h3>You Might Help By</h3> 
+<h4>You Might Help By</h4> 
 Asking questions to grow the FAQ.  
 Posting to the forum (I'll be adding more posts soon).  
 Telling your friends (especially developers/investors).  
