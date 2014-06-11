@@ -7,6 +7,7 @@ Contract outcomes are determined in a trustless and decentralized way, through a
 
 <h4>What's going on!?</h4>
 Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important".  
+Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) to understand "how it works".  
 Visit our new forum: http://forum.truthcoin.info/  
 
 <h3>Rough Comparison to Popular CryptoProjects</h3>
@@ -24,10 +25,10 @@ Visit our new forum: http://forum.truthcoin.info/
 
 Legend: X = "Yes (Inherently Supported)", . = "No (Inherently Unsupported)", * = "Can Build on Top of / Third-Party"
 
-Table Notes:
-1. Compiled on a best-effort basis. Mistake? Pull-request / email me.
-2. Emphasis is on differences across coins, so many similarities were ignored (token issuance).
-3. The question marks indicate some unproven claims, or vague theories, which have yet to be fully explored, tested, and resolved (these score as 'No'). When used after a concept name, they indicate that the concept does not yet exist.
+Table Notes:  
+1. Compiled on a best-effort basis. Mistake? Pull-request / email me.  
+2. Emphasis is on differences across coins, so many similarities were ignored (token issuance).  
+3. The question marks indicate some unproven claims, or vague theories, which have yet to be fully explored, tested, and resolved (these score as 'No'). When used after a concept name, they indicate that the concept does not yet exist.  
 4. Given that 3 of the columns are about PMs, and even somewhat mutually-exclusive, the score column really isn't very meaningful.
 
 
