@@ -20,7 +20,7 @@ Visit our new forum: http://forum.truthcoin.info/
 | Bitcoin       | X | X | * | * | . | *?| 2, 2, 2 |
 | BitsharesX ?  | X | . | * | X | . | . | 2, 1, 3 |
 | Counterparty  | X | X | X | * | . | . | 3, 1, 2 |
-| Etherium ?    | * | . | * | * | * | X | 1, 4, 1 |
+| Ethereum ?    | * | . | * | * | * | X | 1, 4, 1 |
 | Mastercoin    | X | X | X | * | . | . | 3, 1, 2 |
 | NXT Coin      | X | . | * | * | . | . | 1, 2, 3 |
 | USD           | . | . | * | * | . | . | 0, 2, 4 |
