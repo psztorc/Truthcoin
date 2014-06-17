@@ -6,8 +6,7 @@ Created on Sat Mar  8 20:39:36 2014
 """
 
 # "import Markets"
-runfile('C:/Users/Psztorc/Documents/GitHub/Truthcoin/pylib/market/Markets0.py', wdir=r'C:/Users/Psztorc/Documents/GitHub/Truthcoin/pylib/market')
-
+runfile('C:/Users/Psztorc/Documents/GitHub/Truthcoin/pylib/market/Markets.py', wdir=r'C:/Users/Psztorc/Documents/GitHub/Truthcoin/pylib/market')
 
 
 ### Trading Protocol and Market Maker ###
@@ -190,31 +189,4 @@ ShowPrices('Obama2012')
 Buy('Bob','Obama2012',1,.9999,True)
 ShowPrices('Obama2012')
 
-### NOT DONE !!!
-#
-#FinalSell <- function(uID,ID,State,S,Verbose=TRUE) {
-#  #This function takes over after the event's state has been determined, and all shares are either worth zero or the unit price.
-#  Judged <- BlockChain[[length(BlockChain)]]$Jmatrix
-#  ContractState <- -2
-#  ContractState <- try(Judged[Judged$Contract==ID,2])
-#  if(Verbose) print(paste("Determined State of this Market:", ContractState))
-#  
-#  #Which shares are valuable?
-#  if(ContractState<0) return("You cannot sell using this function until there is a consensus about the outcome.") 
-#  if(State!=ContractState) return("Shares of this state have value 0.") 
-#  OldShares <- Users[[uID]][[ID]][[paste("State",State,sep="")]]
-#  
-#  MarginalShares <- S*-1 #Users are expected to enter +3 if they wish to sell 3 shares, ie marginally change shares by -3.
-#  Cost <- MarginalShares # All shares have value 1, so this identiy holds.
-#    
-#  #Reduce shares, add Funds
-#  Users[[uID]][[ID]][[paste("State",State,sep="")]] <<- OldShares + MarginalShares #MarginalShares are negative
-#  Users[[uID]]$Cash <<-  Users[[uID]]$Cash - Cost #Cost is negative
-#  
-#  #Remove Funds and Shares from Market
-#  Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost  
-#  Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] + MarginalShares 
-#  
-#  if(Verbose) print(paste("FinalSold",-1*MarginalShares,"for",-1*Cost,"."))
-#  return(c(MarginalShares,Cost))
-#}  
+#Upon maturation (Voting), shares get swapped for currency.
