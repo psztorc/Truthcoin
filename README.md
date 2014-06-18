@@ -6,8 +6,9 @@ Traditional PMs have been persecuted much in the same way as e-cash systems, and
 Contract outcomes are determined in a trustless and decentralized way, through a weighted vote based on present and past consensus with a unique Nash Equilibrium where all voters report accurately on the state of markets. Incentives are to only create contracts which are useful (measured by trading volume), and unambiguous (measured by vote-similarity). Additionally, market liquidity (a frequent problem) is guaranteed to be permanently nonzero thanks to the LMSR, an invention of Dr. Robin Hanson. The LMSR's use of an update rule instead of actual Buy/Ask trading greatly simplifies implementation, while allowing for realtime buying and selling.
 
 <h4>What's going on!?</h4>
-Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important".  
-Visit our new forum: http://forum.truthcoin.info/  
+Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important". 
+Visit our [FAQ](https://github.com/psztorc/Truthcoin/tree/master/docs#faq).  
+Visit our [forum](http://forum.truthcoin.info/).  
 
 <h3>My Pipeline</h3>
 
