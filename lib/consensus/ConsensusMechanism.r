@@ -5,7 +5,7 @@
 
 
 try(setwd("~/GitHub/Truthcoin/lib"))
-#To my knowledge, R does not feature 'automatic working directories' uneless it is being run as a script
+#To my knowledge, R does not feature 'automatic working directories' unless it is being run as a script
 
 source("consensus/CustomMath.r")
 
