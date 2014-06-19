@@ -6,7 +6,7 @@
 <h2>Block Validation Requirements</h2>
 <h3>Data Sets</h3>
 
-![Figure](/figure/DataSets.jpg "Clarifying Figure")
+![Figure](/docs/Development Plans/figure/DataSets.jpg "Clarifying Figure")
 
 <h4>F Set</h4>
 **(Owner: 160-bit address, Cash: 64-bit integer)**  
