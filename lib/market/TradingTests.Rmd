@@ -15,29 +15,31 @@ CreateAccount("Bob",50)
 Users
 
 Markets
-CreateMarket(Title="Obama",
-             B=1,
-             D.State=list(
-               c("Did Barack H Obama win the United States 2012 presidential election?")
-               ),
-             Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
-             Tags=c("Politics, UnitedStates, President, Winner"),
-             MatureTime=5,
-             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh")
+names(Markets)
 
-CreateMarket(Title="Hillary",
-             B=3.5,
-             D.State=list(
-               c("Did Hillary R Clinton win the United States 2016 presidential election?"),
-               c("Do registered Democrats control a majority of both the House and Senate following 2016 elections?")
-               ),
-             Description="Hillary Clinton and Democratic Congress.",
-             Tags=c("Politics, UnitedStates, President, Winner"),
-             MatureTime=5,
-             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh")
-
-
-Markets
+names(Markets) <- c("Obama", "Hillary")  #ultra-cheap workaround
+# Temporarily Obsolete
+# CreateMarket(Title="Obama",
+#              B=1,
+#              D.State=list(
+#                c("Did Barack H Obama win the United States 2012 presidential election?")
+#                ),
+#              Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
+#              Tags=c("Politics, UnitedStates, President, Winner"),
+#              MatureTime=5,
+#              OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh")
+# 
+# CreateMarket(Title="Hillary",
+#              B=3.5,
+#              D.State=list(
+#                c("Did Hillary R Clinton win the United States 2016 presidential election?"),
+#                c("Do registered Democrats control a majority of both the House and Senate following 2016 elections?")
+#                ),
+#              Description="Hillary Clinton and Democratic Congress.",
+#              Tags=c("Politics, UnitedStates, President, Winner"),
+#              MatureTime=5,
+#              OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh")
+# Markets
 ```
 
 ```{r Functions,echo=FALSE,message=FALSE}
