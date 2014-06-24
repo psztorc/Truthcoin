@@ -1,11 +1,11 @@
-#Consensus Mechanism
-#This is the mechanism that, theoretically,
+# Consensus Mechanism
+# This is the mechanism that, theoretically,
  #   1] allows the software to determine the state of Decisions truthfully, and
  #   2] only allows an efficient number of most-traded-upon-Decisions.
 
 
 try(setwd("~/GitHub/Truthcoin/lib"))
-#To my knowledge, R does not feature 'automatic working directories' unless it is being run as a script
+# To my knowledge, R does not feature 'automatic working directories' unless it is being run as a script
 
 source("consensus/CustomMath.r")
 
@@ -189,11 +189,11 @@ Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   Filled <- FillNa(MScaled, Rep, ScaledIndex, CatchP, Verbose)
 
   ## Consensus - Row Players 
-  #New Consensus Reward
+  # New Consensus Reward
   PlayerInfo <- GetRewardWeights(Filled,Rep,.1,Verbose)
   AdjLoadings <- PlayerInfo$FirstL
   
-  ##Column Players (The Decision Creators)
+  ## Column Players (The Decision Creators)
   # Calculation of Reward for Decision Authors
   # Consensus - "Who won?" Decision Outcome 
   DecisionOutcomes.Raw <- PlayerInfo$SmoothRep %*% Filled #Declare (all binary), Simple matrix multiplication ... highest information density at RowBonus, but need DecisionOutcomes.Raw to get to that
@@ -204,9 +204,9 @@ Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   
   #The Outcome Itself
   #Discriminate Based on Contract Type
-  DecisionOutcome.Final <- mapply(Catch,DecisionOutcomes.Raw,Tolerance=CatchP) #Declare first (assumes all binary) 
-  DecisionOutcome.Final[ScaledIndex] <- DecisionOutcomes.Raw[ScaledIndex]      #Replace Scaled with raw (weighted-median)
-  DecisionOutcome.Final <- t( Scales["Max",] - Scales["Min",] ) %*% diag( DecisionOutcome.Final )    #Rescale these back up.
+  DecisionOutcome.Adj <- mapply(Catch,DecisionOutcomes.Raw,Tolerance=CatchP) #Declare first (assumes all binary) 
+  DecisionOutcome.Adj[ScaledIndex] <- DecisionOutcomes.Raw[ScaledIndex]      #Replace Scaled with raw (weighted-median)
+  DecisionOutcome.Final <- t( Scales["Max",] - Scales["Min",] ) %*% diag( DecisionOutcome.Adj )    #Rescale these back up.
   DecisionOutcome.Final <- DecisionOutcome.Final + Scales["Min",]                                        #Recenter these back up.
   
   # Quality of Outcomes - is there confusion?
@@ -215,12 +215,11 @@ Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   # Scaled first:
   DecisionOutcome.Final
   for(i in 1:ncol(Filled)) { #For each Decision
-    Certainty[i] <- sum( PlayerInfo$SmoothRep [ DecisionOutcomes.Raw[i] == Filled[,i] ] )  # Sum of, the reputations which, met the condition that they voted for the outcome which was selected for this Decision.
+    Certainty[i] <- sum( PlayerInfo$SmoothRep [ DecisionOutcome.Adj[i] == Filled[,i] ] )  # Sum of, the reputations which, met the condition that they voted for the outcome which was selected for this Decision.
   }
-  # Overwrite Binary:
-  Certainty[!ScaledIndex] <- abs(2*(DecisionOutcomes.Raw[!ScaledIndex]-.5))    # .5 is obviously undesireable for binaries, this function travels from 0 to 1 with a minimum at .5
-  ConReward <- GetWeight(Certainty)                  #Grading Authors on a curve. -not necessarily the best idea? may just use Certainty instead
-  Avg.Certainty <- mean(Certainty)                   #How well did beliefs converge?
+  
+  ConReward <- GetWeight(Certainty)   #Grading Authors on a curve. -not necessarily the best idea? may just use Certainty instead
+  Avg.Certainty <- mean(Certainty)    #How well did beliefs converge?
   
  
   if(Verbose) {
