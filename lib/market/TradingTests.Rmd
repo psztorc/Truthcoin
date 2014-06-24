@@ -14,32 +14,27 @@ CreateAccount("Alice",10)
 CreateAccount("Bob",50)
 Users
 
-Markets
 names(Markets)
 
-names(Markets) <- c("Obama", "Hillary")  #ultra-cheap workaround
-# Temporarily Obsolete
-# CreateMarket(Title="Obama",
-#              B=1,
-#              D.State=list(
-#                c("Did Barack H Obama win the United States 2012 presidential election?")
-#                ),
-#              Description="Barack Obama to win United States President in 2012\nThis contract will expire in state 1 if the statement is true and 0 otherwise.",
-#              Tags=c("Politics, UnitedStates, President, Winner"),
-#              MatureTime=5,
-#              OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh")
-# 
-# CreateMarket(Title="Hillary",
-#              B=3.5,
-#              D.State=list(
-#                c("Did Hillary R Clinton win the United States 2016 presidential election?"),
-#                c("Do registered Democrats control a majority of both the House and Senate following 2016 elections?")
-#                ),
-#              Description="Hillary Clinton and Democratic Congress.",
-#              Tags=c("Politics, UnitedStates, President, Winner"),
-#              MatureTime=5,
-#              OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh")
-# Markets
+CreateMarket(Title="Obama", B=1, TradingFee=.01,
+             D_State=list( "184b97f33923f30a9f586827b400676e" ), #Decisions
+             Description="Barack Obama to win United States President in 2012\nThis Market will expire in state 1 if the statement is true and 0 otherwise.",
+             Tags=c("Politics, UnitedStates, President, Winner"),
+             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+             )
+
+CreateMarket(Title="Hillary", B=2.5, TradingFee=.005,
+             D_State=list( # This market has 2 dimensions. 
+                       c("2024304e88665e58b3147b9bfd33fb1f"),  # 2 x 2 = 4 States
+                       c("4bb76625de425c29ce52150cc5b3f160")
+                       ),
+             Description="Hillary and Congress",
+             Tags=c("en", "UnitedStates", "Politics", "President", "Congress"),
+             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+             )
+
+names(Markets)
+
 ```
 
 ```{r Functions,echo=FALSE,message=FALSE}
@@ -101,15 +96,23 @@ Basics
 -----------------------
 ```{r Tests1}
 
-#Tests/Demo
 ShowPrices("Obama")
+#  d1.No d1.Yes 
+#    0.5    0.5 
 ShowPrices("Hillary")
+#        d2.No d2.Yes
+# d1.No   0.25   0.25
+# d1.Yes  0.25   0.25
 
 QueryMove("Obama",State=1,P=.6) #
+# [1] 0.4054651 
 QueryMove("Hillary",State=3,P=.30) #higher B increases liquidity
+# [1] 0.6282861
 
 QueryCost("Obama",State=2,S=1) #cost for 1 share
+# [1] 0.6201145
 QueryCost("Hillary",State=1,S=1)
+# [1] 0.2899116
 
 ```
 
@@ -123,6 +126,7 @@ Simple <- CaptureSequence(
   c(.6,.7,.6,.8,.6,.5,.7,seq(.7,.99,length.out=15)))
 
 MarketVisual(EmbellishRows(Simple))
+# Produces a plot showing sample trades (0-10), and then a demo of linear incrase in Market Price corresponding to geometric growth in Trade Cost.
 ```
 
 Trades Revealing Effect of LMSR
@@ -136,6 +140,7 @@ Markets$Obama$Shares[1]  <- 10 #force possibility of lower price
 Markets$Obama$Shares[2]  <- 10 #force possibility of lower price
 
 MarketVisual(EmbellishRows(CaptureSequence(seq(.5,.95,length.out=30))))
+# Graphic: linear incrase in Market Price (ie "Price Change") corresponds to geometric growth in Trade Cost.
 
 
 #Self-Financing Effect
@@ -147,6 +152,8 @@ plot(CostPerShare~MarketPrice , data=SFE,main="The 'Self-Financing Effect II'",s
 
 #In fact, setting the probability to 1 is always impossible (very realistic).
 QueryMoveCost("Obama",1,1)
+# [1] Inf
+
 
 #Set 2
 ResetAlice()
@@ -189,16 +196,58 @@ lines(dLMSR3$Cash,dLMSR3$MarketPrice)
 axis(side = 2, at = c(.9,.99,.999,.9999),las=2)
 axis(side = 1, at = seq(998,980,by=-2.302),las=2)
 box()
+# Graphic: Although we've spent the same amount (2.302), price increase is geometrically-decreasing (+0.0900, +0.0090, +0.0009, ...)
 
 ```
 
+Redemptions
+-------------------------------
 
-```{r FinalSell}
+```{r Redeptions}
+
+Buy(uID="Alice",ID="Obama",State=2,P=.7,Verbose=TRUE)
+# [1] "Calulating Required Shares... 0.847297860387203"
+# [1] "Determining Cost of Trade... 0.510825623765991"
+# [1] "Fee: 0.00510825623765991"
+# [1] "Bought 0.847297860387203 for 0.51593388000365 ."
+# [1] 0.8472979 0.5159339
+ShowPrices("Obama")
+#  d1.No d1.Yes 
+#    0.3    0.7 
+
+Redeem(uID="Alice",ID="Obama",State=2,S=.8,Verbose=TRUE)
+# [1] "You cannot redeem (sell) using this function until there is a consensus about the outcome."
+# [1] -1
+
+Markets$Obama$State <- 2  # obviously, never would the user set or edit this.
+
+Redeem(uID="Alice",ID="Obama",State=2,S=.8,Verbose=TRUE)
+# [1] "This market contains Disputed Decisions. Funds are frozen during audit."
+# [1] -2
+
+Markets$Obama$State <- 3  # contract's Decisions are all finished  (would be set automatically)
+GetFinalPrices(Markets$Obama) # Requres that all Decisions be resolved. (These results were assumed).
+#  d1.No d1.Yes 
+#      0      1 
+
+Redeem(uID="Alice",ID="Obama",State=2,S=.84,Verbose=TRUE)
+# [1] "FinalSold 0.84 for 0.84 ."
+# [1] -0.84   -0.84 
 
 Users$Alice
-FinalSell("Alice","Obama",1,9.21024)
-Users$Alice
-Markets$Obama
+# $Cash
+# [1] 10.32407
+# 
+# $Obama
+#     State2 
+# 0.00729786 
+
+Markets$Obama$Balance
+# [1] 0.3639728
+
+Markets$Obama$Shares
+#      d1.No     d1.Yes 
+# 0.00000000 0.00729786 
 
 ```
 

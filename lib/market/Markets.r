@@ -14,6 +14,8 @@ CreateDecisionSpace <- function() {
   # Only run this once ...(will erase everything and create a new dataset, otherwise).
 
    Temp <- data.frame(Decision_ID="xcharacter",
+                      State=0,             # The status of this Decision (-1 = Resolved, 0 = No Attempts, N = N failed resolution attempts)
+                      RuledOutcome=NA,     # The post-judgement result.
                       Size=0,
                       Branch="character",
                       Prompt="character",
@@ -26,7 +28,7 @@ CreateDecisionSpace <- function() {
   
   Finalized <- Temp[-1,] # erase dummy row
   
-  Decisions <<- Finalized #global assign
+  Decisions <<- Finalized # global assign
   
 }
 
@@ -107,12 +109,12 @@ FillDecisionInfo <- function(UnfilledDecision, Verbose=FALSE) {
   
   NewDecision <- UnfilledDecision
 
-  # md5 hashes the Market, ignoring the hash field for reproduceability, and the shares/balance fields for consistency.
-  x <- unlist(UnfilledDecision[-1:-2])
+  # md5 hashes the Decision, ignoring all mutable fields.
+  x <- unlist(UnfilledDecision[-1:-4])
   NewDecision$Decision_ID <- digest(x, "md5")
   
   #Size of the Decision in bytes. This may be requried to prevent spam.
-  x <- deparse(UnfilledDecision[-1:-2])
+  x <- deparse(UnfilledDecision[-1:-4])
   if(Verbose) {print("Getting Bytes..."); print(x)}
   NewDecision$Size <- sum(nchar(x, type="bytes"))
   
@@ -129,6 +131,9 @@ AddDecision <- function(Branch, Prompt, OwnerAd, EventOverBy, Scaled=FALSE, Min=
   
   Temp <- data.frame(Decision_ID=NA,
                      Size=NA,
+                     State=0,         # Ie, no Judgement has occured.
+                     RuledOutcome=NA, # Obviously, we don't know it yet.
+                     
                      Branch=Branch,
                      Prompt=Prompt,
                      OwnerAd=OwnerAd,
@@ -355,58 +360,83 @@ M1f <- FillMarketInfo(M1)
 M2f <- FillMarketInfo(M2)
 
 
-#Possibly Obsolete
-GetDecisionRows <- function(Market) {
-  #Takes a Market and returns the set of Decisions that will need to be made
-  #Build IDs for UJ
-  Dim <- GetDim(Market,0)
-  UJ_ID <- vector(length=0)
+GetOutcomeAxis <- function(DecisionAxis, Verbose=FALSE) {
+  N <- length(DecisionAxis)
+  PreCompressedAxis <- matrix(NA, nrow=N, ncol=(N+1))
+  for(j in 1:N) {
+    Pair <- Decisions[Decisions$Decision_ID == DecisionAxis[j], "RuledOutcome"]
+    PreCompressedAxis[j,(j+1)] <- Pair
+  }
   
-  for(i in 1:length(Dim)) UJ_ID <- c(UJ_ID, rep(i,Dim[i]) )
-
-  Dvec <- (1:length(Dim))[UJ_ID] #Dimensions
-  Svec <- unlist( lapply(X=GetDim(Market,0),FUN=function(x) 1:x) ) #State-dividers
-
-  DfStates <- data.frame("IDc"=Market$Market_ID,
-                         "IDd"=Dvec,
-                         "IDs"=Svec,
-                         "IDd"=unlist(Market$D_State)[ names(unlist(Market$D_State))=="Decision_ID" ],
-                         "T"=unlist(Market$D_State)[ names(unlist(Market$D_State))=="EventOverBy" ],
-                         "UJ"=unlist(Market$D_State)[ names(unlist(Market$D_State))=="Prompt" ],
-                         "J"=.5)
-  return(DfStates)
-}
-
-# GetDecisionRows(M1f)
-# GetDecisionRows(M2f)
-
-#Possibly Obsolete
-MapJudgement <- function(Results,Market) {
+  if(Verbose) print(PreCompressedAxis)
   
-  #Filter on correct Market.
-  # (hasnt been done yet)
+  Out <- apply(PreCompressedAxis,2,function(x) mean(x,na.rm=TRUE))
+  if(sum(Out, na.rm=TRUE) !=0) Out <- Out/sum(Out, na.rm=TRUE)  # renormalize (as long as we don't divide by zero)
   
-  #Market undecided - kick out to -1
-  if(sum(Results$J==.5)>0) return(-2)
+  Null <- 1 - sum(Out, na.rm=TRUE)
+  Out[1] <- Null
   
-  #Decided Markets ...traverse the OutComeSpace
-  Results$T <- Results$IDs*Results$J + 1  # +1 for index.. R does not count from zero
-  PreState <- 1:length(GetDim(Market))
-  for(i in 1:length(PreState)) PreState[i] <- max(Results$T[Results$IDd==i])
-  
-  State <- GetSpace(Market)[PreState[1],PreState[2],PreState[3]]
-  return(State)
+  return(Out)
   
 }
 
-#Assume some results
-#
-# > Results <- GetDecisionRows(M2f)
-# > Results$J <- c(0,0,0,0,0,1)
-# > Results
-#
-# > MapJudgement(Results,M2f)
-# [1] 17
+# Assume some Results
+Decisions$State <- -1
+Decisions$RuledOutcome <- c(1, 1, .4, .7, .9, 0, 0) # the most ridiculous results possible.
+
+# > GetOutcomeAxis(  M2$D_State[[1]] , TRUE )
+#       [,1] [,2]
+# [1,]   NA    1
+# [1] 0 1
+# > GetOutcomeAxis(  M2$D_State[[2]] , TRUE )
+#       [,1] [,2] [,3] [,4]
+# [1,]   NA  0.4   NA   NA
+# [2,]   NA   NA  0.7   NA
+# [3,]   NA   NA   NA  0.9
+# [1] 0.00 0.20 0.35 0.45
+# > GetOutcomeAxis(  M2$D_State[[3]] , TRUE )
+#       [,1] [,2] [,3]
+# [1,]   NA    0   NA
+# [2,]   NA   NA    0
+# [1] 1 0 0
+
+Use("tensor")
+
+GetFinalPrices <- function(Market, Verbose=FALSE) {
+  
+  # Check Market State
+  if( Market$State !=3 ) {
+    print("This market does not yet HAVE final price. It is either being traded or audited.")
+    return(-1) }
+
+  # Get Each Axis of this Market
+  nDim <- length(Market$D_State)
+  Axes <- vector("list",nDim)
+  for(i in 1:nDim) {
+    Axes[[i]] <- GetOutcomeAxis( Market$D_State[[i]] )
+  }
+  
+  # R cant handle array multiplication, in something-like-MATLAB, this would be simpler: Axes[[1]] * Axes[[2]] * Axes[[3]] 
+  Accumulator <- Axes[[1]]
+  
+  if( nDim > 1) {
+    for(i in 2:nDim) {
+      Accumulator <- tensor(Accumulator, Axes[[i]]) # requires tensor package
+    }
+  }
+  
+  # reshape accumulated data into original format
+  Out <- array( melt(Accumulator)$value,      
+                dim=GetDim(Market),
+                dimnames=dimnames(GetSpace(Market)) ) 
+  
+  return(Out)
+  
+}
+
+GetFinalPrices(M1)
+GetFinalPrices(M2)
+
 
 
 ## Marketplace Creation ##

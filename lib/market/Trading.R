@@ -19,7 +19,7 @@ QueryMove <- function(ID,State,P) {
   S <- exp(Markets[[ID]]$Shares/Markets[[ID]]$B)
   Sstar <- Markets[[ID]]$B* ( log(P/(1-P)) + log(sum(S[-State])) )
   Marginal <- Sstar -Markets[[ID]]$Shares[State]
-  return(Marginal)
+  return(Marginal[[1]]) # drop column names
 }
 
 
@@ -90,6 +90,9 @@ Buy <- function(uID,ID,State,P,Verbose=TRUE) {
 Sell <- function(uID,ID,State,P,Verbose=TRUE) {
   
   # Check Market Eligibility
+  if(Markets[ID]$State > 0) {
+    print("This market contains Disputed Decisions. Funds are frozen during audit.") 
+    return(-1) }
   
   # Calculate Required Cost
   Cost <- QueryMoveCost(ID,State,P)
@@ -116,28 +119,43 @@ Sell <- function(uID,ID,State,P,Verbose=TRUE) {
 
 Redeem <- function(uID,ID,State,S,Verbose=TRUE) {
   
-  # This function takes over after the event's state has been determined, and all shares are either worth zero or the unit price.
-  Judged <- BlockChain[[length(BlockChain)]]$Jmatrix
-  ContractState <- -2
-  ContractState <- try(Judged[Judged$Contract==ID,2])
-  if(Verbose) print(paste("Determined State of this Market:", ContractState))
+  # This function takes over after the event's state has been determined, and all shares now have a fixed value
   
-  # Which shares are valuable?
-  if(ContractState<0) return("You cannot sell using this function until there is a consensus about the outcome.") 
-  if(State!=ContractState) return("Shares of this state have value 0.") 
+  # Check Market Eligibility
+  ContractState <- Markets[[ID]]$State
+  
+  if(ContractState==1) {
+    print("You cannot redeem (sell) using this function until there is a consensus about the outcome.") 
+    return(-1) }
+  
+  if(ContractState==2) {
+    print("This market contains Disputed Decisions. Funds are frozen during audit.") 
+    return(-2) }
+  
+  # Check Share Ownership
   OldShares <- Users[[uID]][[ID]][[paste("State",State,sep="")]]
-  
   MarginalShares <- S*-1 # Users are expected to enter +3 if they wish to sell 3 shares, ie marginally change shares by -3.
-  Cost <- MarginalShares # All shares have value 1, so this identity holds.
+  if(OldShares<(-1*MarginalShares)) { # Remember, shares are negative.
+    print("Insufficient Shares") 
+    return(-3) }
+  
+  # Calculate Share Value (Simple joint-probability), and extracts the relevant price.
+  FinalPrice <- GetFinalPrices(Markets[[ID]])[State]
+  Cost <- MarginalShares*FinalPrice[[1]] # All shares have equal value, [[1]] to trim label 
     
   #Reduce shares, add Funds
-  Users[[uID]][[ID]][[paste("State",State,sep="")]] <<- OldShares + MarginalShares #MarginalShares are negative
-  Users[[uID]]$Cash <<-  Users[[uID]]$Cash - Cost #Cost is negative
+  Users[[uID]][[ID]][[paste("State",State,sep="")]] <<- OldShares + MarginalShares # MarginalShares are negative
+  Users[[uID]]$Cash <<-  Users[[uID]]$Cash - Cost # Cost is negative
   
   #Remove Funds and Shares from Market
-  Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost  
+  Markets[[ID]]$Balance <<-  Markets[[ID]]$Balance + Cost 
   Markets[[ID]]$Shares[State] <<- Markets[[ID]]$Shares[State] + MarginalShares 
   
   if(Verbose) print(paste("FinalSold",-1*MarginalShares,"for",-1*Cost,"."))
   return(c(MarginalShares,Cost))
+  
+  # Older stuff
+#   ContractState <- try(Judged[Judged$Contract==ID,2])
+#   if(Verbose) print(paste("Determined State of this Market:", ContractState))
+#   Judged <- BlockChain[[length(BlockChain)]]$Jmatrix
 }  
