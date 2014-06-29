@@ -12,7 +12,7 @@ Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) 
 Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) to understand "how it works".  
 Visit our [FAQ](https://github.com/psztorc/Truthcoin/tree/master/docs#faq).  
 Visit our [forum](http://forum.truthcoin.info/).  
-Draft of a [presentation](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pdf)on why this project may be worth your attention, even if you only care about money. ([Powerpoint (with notes)](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pptx).  
+Draft of a [presentation](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pdf) on why this project may be worth your attention, even if you only care about money ([.pptx (with notes)](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pptx)).  
 
 
 <h4>Rough Comparison to Popular CryptoProjects</h4>
