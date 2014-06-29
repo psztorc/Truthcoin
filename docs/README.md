@@ -6,6 +6,7 @@ Papers
 -------------------------------
 
 [Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) - My whitepaper describing a software protocol which creates and manages decentralized prediction markets (PMs).  
+[TruthcoinValuable.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pdf) - A simple slide deck on the potential return available to contributing investors / programmers ([TruthcoinValuable.pptx](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pptx) contains the presentation notes.  
 
 Other papers which describe the overall purposes and goals of this endeavour:  
 
