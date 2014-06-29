@@ -1,6 +1,6 @@
 
 ### Trading Protocol and Market Maker ###
-# try(setwd("~/GitHub/Truthcoin/lib"))
+tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'lib' folder:")) )
 source(file="market/Markets.r")
 
 # The following functions have little meaning in markets that have no trading activity (ie, shares always zero, prices always uniform)
