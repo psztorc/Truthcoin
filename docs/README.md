@@ -116,7 +116,7 @@ Other thoughts: http://www.sirc.org/articles/policy_analysis.shtml
 
 Votes cross-validate other votes, in addition to suppling the data used for Outcome-calculation.
 
-####Why dont you...?
+####Why don't you...?
 
 The idea I published was not my **first** idea for a Trustless PM, it was my **best**. I probably *did* think of whatever you have in mind, but feel free to ask anyway (if you'd like to know why I didn't select it).
 
@@ -155,7 +155,7 @@ Generally, many ideas ignore...
 I did not base my own choice on trial-and-error, I instead based it on my day-to-day real-world truth-finding experiences.
 
 ####In practice everyone [may] pull their data from some kind of external data feed. Presumably they'll use whatever is simplest and cheapest, then they'll be stuck with that until it completely breaks...
-This concern has only been voiced for scaled claims, not binaries (which probably are novel and don't have a feed). If Voters are instructed to use a few external sources (for comparison), they can double-check their answers (of course, if they believe others will NOT double-check, they will not either, so they might not), or more importantly switch to a new source if the first is broken. I personally find it highly unlikely that Yahoo or Google will start publishing wildly disparate financial index data, as they have every reason to ensure that the data is accurate.
+This concern has only been voiced for scaled claims, not binaries (which probably are novel and don't have a feed). If Voters are instructed to use a few external sources (for comparison),Do they can double-check their answers (of course, if they believe others will NOT double-check, they will not either, so they might not), or more importantly switch to a new source if the first is broken. I personally find it highly unlikely that Yahoo or Google will start publishing wildly disparate financial index data, as they have every reason to ensure that the data is accurate.
 
 ####It sounds a lot like you've reinvented...
 So far, people have written in 'Bayesian Truth Serum', ["Thirteen theorems in search of the truth."](http://www.socsci.uci.edu/~bgrofman/69%20Grofman-Owen-Feld-13%20theorems%20in%20search%20of%20truth.pdf), [EigenTrust](http://en.wikipedia.org/wiki/EigenTrust), and a few other things (that weren't quite right).
