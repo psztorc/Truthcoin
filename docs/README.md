@@ -30,6 +30,7 @@ I worked hard to explain my point of view. Here I chronicle the disrespectful at
 |[maaku](https://news.ycombinator.com/item?id=7691919)|[Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) I.a.ii.2.b |"Except that analysis only holds when you assume participants are honest, or there are no derivatives." | 
 |[freshhawk](https://news.ycombinator.com/item?id=7691289)|[Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) I.a.ii.2.b [Truthcoin_1.1.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) II.b|"The defence here is the assumption that the usefulness of the market long term will motivate people to vote "fairly"."|
 |[maaku](https://news.ycombinator.com/item?id=7693254)|[1_Purpose.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) "What are prediction markets?" [5_PM_Manipulation.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/5_PM_Manipulation.pdf)|"Sounds a lot like a "synthetic asset" which is constructed from derivatives rather than the other way around. Synthetic assets are very much vulnerable to manipulation by whales."|
+|[tonyk](https://bitsharestalk.org/index.php?topic=4942.msg70130#msg70130)|[1_Purpose.pdf](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) |"...you have an academic purpose with this project that is very foggy to me"|
 
 
 Talking without knowing is **lying**. If you don't know something (for example, because you haven't read about it), then **be quiet**. 
