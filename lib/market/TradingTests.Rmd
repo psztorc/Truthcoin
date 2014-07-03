@@ -17,7 +17,7 @@ Users
 names(Markets)
 
 CreateMarket(Title="Obama", B=1, TradingFee=.01,
-             D_State=list( "184b97f33923f30a9f586827b400676e" ), #Decisions
+             D_State=list( "184b97f33923f30a9f586827b400676e" ), #Decisions (just one: will Barack be Elected)
              Description="Barack Obama to win United States President in 2012\nThis Market will expire in state 1 if the statement is true and 0 otherwise.",
              Tags=c("Politics, UnitedStates, President, Winner"),
              OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
@@ -25,7 +25,7 @@ CreateMarket(Title="Obama", B=1, TradingFee=.01,
 
 CreateMarket(Title="Hillary", B=2.5, TradingFee=.005,
              D_State=list( # This market has 2 dimensions. 
-                       c("2024304e88665e58b3147b9bfd33fb1f"),  # 2 x 2 = 4 States
+                       c("2024304e88665e58b3147b9bfd33fb1f"),  # k=1 x k=1 => (k+1) x (k+1) => 2 x 2 Market with 4 States
                        c("4bb76625de425c29ce52150cc5b3f160")
                        ),
              Description="Hillary and Congress",
