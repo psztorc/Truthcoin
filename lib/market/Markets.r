@@ -6,6 +6,11 @@ Use <- function(package) { if(suppressWarnings(!require(package,character.only=T
 options(stringsAsFactors = FALSE)
 Use('digest')
 
+## Global Parameters
+
+FeePerKb=.0001          # Message Fee (discourage spam)
+SpaceFee=log(8)/(8^2)  #Second listing fee...designed to lightly discourage low-k, high-n Markets with more than N=256 states. Recall, set st f1(x) = a(x^2) = f2(x) = b (log(x)) @ x=8 
+
 
 ## Global Data Sets ##
 
@@ -36,23 +41,30 @@ CreateBranchSpace <- function() {
   # Creates the dataset we use to store Branches
   # Only run this once ...(will erase everything and create a new dataset, otherwise).
   
-  Branches <<- data.frame(Name="Main",
-                          ExodusAddress="1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8", # which coin was split to make the Votecoins for this branch
-                          Description="The main Votecoin branch, for all your Prediction Market needs. \n Rules: 1] Decisions involving violence (murder, threats, theft, destruction) in ANY WAY resolve to .5",
-                          
-                          BaseListingFee=.01,
-                          FreeDecisions=5,        # First 5 Decisions are free
-                          TargetDecisions=75,     # Next 70 Decisions cost .01
-                          MaxDecisions=300,       # Decisions become incrementally more expensive from 76-300, after which they cannot be added.
-                          
-                          MinimumTradingFee=.0001, # Voters want at least (1/2) of this.
-                          
-                          VotingPeriod=4032,       # Vote every 4032 blocks, or every 4 weeks (once a month) [might use regular time instead, if reliable?]
-                          BallotTime=1008,         # Time between 'start of voting' and 'voting deadline'. Submit Ballots during this time.
-                          UnsealTime=1008,         # Time between 'votind deadline' and 'unseal deadline'. Submit private keys during this time.
-                          
-                          ConsensusThreshold=.75
+  Branches <<- data.frame(
+                    ID=NA,
+                    Name="Main",
+                    
+                    ExodusAddress="1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8", # which coin was split to make the Votecoins for this branch
+                    Description="The main Votecoin branch, for all your Prediction Market needs. \n Rules: 1] Decisions involving violence (murder, threats, theft, destruction) in ANY WAY resolve to .5",
+                    
+                    BaseListingFee=.01,
+                    FreeDecisions=5,        # First 5 Decisions are free
+                    TargetDecisions=75,     # Next 70 Decisions cost .01
+                    MaxDecisions=300,       # Decisions become incrementally more expensive from 76-300, after which they cannot be added.
+                    
+                    MinimumTradingFee=.0001, # Voters want at least (1/2) of this.
+                    
+                    VotingPeriod=4032,       # Vote every 4032 blocks, or every 4 weeks (once a month) [might use regular time instead, if reliable?]
+                    BallotTime=1008,         # Time between 'start of voting' and 'voting deadline'. Submit Ballots during this time.
+                    UnsealTime=1008,         # Time between 'votind deadline' and 'unseal deadline'. Submit private keys during this time.
+                    
+                    ConsensusThreshold=.75   # To address the 51% buyup attack. [optional]
                           )
+  
+  ID <- digest(unlist(Branches[1,-1]), "md5")
+  Branches[1,"ID"] <<- ID
+  
 }
 
 AddBranch <- function(Name, ExodusAddress, Description, BaseListingFee, FreeDecisions, TargetDecisions, MaxDecisions, MinimumTradingFee, 
@@ -74,26 +86,33 @@ AddBranch <- function(Name, ExodusAddress, Description, BaseListingFee, FreeDeci
     print("Irregular overlap in voting periods. Provide longer inter-consensus time, or shorten Ballot / Unseal times.")
     return(-3)
   }  
-  
 
-  Branches <<- rbind(Branches, data.frame(Name=Name,
-                                          ExodusAddress=ExodusAddress,
-                                          Description=Description,
-                                          
-                                          BaseListingFee=BaseListingFee,
-                                          FreeDecisions=FreeDecisions,
-                                          TargetDecisions=TargetDecisions,
-                                          MaxDecisions=MaxDecisions,
-                                          
-                                          MinimumTradingFee=MinimumTradingFee,
-                                          
-                                          VotingPeriod=VotingPeriod,
-                                          BallotTime=BallotTime,
-                                          UnsealTime=UnsealTime,
-                                          
-                                          ConsensusThreshold=ConsensusThreshold
-                                          )
-                     )
+  IncomingBranch <- data.frame(
+                     ID='filled_later',
+                     Name=Name,
+                     
+                     ExodusAddress=ExodusAddress,
+                     Description=Description,
+                     
+                     BaseListingFee=BaseListingFee,
+                     FreeDecisions=FreeDecisions,
+                     TargetDecisions=TargetDecisions,
+                     MaxDecisions=MaxDecisions,
+                     
+                     MinimumTradingFee=MinimumTradingFee,
+                     
+                     VotingPeriod=VotingPeriod,
+                     BallotTime=BallotTime,
+                     UnsealTime=UnsealTime,
+                     
+                     ConsensusThreshold=ConsensusThreshold
+  )
+  
+  ID <- digest(unlist(IncomingBranch[1,-1]), "md5")
+  IncomingBranch[1,"ID"] <- ID
+  
+  Branches <<- rbind(Branches, IncomingBranch)
+   
 }
 
 
@@ -204,7 +223,7 @@ AddDecision(Branch="Politics", Prompt="Did the Democratic Party win (only) a maj
 AddDecision(Branch="Politics", Prompt="Did the Democratic Party win a two-thirds supermajority of House seats (290+)?",
             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh", EventOverBy=5)
 
-## Sample Markets ##
+## M1 and M2, two Example Markets ##
 M1 <- list(
           # features which change during trading
   
@@ -250,7 +269,7 @@ M2 <- list(Market_ID=NA,
 
 ## Functions to Define/Set Attributes of Markets
 LongForm <- function(Ctr) return(unlist(Ctr))
-#unlists the info - easier to hash (convienience only)
+# unlists the info - easier to hash (convienience only)
 
 
 GetId <- function(Market) {
@@ -266,7 +285,7 @@ GetId <- function(Market) {
 
 
 GetSize <- function(Market,Verbose=FALSE) {
-  #Size of the Market in bytes. This may be requried to prevent spam.
+  # Size of the Market in bytes. This may be requried to prevent spam.
   x <- deparse(Market[-1:-6])
   if(Verbose) {print("Getting Bytes..."); print(x)}
   return( sum(nchar(x, type="bytes")) )
@@ -279,10 +298,10 @@ GetSize <- function(Market,Verbose=FALSE) {
 
 
 GetDim <- function(Input, Raw=TRUE) {
-  #Infers, from the D_State ("decision space") the total size of this Markets.
+  # Infers, from the D_State ("decision space") the total size of this Markets.
   Dim <- unlist( lapply(Input$D_State,length) )
   if(Raw) Dim <- Dim + 1
-  #each question corresponds to one partition of the space, thus for each dimension N questions yeilds N+1 states
+  # each question corresponds to one partition of the space, thus for each dimension N questions yeilds N+1 states
   return(Dim)
 }
 
@@ -293,7 +312,7 @@ GetDim <- function(Input, Raw=TRUE) {
 
 
 GetSpace <- function(Market, Verbose=FALSE) {
-  #Takes a Market, specifically its D_States, and constructs the array of possible ending states.
+  # Takes a Market, specifically its D_States, and constructs the array of possible ending states.
   Dim <- GetDim(Market)
   if(Verbose) { print(paste( "Market Dimention(s):", paste(Dim,collapse=",")))}
   
@@ -339,15 +358,15 @@ GetEndingDate <- function(Market) {
 
 
 FillMarketInfo <- function(UnfilledMarket) {
-  #Takes a basic, unfinished Market and fills out some details like the 'size', 'hash', etc. Also calulates the required seed capital for a given B level.
-  #For security and simplicity the Market is hashed after the 'B' (and initial balance) are set. Then one only needs to verify that the balance was truly established.
-  #Other fields, such as 'balance' and 'share', which would change constantly and rapidly, are calcualted from the base ("blank") Market.
-  #Size is calculated second-to-last on the final Market to account for exponentially increasing Share space.
+  # Takes a basic, unfinished Market and fills out some details like the 'size', 'hash', etc. Also calulates the required seed capital for a given B level.
+  # For security and simplicity the Market is hashed after the 'B' (and initial balance) are set. Then one only needs to verify that the balance was truly established.
+  # Other fields, such as 'balance' and 'share', which would change constantly and rapidly, are calcualted from the base ("blank") Market.
+  # Size is calculated second-to-last on the final Market to account for exponentially increasing Share space.
   NewMarket <- UnfilledMarket
   NewMarket$MaturationTime  <- GetEndingDate(UnfilledMarket)
   NewMarket$Shares <- 0*GetSpace(UnfilledMarket)
 
-  #AMM seed capital requirement is given as b*log(N), where N is the number of states the Market must support.
+  # AMM seed capital requirement is given as b*log(N), where N is the number of states the Market must support.
   Nstates <- max(GetSpace(UnfilledMarket))
   NewMarket$Balance <- NewMarket$B*log(Nstates)
   
@@ -356,11 +375,29 @@ FillMarketInfo <- function(UnfilledMarket) {
   return(NewMarket)
 }
 
-M1f <- FillMarketInfo(M1)
-M2f <- FillMarketInfo(M2)
+# > FillMarketInfo(M1)
+# $Market_ID
+# [1] "c5e9554aef9ce1e865085ccf6c5a5f90"
+# 
+# $Size
+# [1] 511
+#   ...
+
+# > FillMarketInfo(M2)
+# $Market_ID
+# [1] "8110b4bc50d1c90befa9993682dee46c"
+# 
+# $Size
+# [1] 693
+# 
+# ...
 
 
 GetOutcomeAxis <- function(DecisionAxis, Verbose=FALSE) {
+  # Intermediate step in 'Get Final Prices' (which calculates the final, Redeem-able value of Market Shares)
+  # Takes the calculated Outcomes (ie Decisions that have been Voted on and Resolved), and transforms them to axis prices.
+  # Relies on mutual exclusivity (ie, if all were Decided as not happening, the Null must have happened), and averages cases where two things are both said to have happened.
+  
   N <- length(DecisionAxis)
   PreCompressedAxis <- matrix(NA, nrow=N, ncol=(N+1))
   for(j in 1:N) {
@@ -401,8 +438,12 @@ Decisions$RuledOutcome <- c(1, 1, .4, .7, .9, 0, 0) # the most ridiculous result
 # [1] 1 0 0
 
 Use("tensor")
+Use("reshape")
 
 GetFinalPrices <- function(Market, Verbose=FALSE) {
+  
+  # Takes a Market, and evaluates the value of its shares.
+  # For multidimensional markets, this is literally the joint probability ( ie P(A) & P(B), calculated P(A) * P(B) ) 
   
   # Check Market State
   if( Market$State !=3 ) {
@@ -434,9 +475,59 @@ GetFinalPrices <- function(Market, Verbose=FALSE) {
   
 }
 
-GetFinalPrices(M1)
-GetFinalPrices(M2)
+# > GetFinalPrices(M1)
+# [1] "This market does not yet HAVE final price. It is either being traded or audited."
+# [1] -1
+# > M1$State <- 3 # claim Market is Resolved
+# > GetFinalPrices(M1)
+#  d1.No  d1.Yes 
+#      0       1 
 
+
+## Governance Items
+
+QueryAddMarket <- function(Title="USFedElect2016",
+                           B=2.5,
+                           TradingFee=.005,
+                           D_State=list( 
+                             c("2024304e88665e58b3147b9bfd33fb1f")
+                           ),
+                           Description="One stop shopping for all of your federal election predictions.",
+                           Tags=c("en", "UnitedStates", "Politics", "President", "Winner"),
+                           OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh") {
+  
+  # Create Object
+  TempMarket <- list( Market_ID=NA,Size=NA,Shares=NA,Balance=NA,FeeBalance=0,State=1,B=B,TradingFee=TradingFee,OwnerAd=OwnerAd,Title=Title,
+                      Description=Description,Tags=Tags,MaturationTime=NA,D_State=D_State )
+  
+  # Prepare Object
+  NewMarket <- FillMarketInfo(TempMarket)
+  
+  Kb_calc <- NewMarket$Size           #Size of Market in KB       # Maybe leave this to miners?
+  S_calc <- prod(GetDim(NewMarket))   #Size of the trading space. # Maybe leave this to miners?
+  
+  Seed_Capital <- NewMarket$B*log(S_calc)
+  
+  Out <- list("MarketMakerSeedCapital"=Seed_Capital,
+              
+              "kBRate"=FeePerKb,
+              "kBSize"=Kb_calc,
+              "kBCost"= (FeePerKb * Kb_calc),
+              
+              "CurrentSpaceRate"=SpaceFee,
+              "SpaceLength"=S_calc, 
+              "SpaceCost"=  (S_calc^2) * SpaceFee,              
+              "TotalCost"= Seed_Capital + (FeePerKb * Kb_calc) + ((S_calc^2) * SpaceFee)  #Cost to list this Market.
+  )
+  return(Out)
+}
+
+# > QueryAddMarket(M1)
+# $MarketMakerSeedCapital
+# [1] 1.732868
+# ...
+# $TotalCost
+# [1] 1.976333
 
 
 ## Marketplace Creation ##
@@ -445,10 +536,11 @@ Markets <- vector("list",length=0) #Critical Step...creates (blank) marketplace 
 CreateMarket <- function(Title,
                          B=1,
                          TradingFee=.01,
-                         D_State=list( "184b97f33923f30a9f586827b400676e" ), #Decisions
+                         D_State=list( "184b97f33923f30a9f586827b400676e" ), # Decisions
                          Description="Barack Obama to win United States President in 2012\nThis Market will expire in state 1 if the statement is true and 0 otherwise.",
                          Tags=c("Politics, UnitedStates, President, Winner"),
-                         OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+                         OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"  # ,
+                         # Payment=" ! infeasable for this proof of concept ! "
                          ) {
   
 
@@ -460,33 +552,63 @@ CreateMarket <- function(Title,
   Temp2 <- FillMarketInfo(TempMarket)
   
   # Check Pre-existance
-  if( !is.null(Markets[[Temp2$Title]]) ) {  #!is.null(Markets[[Temp2$Market_ID]])
+  if( !is.null(Markets[[Temp2$Title]]) ) {  # post-testing, switch to:  !is.null(Markets[[Temp2$Market_ID]])
     print("That exact market already exists.")
     return(-1)
   }
+  
+  # Check Payment
+  ExpectedPayment <- QueryAddMarket(Title=Title,
+                                       B=B,
+                                       TradingFee=TradingFee,
+                                       D_State=D_State,
+                                       Description=Description,
+                                       Tags=Tags,
+                                       OwnerAd=OwnerAd)$TotalCost
+  
+  
+  #   # This is shut off on purpose
+  #   if( ExpectedPayment != Payment ) {
+  #     print("Wrong payment.")
+  #     print(paste("Expected:",ExpectedPayment,". Provided:",Payment))
+  #     return(-2)
+  #   }
    
-  #Add a new Market to the global 'Marketplace' variable.  
-  Markets[[Temp2$Title]] <<- Temp2     #Markets[[Temp2$Market_ID]] <<- Temp2 
+  
+  # FOR TESTING : Add a new Market to the global 'Marketplace' variable.  
+  try( Markets[[Temp2$Title]] <<- Temp2 )       
+  
+  # Realistic
+  try( BlockChain[[length(BlockChain)]]$Markets[[Temp2$Market_ID]] <<- Temp2 )
+  # BlockChain[[length(BlockChain)]]$Markets is the 'Markets' section of the current block
+  # [[ Temp2$MarketID ]] assigns the MarketId to this section of the database
+  
+  # the 'try' functions are so these don't fail in testing ... will be removed later
+  
   
 }
 
-CreateMarket("Obama2012")
-CreateMarket(Title="USFedElect2016",
-             B=2.5,
-             TradingFee=.005,
-             D_State=list( # This contract has 3 dimensions. 
-               
-                       c("2024304e88665e58b3147b9bfd33fb1f"),  # Dim 1 is typical 2-state, containing one Decision.
-         
-                       c("4bb76625de425c29ce52150cc5b3f160",   # Dim 2 actually has 4 mutually-exclusive states (N Decisions = N+1 States)
-                         "b8b085a2957ae1359056257cce61f0c8",
-                         "1800a5b6dc68dfddafbe4bf32ca813dc"),
-                       
-                       c("b55b9a7faf26a97d0a06e16c7151ba33",   # Dim 3 has 3 mutually-exclusive states, and requires 2 Decisions.
-                         "1d5ae87389527a9b9916fffd6b6b511c")
-                       ),
+# Examples
 
-             Description="One stop shopping for all of your federal election predictions.",
-             Tags=c("en", "UnitedStates", "Politics", "President", "Winner"),
-             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
-             )
+# CreateMarket("Obama2012")
+
+# CreateMarket(Title="USFedElect2016",
+#              B=2.5,
+#              TradingFee=.005,
+#              D_State=list( # This contract has 3 dimensions. 
+#                
+#                        c("2024304e88665e58b3147b9bfd33fb1f"),  # Dim 1 is typical 2-state, containing one Decision.
+#          
+#                        c("4bb76625de425c29ce52150cc5b3f160",   # Dim 2 actually has 4 mutually-exclusive states (N Decisions = N+1 States)
+#                          "b8b085a2957ae1359056257cce61f0c8",
+#                          "1800a5b6dc68dfddafbe4bf32ca813dc"),
+#                        
+#                        c("b55b9a7faf26a97d0a06e16c7151ba33",   # Dim 3 has 3 mutually-exclusive states, and requires 2 Decisions.
+#                          "1d5ae87389527a9b9916fffd6b6b511c")
+#                        ),
+# 
+#              Description="One stop shopping for all of your federal election predictions.",
+#              Tags=c("en", "UnitedStates", "Politics", "President", "Winner"),
+#              OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+#              )
+
