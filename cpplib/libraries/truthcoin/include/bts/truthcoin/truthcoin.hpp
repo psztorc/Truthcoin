@@ -21,7 +21,7 @@ namespace bts { namespace truthcoin {
      * in the default market definition, avoid excess copies) - I know this is possible
      * at least for the market-only (but maybe not consensus) functions.
      *
-     * You are free to come up with your own conventions for how to interpret the flat vector
+     * You are free to come up with your own conventions for how to interpret the flat vector + decision matrix
      * as an n-dimensional market.
      *
      * You are also free to drop floats in favor of int64_t if it helps with rounding issues.
@@ -30,21 +30,18 @@ namespace bts { namespace truthcoin {
     struct Market
     {
         vector<float>& values;
-        vector<DecisionID>& decisions;
-        vector<int>& dimensions; // for interpreting decision->value mapping
+        vector<vector<DecisionID>>& decisions;
         float liquidity_parameter;
         float trading_fee;
 
-        Market(vector<float>& values, vector<int>& dimensions,
-               vector<DecisionID> decisions,
+        Market(vector<float>& values,vector<DecisionID> decisions,
                float liquidity_paramter, float trading_fee)
-            :values(values),dimensions(dimensions),decisions(decisions)
-            liquidity_paramter(liquidity_parameter),trading_fee(trading_fee){}
+            :values(values),decisions(decisions),liquidity_parameter(liquidity_parameter){}
     }
 
 
     typedef int MarketState; // an index into Market.values
-    typedef vector<float> Outcomes; // maps 1-to-1 wth decisions
+    typedef vector<vector<float>> Outcomes; // maps 1-to-1 wth decisions
 
 
     // In Trading.R
