@@ -9,9 +9,8 @@ try(setwd("~/GitHub/Truthcoin/lib"))
 
 source("consensus/CustomMath.r")
 
-AsMatrix <- function(Vec) return(matrix(Vec,nrow=length(Vec)))
+## Functions:
 
-# #Function Library
 GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=FALSE) {
   #Calculates the new reputations using WPCA
   
@@ -88,41 +87,105 @@ GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=FALSE) {
   return(Out)
 }
 
+# M <- matrix(nrow=3,byrow=TRUE,data=c(1,0,1,0,
+#                                      1,0,1,0,
+#                                      1,0,0,1))
+# 
+# M2 <- matrix(nrow=3,byrow=TRUE,data=c(.80, .1, .72, 0,
+#                                       .80, .1, .62, 0,
+#                                       .43, .1, .00, 1))
+
+# > GetRewardWeights(M)
+# $FirstL
+# [1]  0.0000000  0.0000000 -0.7071068  0.7071068
+# $OldRep
+# [1] 0.3333333 0.3333333 0.3333333
+# $ThisRep
+# [1] 0.5 0.5 0.0
+# $SmoothRep
+# [1] 0.35 0.35 0.30
+# 
+# > GetRewardWeights(M, Rep=c(.2,.2,.6))
+# $FirstL
+# [1]  0.0000000  0.0000000 -0.7071068  0.7071068
+# $OldRep
+# [1] 0.2 0.2 0.6
+# $ThisRep
+# [1] 0 0 1
+# $SmoothRep
+# [1] 0.18 0.18 0.64
+# 
+# > GetRewardWeights(M2)
+# $FirstL
+# [1] -0.2934226  0.0000000 -0.5338542  0.7930340
+# $OldRep
+# [1] 0.3333333 0.3333333 0.3333333
+# $ThisRep
+# [1] 0.5105984 0.4894016 0.0000000
+# $SmoothRep
+# [1] 0.3510598 0.3489402 0.3000000
+# 
+# > GetRewardWeights(M2, Rep=c(.2,.2,.6), alpha=.5)
+# $FirstL
+# [1] -0.2935984  0.0000000 -0.5330507  0.7935092
+# $OldRep
+# [1] 0.2 0.2 0.6
+# $ThisRep
+# [1] 0.00000000 0.01362912 0.98637088
+# $SmoothRep
+# [1] 0.1000000 0.1068146 0.7931854
+
+
 GetDecisionOutcomes <- function(Mtemp, Rep, ScaledIndex, Verbose=FALSE) {
-  #Determines the Outcomes of Decisions based on the provided reputation (weighted vote)
+  # Determines the Outcomes of Decisions based on the provided reputation (weighted vote)
   
   if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(Mtemp)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
   
   if(Verbose) { print("****************************************************") ; print("Begin 'GetDecisionOutcomes'")}
   
-  RewardWeightsNA <- Rep
-  
-  DecisionOutcomes.Raw  <- 1:ncol(Mtemp) #Declare this (filled below)
+  DecisionOutcomes.Raw  <- 1:ncol(Mtemp) # Declare this (filled below)
   
   for(i in 1:ncol(Mtemp)) {    
     #For each column:    
-    Row <- ReWeight(RewardWeightsNA[!is.na(Mtemp[,i])]) #The Reputation of the row-players who DID provide judgements, rescaled to sum to 1.
-    Col <- Mtemp[!is.na(Mtemp[,i]),i]                   #The relevant Decision with NAs removed. ("What these row-players had to say about the Decisions they DID judge.")
+    Row <- ReWeight(Rep[!is.na(Mtemp[,i])]) # The Reputation of the row-players who DID provide judgements, rescaled to sum to 1.
+    Col <- Mtemp[!is.na(Mtemp[,i]),i]       # The relevant Decision with NAs removed. ("What these row-players had to say about the Decisions they DID judge.")
     
     #Discriminate Based on Contract Type
-    if(!ScaledIndex[i]) DecisionOutcomes.Raw[i] <- Row%*%Col                     #Our Current best-guess for this Binary Decision (weighted average) 
-    if(ScaledIndex[i]) DecisionOutcomes.Raw[i] <- weighted.median(w=Row, x=Col)  #Our Current best-guess for this Scaled Decision (weighted median)
+    if(!ScaledIndex[i]) DecisionOutcomes.Raw[i] <- Row %*% Col                   # Our Current best-guess for this Binary Decision (weighted average) 
+    if(ScaledIndex[i]) DecisionOutcomes.Raw[i] <- weighted.median(w=Row, x=Col)  # Our Current best-guess for this Scaled Decision (weighted median)
    
-    if(Verbose) { print("** **"); print("Column:"); print(i); print(AsMatrix(Row)); print(Col); print("Consensus:"); print(DecisionOutcomes.Raw[i])}
+    if(Verbose) { print("** **"); print("Column:"); print(i); print(AsMatrix(Row)); print(Col); print("Consensus:"); print(DecisionOutcomes.Raw[i]) }
   }
   
   #Output
   return(DecisionOutcomes.Raw)
 }
 
+# M <- matrix( data=c(
+#       1,    1,    0,    0,    0.5356322, 6.689658e-01,
+#       1,    0,    0,    0,    0.4574713,           NA,
+#       1,    1,    0,    0,    0.5356322, 6.689658e-01,
+#       1,    1,    1,    0,    0.5747126,           NA,
+#       0,    0,    1,    1,    1.0000000, 8.333333e-05,
+#       0,    0,    1,    1,    1.0000000, 9.999167e-01),
+#   nrow=6,byrow=TRUE)
+
+# > GetDecisionOutcomes(Mtemp=M, ScaledIndex=c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE))
+# [1] 0.6666667 0.5000000 0.5000000 0.3333333 0.5551724 0.6689658
+# > GetDecisionOutcomes(Mtemp=M, ScaledIndex=c(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE))
+# [1] 0.6666667 0.5000000 0.5000000 0.3333333 0.6839080 0.6689658
+# > GetDecisionOutcomes(Mtemp=M, ScaledIndex=c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE), Rep=c(.2,.2,.1,.4,.04,.06))
+# [1] 1.0000000 0.7000000 0.5000000 0.1000000 0.5820690 0.6517202
+
+
 FillNa <- function(Mna, Rep, ScaledIndex, CatchP=.1, Verbose=FALSE) { 
-  #Uses exisiting data and reputations to fill missing observations.
-  #Essentially a weighted average using all availiable non-NA data.
-  #How much should slackers who arent voting suffer? I decided this would depend on the global percentage of slacking.
+  # Uses exisiting data and reputations to fill missing observations.
+  # Essentially a weighted average using all availiable non-NA data.
+  # How much should slackers who arent voting suffer? I decided this would depend on the global percentage of slacking.
   
   if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(Mna)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
   
-  Mnew <- Mna #Declare (in case no Missing values, Mnew, MnewC, and Mna will be the same)
+  Mnew <- Mna # Declare (in case no Missing values, Mnew, MnewC, and Mna will be the same)
   MnewC <- Mna
   
   if(sum(is.na(Mna))>0) {
@@ -162,6 +225,33 @@ FillNa <- function(Mna, Rep, ScaledIndex, CatchP=.1, Verbose=FALSE) {
   
   return(MnewC)
 }
+
+# M <- matrix( data=c(
+#       1,    1,     0,     0,    0.5356322, 6.689658e-01,
+#       1,    0,    NA,    NA,    0.4574713,           NA,
+#       1,    NA,    0,    NA,    0.5356322, 6.689658e-01,
+#       1,    1,     1,    NA,    0.5747126,           NA,
+#       0,    NA,    1,    NA,    1.0000000, 8.333333e-05,
+#       0,    0,     1,     1,    NA,        9.999167e-01),
+#   nrow=6,byrow=TRUE)
+
+# > FillNa(M,ScaledIndex=c(FALSE,FALSE,FALSE,FALSE,TRUE,TRUE))
+#       [,1] [,2] [,3] [,4]      [,5]         [,6]
+# [1,]    1  1.0    0  0.0 0.5356322 6.689658e-01
+# [2,]    1  0.0    1  0.5 0.4574713 6.689658e-01
+# [3,]    1  0.5    0  0.5 0.5356322 6.689658e-01
+# [4,]    1  1.0    1  0.5 0.5747126 6.689658e-01
+# [5,]    0  0.5    1  0.5 1.0000000 8.333333e-05
+# [6,]    0  0.0    1  1.0 0.5356322 9.999167e-01
+# > FillNa(M,ScaledIndex=c(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE))
+#       [,1] [,2] [,3] [,4] [,5] [,6]
+# [1,]    1  1.0    0  0.0  0.5    1
+# [2,]    1  0.0    1  0.5  0.5    1
+# [3,]    1  0.5    0  0.5  0.5    1
+# [4,]    1  1.0    1  0.5  1.0    1
+# [5,]    0  0.5    1  0.5  1.0    0
+# [6,]    0  0.0    1  1.0  1.0    1
+
 
 
 #Putting it all together:
@@ -279,6 +369,172 @@ Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   return(Output)
 }
 
+
+# M1 <-  rbind(
+#   c(1,1,0,0),
+#   c(1,0,0,0),
+#   c(1,1,0,0),
+#   c(1,1,1,0),
+#   c(0,0,1,1),
+#   c(0,0,1,1))
+# 
+# row.names(M1) <- c("True", "Distort 1", "True", "Distort 2", "Liar", "Liar")
+# colnames(M1) <- c("C1.1","C2.1","C3.0","C4.0")
+
+# > Factory(M1)
+# $Original
+#           C1.1 C2.1 C3.0 C4.0
+# True         1    1    0    0
+# Distort 1    1    0    0    0
+# True         1    1    0    0
+# Distort 2    1    1    1    0
+# Liar         0    0    1    1
+# Liar         0    0    1    1
+# 
+# $Filled
+#           C1.1 C2.1 C3.0 C4.0
+# True         1    1    0    0
+# Distort 1    1    0    0    0
+# True         1    1    0    0
+# Distort 2    1    1    1    0
+# Liar         0    0    1    1
+# Liar         0    0    1    1
+# 
+# $Agents
+#              OldRep   ThisRep SmoothRep NArow ParticipationR RelativePart  RowBonus
+# True      0.1666667 0.2823757 0.1782376     0              1    0.1666667 0.1782376
+# Distort 1 0.1666667 0.2176243 0.1717624     0              1    0.1666667 0.1717624
+# True      0.1666667 0.2823757 0.1782376     0              1    0.1666667 0.1782376
+# Distort 2 0.1666667 0.2176243 0.1717624     0              1    0.1666667 0.1717624
+# Liar      0.1666667 0.0000000 0.1500000     0              1    0.1666667 0.1500000
+# Liar      0.1666667 0.0000000 0.1500000     0              1    0.1666667 0.1500000
+# 
+# $Decisions
+#                             C1.1       C2.1      C3.0      C4.0
+# First Loading         -0.5395366 -0.4570561 0.4570561 0.5395366
+# DecisionOutcomes.Raw   0.7000000  0.5282376 0.4717624 0.3000000
+# Consensus Reward       0.5000000  0.0000000 0.0000000 0.5000000
+# Certainty              0.7000000  0.0000000 0.0000000 0.7000000
+# NAs Filled             0.0000000  0.0000000 0.0000000 0.0000000
+# ParticipationC         1.0000000  1.0000000 1.0000000 1.0000000
+# Author Bonus           0.5000000  0.0000000 0.0000000 0.5000000
+# DecisionOutcome.Final  1.0000000  0.5000000 0.5000000 0.0000000
+# 
+# $Participation
+# [1] 1
+# 
+# $Certainty
+# [1] 0.35
+
+
+
+# MS <- matrix( data=c(
+#       1,    1,    0,    0,    233,   16027.59,
+#       1,    0,    0,    0,    199,         NA,
+#       1,    1,    0,    0,    233,   16027.59,
+#       1,    1,    1,    0,    250,         NA,
+#       0,    0,    1,    1,    435,    8001.00,
+#       0,    0,    1,    1,    435,   19999.00),
+#   nrow=6,byrow=TRUE)
+# 
+# Scales <- matrix( c( rep(FALSE,ncol(MS)),
+#                      rep(0,ncol(MS)),
+#                      rep(1,ncol(MS))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(MS2)) )
+# 
+# Scales["Scaled",5] <- 1
+# Scales["Max",5] <- 435
+# Scales["Scaled",6] <- 1
+# Scales["Min",6] <- 8000
+# Scales["Max",6] <- 20000
+# 
+# > Factory(M0=MS,Scales=Scales)
+# $Original
+#      [,1] [,2] [,3] [,4] [,5]     [,6]
+# [1,]    1    1    0    0  233 16027.59
+# [2,]    1    0    0    0  199       NA
+# [3,]    1    1    0    0  233 16027.59
+# [4,]    1    1    1    0  250       NA
+# [5,]    0    0    1    1  435  8001.00
+# [6,]    0    0    1    1  435 19999.00
+# 
+# $Filled
+#      [,1] [,2] [,3] [,4]      [,5]         [,6]
+# [1,]    1    1    0    0 0.5356322 6.689658e-01
+# [2,]    1    0    0    0 0.4574713 6.689658e-01
+# [3,]    1    1    0    0 0.5356322 6.689658e-01
+# [4,]    1    1    1    0 0.5747126 6.689658e-01
+# [5,]    0    0    1    1 1.0000000 8.333333e-05
+# [6,]    0    0    1    1 1.0000000 9.999167e-01
+# 
+# $Agents
+#         OldRep    ThisRep SmoothRep NArow ParticipationR RelativePart  RowBonus
+# [1,] 0.1666667 0.27512698 0.1775127     0      1.0000000    0.1764706 0.1774530
+# [2,] 0.1666667 0.22080941 0.1720809     1      0.8333333    0.1470588 0.1706477
+# [3,] 0.1666667 0.27512698 0.1775127     0      1.0000000    0.1764706 0.1774530
+# [4,] 0.1666667 0.21600171 0.1716002     1      0.8333333    0.1470588 0.1701944
+# [5,] 0.1666667 0.00000000 0.1500000     0      1.0000000    0.1764706 0.1515162
+# [6,] 0.1666667 0.01293492 0.1512935     0      1.0000000    0.1764706 0.1527356
+# 
+# $Decisions
+#                             [,1]        [,2]       [,3]      [,4]        [,5]          [,6]
+# First Loading         -0.5223889 -0.43411264 0.44195128 0.5223889   0.2463368 -9.880889e-02
+# DecisionOutcomes.Raw   0.6987065  0.52662557 0.47289366 0.3012935   0.5356322  6.689658e-01
+# Consensus Reward       0.2850531  0.00000000 0.00000000 0.2850531   0.1448406  2.850531e-01
+# Certainty              0.6987065  0.00000000 0.00000000 0.6987065   0.3550254  6.987065e-01
+# NAs Filled             0.0000000  0.00000000 0.00000000 0.0000000   0.0000000  2.000000e+00
+# ParticipationC         1.0000000  1.00000000 1.00000000 1.0000000   1.0000000  6.563189e-01
+# Author Bonus           0.2788520  0.01012676 0.01012676 0.2788520   0.1466709  2.753716e-01
+# DecisionOutcome.Final  1.0000000  0.50000000 0.50000000 0.0000000 233.0000000  1.602759e+04
+# 
+# $Participation
+# [1] 0.9427198
+# 
+# $Certainty
+# [1] 0.4085242
+# 
+# > Factory(M0=MS,Scales=Scales,Rep=c(.05,.05,.05,.05,.10,.70))
+# $Original
+#      [,1] [,2] [,3] [,4] [,5]     [,6]
+# [1,]    1    1    0    0  233 16027.59
+# [2,]    1    0    0    0  199       NA
+# [3,]    1    1    0    0  233 16027.59
+# [4,]    1    1    1    0  250       NA
+# [5,]    0    0    1    1  435  8001.00
+# [6,]    0    0    1    1  435 19999.00
+# $Filled
+#      [,1] [,2] [,3] [,4]      [,5]         [,6]
+# [1,]    1    1    0    0 0.5356322 6.689658e-01
+# [2,]    1    0    0    0 0.4574713 9.999167e-01
+# [3,]    1    1    0    0 0.5356322 6.689658e-01
+# [4,]    1    1    1    0 0.5747126 9.999167e-01
+# [5,]    0    0    1    1 1.0000000 8.333333e-05
+# [6,]    0    0    1    1 1.0000000 9.999167e-01
+# $Agents
+#      OldRep    ThisRep  SmoothRep NArow ParticipationR RelativePart   RowBonus
+# [1,]   0.05 0.00000000 0.04500000     0      1.0000000    0.1764706 0.04702833
+# [2,]   0.05 0.01235137 0.04623514     1      0.8333333    0.1470588 0.04779064
+# [3,]   0.05 0.00000000 0.04500000     0      1.0000000    0.1764706 0.04702833
+# [4,]   0.05 0.01332745 0.04633275     1      0.8333333    0.1470588 0.04788674
+# [5,]   0.10 0.11962886 0.10196289     0      1.0000000    0.1764706 0.10311239
+# [6,]   0.70 0.85469232 0.71546923     0      1.0000000    0.1764706 0.70715357
+# $Decisions
+#                             [,1]       [,2]      [,3]      [,4]        [,5]         [,6]
+# First Loading         -0.5369880 -0.4210132 0.4240200 0.5369880   0.2540098 4.149213e-02
+# DecisionOutcomes.Raw   0.1825679  0.1363327 0.8637649 0.8174321   1.0000000 9.999167e-01
+# Consensus Reward       0.1638874  0.1731571 0.1731767 0.1638874   0.1638874 1.620038e-01
+# Certainty              0.8174321  0.8636673 0.8637649 0.8174321   0.8174321 8.080371e-01
+# NAs Filled             0.0000000  0.0000000 0.0000000 0.0000000   0.0000000 2.000000e+00
+# ParticipationC         1.0000000  1.0000000 1.0000000 1.0000000   1.0000000 9.074321e-01
+# Author Bonus           0.1639706  0.1730973 0.1731166 0.1639706   0.1639706 1.618743e-01
+# DecisionOutcome.Final  0.0000000  0.0000000 1.0000000 1.0000000 435.0000000 1.999900e+04
+# $Participation
+# [1] 0.984572
+# $Certainty
+# [1] 0.8312943
+
+
+
+
 #Long-Term
 Chain <- function(X,Scales,N=2,ThisRep) {
   #Repeats factory process N times
@@ -298,13 +554,3 @@ Chain <- function(X,Scales,N=2,ThisRep) {
   return(Output)
 }
 
-
-#Notes
-
-#Voting Across Time
-#Later Votes could count more
-#! ...simple change = DecisionOutcome.Final becomes exponentially smoothed result of previous chains.
-#! require X number of chains (blocks) before the outcome is officially determined .. or, continue next round if ~ .5, or Decisions.Raw is within a threshold ( .2 to .8)
-# Would need:
-# 1] Percent Voted
-# 2] Time Dimension of blocks.
