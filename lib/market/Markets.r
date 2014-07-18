@@ -59,7 +59,7 @@ CreateBranchSpace <- function() {
                     BallotTime=1008,         # Time between 'start of voting' and 'voting deadline'. Submit Ballots during this time.
                     UnsealTime=1008,         # Time between 'votind deadline' and 'unseal deadline'. Submit private keys during this time.
                     
-                    ConsensusThreshold=.75   # To address the 51% buyup attack. [optional]
+                    ConsensusThreshold=.75   # To address the 51% buyup attack. [optional, or this may be a global parameter with automatic branching]
                           )
   
   ID <- digest(unlist(Branches[1,-1]), "md5")
@@ -121,6 +121,9 @@ CreateBranchSpace()
 
 AddBranch(Name="Politics", ExodusAddress="1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8", Description="Politics, particularly US Elections. No violence.",
           BaseListingFee=.02, 10, 200, 600, MinimumTradingFee=.0005, VotingPeriod=26208, 2016, 2016, ConsensusThreshold=.80)
+
+
+# Eventually, there will need to be a function to "update the branch rules", which will probably require some kind of 75% vote.
 
 
 FillDecisionInfo <- function(UnfilledDecision, Verbose=FALSE) {

@@ -179,6 +179,8 @@ weighted.median <- function(x, w, na.rm=TRUE, ties=NULL) {
 
 
 Rescale <- function(UnscaledMatrix, ScalingData) {
+  # Forces a matrix of raw (user-supplied) information (for example, # of House Seats, or DJIA) to conform to svd-appropriate range.
+  # Practically, this is done by subtracting min and dividing by scaled-range (which itself is max-min).
   
   # Calulate multiplicative factors
   InvSpan = ( 1/ ( ScalingData["Max",] - ScalingData["Min",]) )
