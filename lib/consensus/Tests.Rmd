@@ -596,3 +596,99 @@ system.time(TestLimit(1000,100))
 
 #Actually all of this is irrelevant because code runs 100x faster on python
 ```
+
+
+
+Audit
+------------------
+What is the effect of withholding "confusing" Decisions?
+
+```{r HoldOff,cache=FALSE}
+
+library(reshape)
+
+DoubleFactory <- function(X,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
+  
+    #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
+  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(X)))
+                     if(Verbose) print("Reputation not provided...assuming equal influence.")
+  }
+  
+  #******************
+  #Fill the default scales (binary) if none are provided. In practice, this would also never be used.
+  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(X)),
+                                             rep(0,ncol(X)),
+                                             rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(X)) )
+                        if(Verbose) print("Scales not provided...assuming binary (0,1).")
+  }
+  
+  
+  WaveOne <- Factory(X,Scales,Rep,CatchP,MaxRow,Verbose)
+  
+  print(" Wave One Complete.")
+  
+  # Find the contested contracts
+  ContestParameter <- .65 # completely made up, for now
+  
+  Safe  <- ( WaveOne$Decisions["Certainty",] ) >= ContestParameter # all those contracts which were unanimous for a subset of proportion .65 (ContestParameter)
+  
+  print( sum(Safe)/ncol(X) ) # proportion which made it
+  print( X[,Safe] )          # the new matrix
+  
+  WaveTwo <- Factory( X[,Safe] ,
+                      Scales[,Safe],
+                      Rep,CatchP,MaxRow,Verbose)
+  
+  Results <- matrix( c( WaveOne$Agents[,"RowBonus"], WaveTwo$Agents[,"RowBonus"] ),ncol=2,dimnames=list(rownames(X),c("One","Two")) )
+  
+  mRes <- melt(Results)
+  cRes <- cast(mRes,formula=X1~X2,fun.aggregate=sum)
+  
+  print(cRes)
+  
+  Results <- cbind(Results, "Diff"=Results[,2]-Results[,1])
+  
+  return(Results)
+  
+}
+
+DoubleFactory(Scenarios$Base)
+
+#          X1       One   Two
+# 1 Distort 1 0.1717624 0.175
+# 2 Distort 2 0.1717624 0.175
+# 3      Liar 0.3000000 0.300
+# 4      True 0.3564751 0.350
+
+DoubleFactory(Scenarios$CoalitionalDeviance)
+
+#      X1        One        Two
+# 1 Diver 0.08181818 0.08181818
+# 2  Liar 0.35698136 0.36727273
+# 3  True 0.56120046 0.55090909
+
+# The attack has essentially been erased...
+
+
+DoubleFactory(Scenarios$CluelessTest)
+# No difference
+
+DoubleFactory(Scenarios$Incoherence,CatchP=.2)
+
+DoubleFactory(Scenarios$Gaming,CatchP=.2)
+
+
+Mz <- matrix( c(1, 1,.5, 0, 0, # real
+                0, 1,.5, 0, 0, # attacker 1
+                1, 0,.5, 0, 0), # attacker 2
+              ncol=5,byrow=TRUE,dimnames=list(c("Honest","Attacker1","Attacker2"),c("C1.1","C2.1","C3.5","C4.0","C5.0")))
+                
+                
+DoubleFactory(Mz,Rep=c(.34,.30,.36))
+DoubleFactory(Mz,Rep=c(.34,.36,.30))
+
+# Having more reputation actually HURTs the attack, by kicking it out of the second wave. Then, with the contested Decision out of the wave, a less-interested attacker bailing with Honest on one other Decision (one that they don't really care about). The majority attacker loses some of the influence he would have gained had he been able to flip more contracts.
+# Knowing this, the minority attacker should be even more worried than usual.
+# Facinating.
+
+```

@@ -307,7 +307,7 @@ WeightedPrinComp <- function(X, Weights) {
     Weights <- ReWeight(rep(1,nrow(X)))
   } 
   
-  if(length(Weights))!=nrow(X) {
+  if(length(Weights)!=nrow(X)) {
     print("Error: Weights must be equal to nrow(X)")
     return(NULL)
   }
