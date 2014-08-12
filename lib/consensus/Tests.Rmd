@@ -31,12 +31,15 @@ CompareIncentives <- function(X,FF=Factory,N=1) {
 }
 
 #2 - Visual display of a given period.
+
+library(ggplot2)
+library(scales)
+library(reshape)
+library(ggthemes)
+
 PlotJ <- function(M,FF=Factory,Title="Plot of Judgement Space") { 
-  library(ggplot2)
-  library(reshape)
-  library(ggthemes)
   
-  Results <- Factory(M)
+  Results <- Factory(M,CatchP=0)
   
   DF <- melt(Results[["Filled"]])
   DF$value <- factor(DF$value)
@@ -46,17 +49,24 @@ PlotJ <- function(M,FF=Factory,Title="Plot of Judgement Space") {
   
   DF <- merge(DF,SC)
   
-  p1 <- ggplot(DF,aes(x=value,fill=X1,alpha=Scores)) + geom_histogram() + facet_grid(X2~.)
+  
+  
+  p1 <- ggplot(DF,aes(x=value,fill=X1,alpha=Scores)) +
+              facet_grid(X2~.) +
+              geom_histogram() +
+    geom_bar(aes(y=1),stat="identity", colour="black") 
+
   
   p1f <- p1 + theme_bw() +
-    scale_fill_hue(h=c(180, 225), guide=guide_legend(title = "Judge")) +
-    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.2,.8)) +
+    scale_fill_manual(, guide=guide_legend(title = "Voter")) +
+    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.1,.6)) +
     xlab("Contract Outcome") +
-    ylab('Unscaled "Naive" Votes (%)') + 
+    ylab('Unscaled Votes') + 
     theme_grey() +
     labs(title = Title)
   print(p1f)
 }
+
 ```
 
 
@@ -77,8 +87,8 @@ M1 <-  rbind(
     c(0,0,1,1),
     c(0,0,1,1))
   
-row.names(M1) <- c("True", "Distort 1", "True", "Distort 2", "Liar", "Liar")
-colnames(M1) <- c("C1.1","C2.1","C3.0","C4.0")
+row.names(M1) <- c("Honest", "Confused 1", "Honest", "Confused 2", "Liar", "Liar")
+colnames(M1) <- c("D1.1","D2.1","D3.0","D4.0")
 
 Scenarios$Base <- M1
 #
