@@ -37,7 +37,12 @@ library(scales)
 library(reshape)
 library(ggthemes)
 
+#Colours <- c("Liar" = "red","Honest" = "blue","Confused 1" = "darkgreen", "Confused 2" = "orange")
+
 PlotJ <- function(M,FF=Factory,Title="Plot of Judgement Space") { 
+  
+  # Give unique names
+  row.names(M) <- paste("Voter",1:nrow(M))
   
   Results <- Factory(M,CatchP=0)
   
@@ -45,11 +50,9 @@ PlotJ <- function(M,FF=Factory,Title="Plot of Judgement Space") {
   DF$value <- factor(DF$value)
   DF$X1  <- factor(DF$X1)
   
-  SC <- data.frame(X1=rownames(M), Scores= Results[["Agents"]][,"RowBonus"])
+  SC <- data.frame(X1=rownames(M), Scores= Results[["Agents"]][,"ThisRep"])
   
   DF <- merge(DF,SC)
-  
-  
   
   p1 <- ggplot(DF,aes(x=value,fill=X1,alpha=Scores)) +
               facet_grid(X2~.) +
@@ -58,9 +61,9 @@ PlotJ <- function(M,FF=Factory,Title="Plot of Judgement Space") {
 
   
   p1f <- p1 + theme_bw() +
-    scale_fill_manual(, guide=guide_legend(title = "Voter")) +
-    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.1,.6)) +
-    xlab("Contract Outcome") +
+    scale_fill_hue(h=c(10,90), guide=guide_legend(title = "Voter")) +
+    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.05,.8)) +
+    xlab("Outcome") +
     ylab('Unscaled Votes') + 
     theme_grey() +
     labs(title = Title)
@@ -91,6 +94,9 @@ row.names(M1) <- c("Honest", "Confused 1", "Honest", "Confused 2", "Liar", "Liar
 colnames(M1) <- c("D1.1","D2.1","D3.0","D4.0")
 
 Scenarios$Base <- M1
+
+M1disp <- M1
+row.names(M1disp) <- paste("Voter",1:nrow(M1))
 #
 
 
@@ -161,13 +167,23 @@ SLabels$Incoherence2 <- c("Punishing Incoherence - I KNOW that this contract is 
 M6 <- M3a
 M6[-3,2]  <- .5 #Incoherent
 
+colnames(M6) <- c("D1.1", "D2.(.5)", "D3.0", "D4.0")
+row.names(M6)[3] <- "Overconfident"
+M6disp <- M6
+row.names(M6disp) <- paste("Voter",1:nrow(M6))
+
+
 M6b <- M6
 M6b[7,2]  <- 0 #Incentive examination
+
 
 Scenarios$Incoherence <- M6
 Scenarios$Incoherence2 <- M6b
 #
   
+
+
+
 
 # [7] Unanimous: Perfect Consensus Bug
 SLabels$Unanimous <- c("Having everyone agree perfectly (desireable) crashes PCA") 
@@ -196,9 +212,9 @@ SLabels$Missing3 <- c("All players give missing values to a minority of their co
 SLabels$Missing4 <- c("Some players give missing values to a majority of their contracts")
 SLabels$Missing5 <- c("All players give missing values to a majority of their contracts")
 
-M10a <- cbind(M1,"C0"=c(0,NA,0,NA,1,1))
+M10a <- cbind(M1,"D5.0"=c(0,NA,0,NA,1,1))
 
-M10b <- cbind(M10a, "C1"=c(1,1,1,NA,0,0), "C1"=c(NA,NA,NA,0,1,1))
+M10b <- cbind(M10a, "D6.1"=c(1,1,1,NA,0,0), "D6.0"=c(NA,NA,NA,0,1,1))
 M10b <- rbind(M10b,M10b)
 
 M10c <- M10b
