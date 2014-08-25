@@ -9,7 +9,7 @@ Contract outcomes are determined in a trustless and decentralized way, through a
 
 <h4>What's going on!?</h4>
 Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important".  
-Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_1.1.pdf) to understand "how it works".  
+Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_Whitepaper.pdf) to understand "how it works".  
 Visit our [FAQ](https://github.com/psztorc/Truthcoin/tree/master/docs#faq).  
 Visit our [forum](http://forum.truthcoin.info/).  
 Draft of a [presentation](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pdf) on why this project may be worth your attention, even if you only care about money ([.pptx (with notes)](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pptx)).  
