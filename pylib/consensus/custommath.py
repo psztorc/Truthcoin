@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Supporting math for the consensus mechanism.
@@ -263,6 +263,7 @@ def CustomMathTest():
     print(CheckEqual(Tests))
     
     return(CheckEqual(Tests))
+
 
 if __name__ == "__main__":
     CustomMathTest()
