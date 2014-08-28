@@ -1,11 +1,75 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
-WinPython-64bit-3.3.3.3
+Supporting math for the consensus mechanism.
 
-Note: "Imported NumPy 1.8.0, SciPy 0.13.3, Matplotlib 1.3.1, guidata 1.6.1, guiqwt 2.3.2"
 """
+from __future__ import division
+from numpy import *
+from numpy.linalg import *
+import weighted
 
+def WeightedMedian(data, weights, rage=False):
+    """Calculate a weighted median.
+
+    Args:
+      data (numpy.array): your data
+      weights (2d numpy.array "column vector"): your weights
+      rage (bool): False to use weighted.median from a package (default)
+
+    """
+    # First, sort both arrays using the weight array.
+    sorted_weights, sorted_data = [], []
+    for r, c in sorted(zip(weights, data)):
+        sorted_weights.append(r)
+        sorted_data.append(c)
+    sorted_weights = array(sorted_weights)
+    sorted_data = array(sorted_data)
+
+    # Selects the data closest to where the cumulative sum of the weights
+    # is 0.5.  If there are multiple points found, then their simple median
+    # is used.
+    if rage:
+        absdiff = abs(cumsum(sorted_weights) - 0.5)
+        min_index = where(absdiff == absdiff.min())[0]
+        weighted_median = median(sorted_data[min_index])
+
+    # Use weighted.median from the wquantiles Python package.
+    else:
+        weighted_median = weighted.median(sorted_data, sorted_weights)
+
+    return weighted_median
+
+
+def Rescale(UnscaledMatrix, Scales):
+    """Forces a matrix of raw (user-supplied) information
+    (for example, # of House Seats, or DJIA) to conform to
+    svd-appropriate range.
+
+    Practically, this is done by subtracting min and dividing by
+    scaled-range (which itself is max-min).
+
+    """
+
+    # Calulate multiplicative factors   
+    InvSpan = []
+    for scale in Scales:
+        InvSpan.append(1 / float(scale["max"] - scale["min"]))
+
+    # Recenter
+    OutMatrix = copy(UnscaledMatrix)
+    cols = UnscaledMatrix.shape[1]
+    for i in range(cols):
+        OutMatrix[:,i] -= Scales[i]["min"]
+
+    # Rescale
+    NaIndex = isnan(OutMatrix)
+    OutMatrix[NaIndex] = 0
+
+    OutMatrix = dot(OutMatrix, diag(InvSpan))
+    OutMatrix[NaIndex] = nan
+
+    return OutMatrix
 
 def MeanNa(Vec):
     """Takes masked array, replaces missing values with array mean."""
@@ -200,4 +264,5 @@ def CustomMathTest():
     
     return(CheckEqual(Tests))
 
-#CustomMathTest()
+if __name__ == "__main__":
+    CustomMathTest()

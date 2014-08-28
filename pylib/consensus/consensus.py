@@ -1,21 +1,25 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+"""Consensus mechanism for Truthcoin.
+
+This is the mechanism that, theoretically:
+  1. Allows the software to determine the state of Decisions truthfully, and
+  2. Only allows an efficient number of most-traded-upon-Decisions.
+
 """
-Created on Sun Mar  2 20:52:33 2014
+from __future__ import division, print_function
+from numpy import *
+from numpy.linalg import *
+from numpy.random import random_integers
+from custommath import *
 
-@author: Psztorc
-"""
+__author__     = "Paul Sztorc and Jack Peterson"
+__maintainer__ = "Paul Sztorc"
+__email__      = "truthcoin@gmail.com"
 
-import custommath
-#CustomMathTest() #True
+# Alpha = Smoothing Parameter
 
-#Consensus Mechanism
-#This is the mechanism that, theoretically,
- #   1] allows the software to determine the state of Decisions truthfully, and
- #   2] only allows an efficient number of most-traded-upon-Decisions.
-
-#Alpha = Smoothing Parameter
-
-# #Function Library
+# Function Library
 def GetRewardWeights(M, Rep=-1, Alpha=.1, Verbose=False):
     """Calculates the new reputations using Weighted Principal Components Analysis"""
     
@@ -96,173 +100,256 @@ def GetRewardWeights(M, Rep=-1, Alpha=.1, Verbose=False):
     return(Out)
 
 
-def GetDecisionOutcomes(Mtemp, Rep=-1, Verbose=False):
+def GetDecisionOutcomes(Mtemp, ScaledIndex, Rep=-1, Verbose=False):
     """Determines the Outcomes of Decisions based on the provided reputation (weighted vote)."""
-    
+
     if type(Rep) is int:
-        Rep = DemocracyCoin(Mat) 
-        
+        Rep = DemocracyCoin(Mtemp)
+
     if Verbose:
-        print("****************************************************") ; print("Begin 'GetDecisionOutcomes'")
-    
+        print('****************************************************')
+        print("Begin 'GetDecisionOutcomes'")
+
     RewardWeightsNA = Rep
-    DecisionOutcomes_Raw  = [] #Declare this (filled below)
-    
+    DecisionOutcomes_Raw = []
+
+    # For each column:
     for i in range(Mtemp.shape[1]):
-        #For each column:            
-        Row = ReWeight( RewardWeightsNA[ -Mtemp[...,i].mask ] )   #The Reputation of the row-players who DID provide judgements, rescaled to sum to 1.
-        Col =  Mtemp[ -Mtemp[...,i].mask ,i]                #The relevant Decision with NAs removed. ("What these row-players had to say about the Decisions they DID judge.")
-        
-        DecisionOutcomes_Raw.append(dot(Col,Row))            #Our Current best-guess for this Decision (weighted average)  
-        
-        if(Verbose):
-            print("** **"); print("Column:", end=" "); print(i); print(Row); print(Col); print("Consensus:"); print(DecisionOutcomes_Raw[i])
 
-    #Output
-    return( array(DecisionOutcomes_Raw).T )
-    
+        # The Reputation of the row-players who DID provide
+        # judgements, rescaled to sum to 1.
+        Row = ReWeight(RewardWeightsNA[-Mtemp[..., i].mask])
 
-def FillNa(Mna, Rep=-1, CatchP=.1, Verbose=False):
+        # The relevant Decision with NAs removed.
+        # ("What these row-players had to say about the Decisions
+        # they DID judge.")
+        Col = Mtemp[-Mtemp[..., i].mask, i]
+
+        # Discriminate Based on Contract Type
+        if not ScaledIndex[i]:
+            # Our Current best-guess for this Binary Decision (weighted average)
+            DecisionOutcomes_Raw.append(dot(Col, Row))
+        else:
+            # Our Current best-guess for this Scaled Decision (weighted median)
+            wmed = WeightedMedian(Row[:,0], Col)
+            DecisionOutcomes_Raw.append()
+
+        if Verbose:
+            print('** **')
+            print('Column:')
+            print(i)
+            print(Row)
+            print(Col)
+            print('Consensus:')
+            print(DecisionOutcomes_Raw[i])
+
+    # Output
+    return array(DecisionOutcomes_Raw).T
+
+
+def FillNa(Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
     """Uses exisiting data and reputations to fill missing observations.
     Essentially a weighted average using all availiable non-NA data.
-    How much should slackers who arent voting suffer? I decided this would depend on the global percentage of slacking."""
-    
+    How much should slackers who arent voting suffer? I decided this would
+    depend on the global percentage of slacking.
+    """
     if type(Rep) is int:
-        Rep = DemocracyCoin(Mat) 
-         
-    Mnew = ma.copy(Mna) #Declare (in case no Missing values, Mnew and Mna will be the same)
-     
-    if(sum(Mna.mask)>0):
-    #Of course, only do this process if there ARE missing values.
-     
-        if(Verbose):
-            print("Missing Values Detected. Beginning presolve using availiable values.")
-             
-        #Decision Outcome - Our best guess for the Decision state (FALSE=0, Ambiguous=.5, TRUE=1) so far (ie, using the present, non-missing, values).
-        DecisionOutcomes_Raw = GetDecisionOutcomes(Mna,Rep,Verbose)
-         
-        #Fill in the predictions to the original M
-        NAmat = Mna.mask   #Defines the slice of the matrix which needs to be edited.
-        Mnew[NAmat] = 0     #Erase the NA's
+        Rep = DemocracyCoin(Mat)
+
+    # Declare (in case no Missing values, Mnew and Mna will be the same)
+    Mnew = ma.copy(Mna)
+
+    # Of course, only do this process if there ARE missing values.
+    if sum(Mna.mask) > 0:
+        if Verbose:
+            print('Missing Values Detected. Beginning presolve using availiable values.')
+
+        # Decision Outcome -
+        # Our best guess for the Decision state (FALSE=0, Ambiguous=.5, TRUE=1)
+        # so far (ie, using the present, non-missing, values).
+        DecisionOutcomes_Raw = GetDecisionOutcomes(Mna, ScaledIndex, Rep, Verbose)
+
+        # Fill in the predictions to the original M
+        NAmat = Mna.mask  # Defines the slice of the matrix which needs to be edited.
+        Mnew[NAmat] = 0  # Erase the NA's
+
+        # Slightly complicated:
+        NAsToFill = dot(NAmat, diag(DecisionOutcomes_Raw[0]))
         
-        #Slightly complicated:
-        NAsToFill = dot( NAmat , diag(DecisionOutcomes_Raw[0]) )
-        #   This builds a matrix whose columns j:
-            #          NAmat was false (the observation wasn't missing)     ...  have a value of Zero
-            #          NAmat was true (the observation was missing)         ...  have a value of the jth element of DecisionOutcomes.Raw (the 'current best guess') 
+        # This builds a matrix whose columns j:
+        #   NAmat was false (the observation wasn't missing) - have a value of Zero
+        #   NAmat was true (the observation was missing)     - have a value of the jth element of DecisionOutcomes.Raw (the 'current best guess')
         Mnew = Mnew + NAsToFill
-        #This replaces the NAs, which were zeros, with the predicted Decision outcome.
-         
-        if(Verbose):
-            print("Missing Values:"); print(NAmat); print("Imputed Values:"); print(NAsToFill)
-        
-        #Appropriately force the predictions into their discrete (0,.5,1) slot. (continuous variables can be gamed).
-        for i in range(Mnew.shape[0]):
-            for j in range(Mnew.shape[1]):
-                Mnew[i][j] = Catch(j,CatchP)
-        
-        if(Verbose):
-            print("Binned:"); print(Mnew) ; print("*** ** Missing Values Filled ** ***")
-            
-    return(Mnew)
-        
-        
-##Putting it all together:
-def Factory(M0, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
-    
-    #Main Routine
-    #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
+        # This replaces the NAs, which were zeros, with the predicted Decision outcome.
+        if Verbose:
+            print('Missing Values:')
+            print(NAmat)
+            print('Imputed Values:')
+            print(NAsToFill)
+
+        # Appropriately force the predictions into their discrete
+        # (0,.5,1) slot. (continuous variables can be gamed).
+        rows, cols = Mnew.shape
+        for i in range(rows):
+            if not ScaledIndex[i]:
+                for j in range(cols):
+                    Mnew[i][j] = Catch(j, CatchP)
+
+        if Verbose:
+            print('Binned:')
+            print(Mnew)
+            print('*** ** Missing Values Filled ** ***')
+
+    return Mnew
+
+
+def Factory(M0, Scales=None, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
+    """Main routine: putting it all together.
+
+    Args:
+      M0 (ma.masked_array): votes matrix; rows = voters, columns = Decisions.
+      Scales (list): list of dicts for each Decision
+        {
+          scaled (bool): True if scalar, False if binary (boolean)
+          min (float): minimum allowed value (0 if binary)
+          max (float): maximum allowed value (1 if binary)
+        }
+
+    Returns:
+      dict: consensus results
+
+    """
+    # Fill the default reputations (egalitarian) if none are provided...
+    # unrealistic and only for testing.
     if type(Rep) is int:
-        Rep = DemocracyCoin(M0) 
-        
-    #Handle Missing Values
-    Filled = FillNa(M0, Rep, CatchP, Verbose)
-    
-    ## Consensus - Row Players 
-    #New Consensus Reward
+        Rep = DemocracyCoin(M0)
+
+    # Fill the default scales (binary) if none are provided.
+    # In practice, this would also never be used.
+    if Scales is None:
+        ScaledIndex = [False] * M0.shape[1]
+        MScaled = M0
+    else:
+        ScaledIndex = [scale["scaled"] for scale in Scales]
+        MScaled = Rescale(M0, Scales)
+
+    # Handle Missing Values
+    Filled = FillNa(MScaled, ScaledIndex, Rep, CatchP, Verbose)
+
+    # Consensus - Row Players
+    # New Consensus Reward
     PlayerInfo = GetRewardWeights(Filled, Rep, .1, Verbose)
     AdjLoadings = PlayerInfo['FirstL']
-  
-    ##Column Players (The Decision Creators)
-    #Calculation of Reward for Decision Authors
-    # Consensus - "Who won?" Decision Outcome 
-    DecisionOutcomes_Raw = dot( PlayerInfo['SmoothRep'] , Filled ) #Simple matrix multiplication ... highest information density at RowBonus, but need DecisionOutcomes.Raw to get to that
-  
-    # Quality of Outcomes - is there confusion?
-    Certainty = abs(2*(DecisionOutcomes_Raw-.5))      # .5 is obviously undesireable, this function travels from 0 to 1 with a minimum at .5
-    ConReward = GetWeight(Certainty)                  #Grading Authors on a curve.
-    Avg_Certainty = mean(Certainty)                   #How well did beliefs converge?
-  
-    #The Outcome Itself
-    DecisionOutcome_Final = []
-    for i in DecisionOutcomes_Raw[0]:
-        DecisionOutcome_Final.append(Catch(i,CatchP))
- 
-    if(Verbose):
-        print("*Decision Outcomes Sucessfully Calculated*")
-        print("Raw Outcomes, Certainty, AuthorPayoutFactor"); print( hstack([DecisionOutcomes_Raw,Certainty,ConReward]))
 
-    ## Participation
-  
-    #Information about missing values
-    NAmat = M0*0 
-    NAmat[NAmat.mask] = 1 #indicator matrix for missing
-  
-    #Participation Within Decisions (Columns) 
+    # Column Players (The Decision Creators)
+    # Calculation of Reward for Decision Authors
+    # Consensus - "Who won?" Decision Outcome    
+    # Simple matrix multiplication ... highest information density at RowBonus,
+    # but need DecisionOutcomes.Raw to get to that
+    DecisionOutcomes_Raw = dot(PlayerInfo['SmoothRep'], Filled)
+
+    # Discriminate Based on Contract Type
+    ncols = Filled.shape[1]
+    for i in range(ncols):
+        # Our Current best-guess for this Scaled Decision (weighted median)
+        if ScaledIndex[i]:
+            DecisionOutcomes_Raw[i] = WeightedMedian(Filled[:,i],
+                                                     PlayerInfo["SmoothRep"])
+
+    # .5 is obviously undesireable, this function travels from 0 to 1
+    # with a minimum at .5
+    Certainty = abs(2 * (DecisionOutcomes_Raw - .5))
+
+    # Grading Authors on a curve.
+    ConReward = GetWeight(Certainty)
+
+    # How well did beliefs converge?
+    Avg_Certainty = mean(Certainty)
+
+    # The Outcome Itself
+    # Discriminate Based on Contract Type
+    DecisionOutcome_Adj = []
+    for i, raw in enumerate(DecisionOutcomes_Raw[0]):
+        DecisionOutcome_Adj.append(Catch(raw, CatchP))
+        if ScaledIndex[i]:
+            DecisionOutcome_Adj[i] = raw
+
+    DecisionOutcome_Final = []
+    for i, raw in enumerate(DecisionOutcomes_Raw[0]):
+        DecisionOutcome_Final.append(DecisionOutcome_Adj[i])
+        if ScaledIndex[i]:
+            DecisionOutcome_Final[i] *= (Scales[i]["max"] - Scales[i]["min"])
+
+    if Verbose:
+        print('*Decision Outcomes Sucessfully Calculated*')
+        print('Raw Outcomes, Certainty, AuthorPayoutFactor')
+        print(hstack([DecisionOutcomes_Raw, Certainty, ConReward]))
+
+    # Participation
+    # Information about missing values
+    NAmat = M0 * 0
+    NAmat[NAmat.mask] = 1  # indicator matrix for missing
+
+    # Participation Within Decisions (Columns)
     # % of reputation that answered each Decision
-    ParticipationC = 1-dot(PlayerInfo['SmoothRep'] , NAmat)
-  
-    #Participation Within Agents (Rows) 
+    ParticipationC = 1 - dot(PlayerInfo['SmoothRep'], NAmat)
+
+    # Participation Within Agents (Rows)
     # Many options
-  
     # 1- Democracy Option - all Decisions treated equally.
-    ParticipationR  = 1-( NAmat.sum(axis=1) / NAmat.shape[1] )
-  
-    #General Participation
-    PercentNA = 1-mean(ParticipationC)
-    #(Possibly integrate two functions of participation?) Chicken and egg problem...
-  
-    if(Verbose):
-        print("*Participation Information*")
-        print("Voter Turnout by question"); print( ParticipationC )
-        print("Voter Turnout across questions"); print ( ParticipationR )
-  
-    ## Combine Information
-    #Row
+    ParticipationR = 1 - NAmat.sum(axis=1) / NAmat.shape[1]
+
+    # General Participation
+    PercentNA = 1 - mean(ParticipationC)
+
+    # (Possibly integrate two functions of participation?) Chicken and egg problem...
+    if Verbose:
+        print('*Participation Information*')
+        print('Voter Turnout by question')
+        print(ParticipationC)
+        print('Voter Turnout across questions')
+        print(ParticipationR)
+
+    # # Combine Information
+    # Row
     NAbonusR = GetWeight(ParticipationR)
-    RowBonus = (NAbonusR*(PercentNA))+(PlayerInfo['SmoothRep']*(1-PercentNA))
-  
-    #Column
+    RowBonus = NAbonusR * PercentNA + PlayerInfo['SmoothRep'] * (1
+            - PercentNA)
+
+    # Column
     NAbonusC = GetWeight(ParticipationC)
-    ColBonus = (NAbonusC*(PercentNA))+(ConReward*(1-PercentNA))  
-  
-    #Present Results
-    Output = {"Original": M0.base, "Filled": Filled.base,
-        "Agents": {
-            "OldRep": PlayerInfo['OldRep'][0],
-            "ThisRep": PlayerInfo['ThisRep'][0],
-            "SmoothRep": PlayerInfo['SmoothRep'][0],
-            "NArow": NAmat.sum(axis=1).base,
-            "ParticipationR": ParticipationR.base,
-            "RelativePart": NAbonusR.base,
-            "RowBonus": RowBonus.base
+    ColBonus = NAbonusC * PercentNA + ConReward * (1 - PercentNA)
+
+    # Present Results
+    Output = {  # Using this to set inclusion fees
+                # Using this to set Catch Parameter
+        'Original': M0.base,
+        'Filled': Filled.base,
+        'Agents': {
+            'OldRep': PlayerInfo['OldRep'][0],
+            'ThisRep': PlayerInfo['ThisRep'][0],
+            'SmoothRep': PlayerInfo['SmoothRep'][0],
+            'NArow': NAmat.sum(axis=1).base,
+            'ParticipationR': ParticipationR.base,
+            'RelativePart': NAbonusR.base,
+            'RowBonus': RowBonus.base,
             },
-        "Decisions": {
-            "First Loading": AdjLoadings,
-            "DecisionOutcomes_Raw": DecisionOutcomes_Raw,
-            "Consensus Reward": ConReward,
-            "Certainty": Certainty,
-            "NAs Filled": NAmat.sum(axis=0),
-            "ParticipationC": ParticipationC,
-            "Author Bonus": ColBonus,
-            "DecisionOutcome_Final": DecisionOutcome_Final
+        'Decisions': {
+            'First Loading': AdjLoadings,
+            'DecisionOutcomes_Raw': DecisionOutcomes_Raw,
+            'Consensus Reward': ConReward,
+            'Certainty': Certainty,
+            'NAs Filled': NAmat.sum(axis=0),
+            'ParticipationC': ParticipationC,
+            'Author Bonus': ColBonus,
+            'DecisionOutcome_Final': DecisionOutcome_Final,
             },
-        "Participation": (1-PercentNA), #Using this to set inclusion fees.
-        "Certainty": Avg_Certainty #Using this to set Catch Parameter)
+        'Participation': 1 - PercentNA,
+        'Certainty': Avg_Certainty,
         }
-      
-    return(Output)
-  
+
+    return Output
+
 
 #Long-Term
 def Chain(X,N=2,ThisRep=-1):
@@ -333,20 +420,6 @@ def DisplayResults(FactorObject):
     return( q["Participation"] ) #simple estimate of sucess 
 
 
-
-
-
-###TEST
-
-global Votes
-VotesUM = array([[1,1,0,0], 
-               [1,0,0,0],
-               [1,1,0,0],
-               [1,1,1,0],
-               [0,0,1,1],
-               [0,0,1,1]])            
-Votes = ma.masked_array(VotesUM, isnan(VotesUM))
-
 def TestConsensus():
     """Verifies function works as required. If False, check comments below for full expected results."""
     
@@ -362,12 +435,37 @@ def TestConsensus():
     Expected = 0.228237569613
 
     return( round(Actual, 11) == round(Expected, 11) )
-    
-TestConsensus()
-    
-    
 
-    
+
+if __name__ == "__main__":
+    ### TEST
+    global Votes
+    VotesUM = array([[1,1,0,0], 
+                   [1,0,0,0],
+                   [1,1,0,0],
+                   [1,1,1,0],
+                   [0,0,1,1],
+                   [0,0,1,1]])            
+    Votes = ma.masked_array(VotesUM, isnan(VotesUM))
+
+    TestConsensus()
+
+    ## Speed Test
+    import time
+
+    print(time.asctime())
+    InitVotesL = random_integers(0,1,(10000*100)).reshape(10000,100)
+    VotesL = ma.masked_array(InitVotesL, isnan(InitVotesL))
+    print(time.asctime())
+
+    print(time.asctime())
+    DisplayResults(Factory(Votes))
+    print(time.asctime())
+
+    print(time.asctime())
+    DisplayResults(Factory(VotesL))
+    print(time.asctime())
+
     
 # "Official" Answers
     
@@ -424,25 +522,3 @@ TestConsensus()
 # Participation: 1.0
 #
 # Certainty: 0.228237569613    
-    
-    
-    
-    
-    
-## Speed Test
-#
-import time
-
-print(time.asctime())
-InitVotesL = random_integers(0,1,(10000*100)).reshape(10000,100)
-VotesL = ma.masked_array(InitVotesL, isnan(InitVotesL))
-print(time.asctime())
-
-print(time.asctime())
-DisplayResults(Factory(Votes))
-print(time.asctime())
-
-print(time.asctime())
-DisplayResults(Factory(VotesL))
-print(time.asctime())
-
