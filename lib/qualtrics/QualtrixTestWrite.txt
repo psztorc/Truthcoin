@@ -1,0 +1,55 @@
+[[SimpleFormat]]
+
+1. This is a multiple choice question. Every question starts with a
+number followed by a period. There should be a blank line between
+the question text and the choices.
+
+a
+b
+c
+d
+
+
+[[Block:My Block Name]]
+2. This is a multiple choice- multiple answer question.
+[[MultipleAnswer]]
+
+a
+b
+c
+d
+
+
+[[PageBreak]]
+3. This is a matrix question that has longer question text.
+It is a matrix question because it has two groups of choices.
+
+The question text is on two lines.
+
+ma
+mb
+mc
+
+m1
+m2
+m3
+
+
+
+4. This is a matrix-multiple answer question.
+[[MultipleAnswer]]
+
+ma
+mb
+mc
+
+m1
+m2
+m3
+
+
+[[Block]]
+5. What is your gender?
+
+Male
+Female

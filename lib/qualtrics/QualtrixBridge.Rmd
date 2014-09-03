@@ -1,0 +1,209 @@
+---
+title: "QualtricsBridge"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents.
+
+```{r Setup}
+# Testing the SVD empirically with Qualtrix
+
+tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'Truthcoin/lib' folder:")) )
+
+
+```
+
+
+
+```{r ReadingAndWritingTXT}
+
+ReadTxt <- function(InFile) {
+  # Lots of settings required to make R handle this data in the appropriate format
+  DataFrame <- read.table(InFile, sep = "\n", col.names = "Data", header = FALSE, blank.lines.skip = FALSE, stringsAsFactors = FALSE)
+  return(DataFrame)
+}
+
+
+WriteTxt <- function(CharacterVector, OutFile="qualtrics\\QualtrixTestWrite.txt") {
+  # Dumps the contents of a Character Vector into a .txt file
+  
+  sink(OutFile) # Opens the file
+  cat(CharacterVector,sep = "\n") # Writes the Data
+  sink() # Restores output to the console
+  
+}
+
+
+SurveyData <- ReadTxt("qualtrics\\QualtrixTestRead.txt")
+WriteTxt(SurveyData$Data, "qualtrics\\QualtrixTestWrite.txt")
+
+
+# Make sure we did the job correctly
+SurveyData2 <- ReadTxt("qualtrics\\QualtrixTestWrite.txt")
+all.equal(SurveyData,SurveyData2)
+
+
+# Qualtrics Data Format
+# install.packages('rjson')
+# library(rjson)
+# Qual <- fromJSON( file = "C:\\Users\\Psztorc\\Desktop\\Attempt1.qsf")
+
+```
+
+
+```{r CsvToQualtrics}
+
+SurveyQuestionsFile <- "qualtrics\\SurveyInputs.csv"
+SurveyInputs <- read.csv(SurveyQuestionsFile, stringsAsFactors = FALSE)
+
+SurveyInputs
+
+Lines <- c("[[AdvancedFormat]]","","[[Block:MC Block]]","")
+
+for(i in 1:nrow(SurveyInputs)) {
+  
+  if(SurveyInputs$Type[i]=="Binary") {
+    Lines <- c(Lines, "[[Question:MC:SingleAnswer:Vertical]]")
+    Lines <- c(Lines, SurveyInputs$Wording[i] )
+    Lines <- c(Lines, "[[Choices]]", "Yes", "Ambiguous / Too Much Work", "No")
+    Lines <- c(Lines, "")
+  }
+  
+  if(SurveyInputs$Type[i]=="Scaled") {
+    Lines <- c(Lines, "[[Question:TE:SingleLine]]")
+    Lines <- c(Lines, SurveyInputs$Wording[i] )
+    Lines <- c(Lines, "")
+  }
+  
+}
+
+Lines
+
+WriteTxt(CharacterVector = Lines, OutFile = "qualtrics\\ToQualtrics.txt")
+
+```
+
+
+```{r QualtricsToVoteMatrix}
+
+QualtricsFile <- "qualtrics\\FromQualtrics.csv"
+
+Results <- read.csv(QualtricsFile, stringsAsFactors= FALSE)
+
+GetFirstLetter <- function(Vec) vapply( Vec , FUN = function(x) strsplit(x , fixed = TRUE, split = "")[[1]][1], FUN.VALUE = "a")
+
+GetQsOnly <- function(DataFrame) DataFrame[ -1 , GetFirstLetter( names(DataFrame) )=="Q" ] # And remove the first row (q text reminder) while we're at it
+
+VoteMatrix <- GetQsOnly(Results)
+VoteMatrix <- data.frame ( lapply( VoteMatrix, as.numeric) )# make all observations numbers
+
+VoteMatrix[ VoteMatrix==2 ] <- .5
+VoteMatrix[ VoteMatrix==3 ] <- 0
+
+VoteMatrix
+
+# Rescale
+Scales <- SurveyInputs[SurveyInputs$Type=="Scaled", c("ID","Type","Min","Max")]
+FilledVoteMatrix <- VoteMatrix
+for(i in 1:nrow(Scales)) { # for each scaled operation
+  
+  ThisQ <- Scales$ID[i]
+  ThisColumn <- FilledVoteMatrix[ , names(FilledVoteMatrix)==ThisQ ]
+  RescaledColumn <- (ThisColumn - Scales$Min[i]) / (Scales$Max[i] - Scales$Min[i])  # "rescale"
+  
+  FilledVoteMatrix[ , names(FilledVoteMatrix)==ThisQ ] <- RescaledColumn # Overwrite
+}
+
+FilledVoteMatrix <- as.matrix(FilledVoteMatrix)
+row.names(FilledVoteMatrix) <- paste( "Voter", (1:nrow(FilledVoteMatrix)) )
+
+```
+
+
+```{r LoadFactory}
+# Load what we need
+source("consensus\\ConsensusMechanism.r")
+
+# Didnt want to source this...should move to its own file, I guess.
+PlotJ <- function(M,Scales,Title="Plot of Judgement Space") { 
+  
+  require(ggplot2)
+  require(reshape2)
+  
+  # Give unique names
+  row.names(M) <- paste("Voter",1:nrow(M))
+  
+  Results <- Factory(M, Scales = ScaleData, CatchP=0)
+  
+  DF <- melt(Results[["Filled"]])
+  DF$value <- factor( round(DF$value, 4))
+  DF$Var1  <- factor(DF$Var1)
+  
+  SC <- data.frame(Var1=rownames(M), Scores= Results[["Agents"]][,"ThisRep"])
+  
+  DF <- merge(DF,SC)
+  
+  p1 <- ggplot(DF,aes(x=value,fill=Var1,alpha=Scores)) +
+              facet_grid(Var2~.) +
+              geom_histogram() +
+    geom_bar(aes(y=1),stat="identity", colour="black") 
+
+  
+  p1f <- p1 + theme_bw() +
+    scale_fill_hue(h=c(10,90), guide=guide_legend(title = "Voter")) +
+    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.05,.8)) +
+    xlab("Outcome") +
+    ylab('Unscaled Votes') + 
+    theme_grey() +
+    labs(title = Title)
+  return(p1f)
+}
+
+# I've already rescaled, but we still need to pass the boolean
+ScaleData <- matrix( c( rep(FALSE,ncol(FilledVoteMatrix)),
+              rep(0,ncol(FilledVoteMatrix)),
+              rep(1,ncol(FilledVoteMatrix))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(FilledVoteMatrix)) )
+
+ScaleData[1,] <- SurveyInputs$Type=="Scaled"
+
+
+SvdResults <- Factory(FilledVoteMatrix,Scales = ScaleData)
+Plot <- PlotJ(FilledVoteMatrix, Scales = ScaleData)
+
+write.csv(SvdResults$Original, file="qualtrics\\output\\OriginalVoteMatrix.csv")
+write.csv(SvdResults$Agents, file="qualtrics\\output\\agents.csv")
+write.csv(SvdResults$Decisions, file="qualtrics\\output\\decisions.csv")
+
+svg("qualtrics\\output\\plot.svg",width = 8.5,height = 11)
+Plot
+dev.off()
+
+```
+
+
+```{r ExtraStuff}
+
+# # If Randomness: Find end of q_block
+# EndOfVM_Name <- names(VoteMatrix)[ncol(VoteMatrix)]           # What is the label of the last column of VM?
+# EndOfVM_Column <- (1:ncol(Results))[names(Results)==EndOfVM_Name]  # What is the absolute position of the last column of VM?
+# Order <- as.character( Results[ -1 , 1 + EndOfVM_Column ] ) # drop useless rows and change formatting while were at it
+# 
+# Order
+
+
+# # Prompts to Ballots
+# 
+# strsplit(Prompts,"QID")[[1]][-1]
+# 
+# LoseTheVbar <- function(Vec) gsub( x = Vec, pattern = "|", fixed = TRUE, replacement = "" )
+# 
+# StandardizeBallotId <- function(Vec) {
+#   Numbers <- as.numeric(Vec)
+#   ID <- paste( sort(Numbers), collapse = "." )
+#   return(ID)
+# }
+# 
+# LoseTheVbar( strsplit(Prompts,"QID")[[1]][-1] )
+# 
+# StandardizeBallotId( LoseTheVbar( strsplit(Prompts,"QID")[[1]][-1] ) )
+```

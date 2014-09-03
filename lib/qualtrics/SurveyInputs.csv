@@ -1,0 +1,11 @@
+Trial,ID,Type,Topic,Title,ExpectedDifficulty,Min,Max,Clarity,Date,OfficalAnswer,Wording,Link
+1,QID1,Binary,Politics,2012President,1,0,1,A,2012.11.06,1,"In the United States, following the 2012 November elections, was Barack Obama elected US President?","http://en.wikipedia.org/wiki/United_States_presidential_election,_2012"
+1,QID2,Binary,Politics,2012President,1,0,1,A,2012.11.06,0,"In the United States, following the 2012 November elections, was Mitt Romney elected US President?","http://en.wikipedia.org/wiki/United_States_presidential_election,_2013"
+1,QID3,Binary,Politics,2012DemSenate,4,0,1,A,2012.11.06,1,"In the United States, following the 2012 November elections, did the Democratic Party control 51 or more Senate seats?",
+1,QID4,Binary,Politics,2012RepubHouse,4,0,1,A,2012.11.06,1,"In the United States, following the 2012 November elections, did the Republican Party control 218 or more seats in the House of Representatives?","http://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012"
+1,QID5,Scaled,Politics,2012RepubHouseSCL,6,0,435,A,2012.11.06,242,"In the United States, following the 2012 November elections, how many seats in the House of Representatives were controlled by the Republican Party? Range: 0 to 435","http://en.wikipedia.org/wiki/United_States_House_of_Representatives_elections,_2012"
+1,QID6,Binary,Sports,2012SuperBowlPatriots,4,0,1,A,2012.02.05,0,"During the 2011-2012 United States football season, did the New England Patriots (AFC) win the 2012 Super Bowl (XLVI)?",http://en.wikipedia.org/wiki/Super_Bowl_XLVI
+1,QID7,Binary,Sports,2014SuperBowlBroncos,4,0,1,A,2014.02.02,0,"During the 2013-2014 United States football season, did the Denver Broncos (AFC) win the 2014 Super Bowl (XLVIII)?",
+1,QID8,Binary,Finance,DJIA20140627,4,0,1,A,2014.06.27,1,"On June 27th, 2014, was the closing price of the Dow Jones Industrial Average (INDEXDJX:.DJI) above 16000?",
+1,QID9,Binary,Finance,GLD20140627,4,0,1,A,2014.06.27,1,"On June 27th, 2014, was the closing price of the SPDR Gold Trust (ETF) (NYSEARCA:GLD) above 120?",
+1,QID10,Scaled,Finance,DJIA20140709,6,8000,20000,A,2014.07.09,16985.61,"On July 9th, 2014, what was the closing price of the Dow Jones Industrial Average (INDEXDJX:.DJI, USD per Share, 2 decimal points)? Range: 8000 to 20000",

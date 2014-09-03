@@ -1,0 +1,66 @@
+[[AdvancedFormat]]
+
+[[Block:MC Block]]
+
+[[Question:MC:SingleAnswer:Vertical]]
+In the United States, following the 2012 November elections, was Barack Obama elected US President?
+[[Choices]]
+Yes
+Ambiguous / Too Much Work
+No
+
+[[Question:MC:SingleAnswer:Vertical]]
+In the United States, following the 2012 November elections, was Mitt Romney elected US President?
+[[Choices]]
+Yes
+Ambiguous / Too Much Work
+No
+
+[[Question:MC:SingleAnswer:Vertical]]
+In the United States, following the 2012 November elections, did the Democratic Party control 51 or more Senate seats?
+[[Choices]]
+Yes
+Ambiguous / Too Much Work
+No
+
+[[Question:MC:SingleAnswer:Vertical]]
+In the United States, following the 2012 November elections, did the Republican Party control 218 or more seats in the House of Representatives?
+[[Choices]]
+Yes
+Ambiguous / Too Much Work
+No
+
+[[Question:TE:SingleLine]]
+In the United States, following the 2012 November elections, how many seats in the House of Representatives were controlled by the Republican Party? Range: 0 to 435
+
+[[Question:MC:SingleAnswer:Vertical]]
+During the 2011-2012 United States football season, did the New England Patriots (AFC) win the 2012 Super Bowl (XLVI)?
+[[Choices]]
+Yes
+Ambiguous / Too Much Work
+No
+
+[[Question:MC:SingleAnswer:Vertical]]
+During the 2013-2014 United States football season, did the Denver Broncos (AFC) win the 2014 Super Bowl (XLVIII)?
+[[Choices]]
+Yes
+Ambiguous / Too Much Work
+No
+
+[[Question:MC:SingleAnswer:Vertical]]
+On June 27th, 2014, was the closing price of the Dow Jones Industrial Average (INDEXDJX:.DJI) above 16000?
+[[Choices]]
+Yes
+Ambiguous / Too Much Work
+No
+
+[[Question:MC:SingleAnswer:Vertical]]
+On June 27th, 2014, was the closing price of the SPDR Gold Trust (ETF) (NYSEARCA:GLD) above 120?
+[[Choices]]
+Yes
+Ambiguous / Too Much Work
+No
+
+[[Question:TE:SingleLine]]
+On July 9th, 2014, what was the closing price of the Dow Jones Industrial Average (INDEXDJX:.DJI, USD per Share, 2 decimal points)? Range: 8000 to 20000
+
