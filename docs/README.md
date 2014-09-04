@@ -18,7 +18,7 @@ Other papers which describe the overall purposes and goals of this endeavour:
 
 
 
-
+<!---
 Wall of Shame
 -------------------------------------------------
 
@@ -34,7 +34,7 @@ I worked hard to explain my point of view. Here I chronicle the disrespectful at
 
 
 Talking without knowing is **lying**. If you don't know something (for example, because you haven't read about it), then **be quiet**. 
-
+-->
 
 FAQ
 ------------------------------------------
