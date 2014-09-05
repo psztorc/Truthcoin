@@ -1,25 +1,20 @@
----
-title: "QualtricsBridge"
-output: html_document
----
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents.
-
-```{r Setup}
 # Testing the SVD empirically via Website
-# 
-# tryCatch(expr=setwd("~/GitHub/Truthcoin/lib/demo"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'Truthcoin/lib' folder:")) )
+# Paul Sztorc
 
-setwd("C:/Users/ps583/Documents/Shared Files/DPM/Truthcoin/lib")
+## Load Data ##
+print("Loading data..")
 
-```
-
-
-```{r LoadData}
+tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'Truthcoin/lib' folder:")) )
 
 DataFile <- "demo/input/Questions_VoteMatrix.csv"
-
 Data <- read.csv(DataFile, stringsAsFactors= FALSE, row.names=1)
+
+print("Load Complete.")
+print(" ")
+
+## Get VoteMatrix ##
+print("Getting Votes..")
 
 ToMatrix <- function(DF) {
   RowNames <- row.names(DF)
@@ -33,12 +28,12 @@ ToMatrix <- function(DF) {
 VoteData <- Data[-1:-4,]
 VoteMatrix <- ToMatrix(VoteData)
 
-VoteMatrix
+print(VoteMatrix)
+print(" ")
 
-```
 
-
-```{r Rescale}
+## Rescale ##
+print("Rescaling the Scaled Decisions..")
 
 # Scaled claims must become range(0,1)
 
@@ -59,15 +54,15 @@ for(i in 1:ncol(ScaleMatrix)) { # for each scaled decision
   RescaledVoteMatrix[ , colnames(RescaledVoteMatrix)==ThisQ ] <- RescaledColumn # Overwrite
 }
 
-RescaledVoteMatrix
+print("Rescale Complete.")
+print(" ")
 
-```
 
+## Do Computations ##
 
-```{r DoComputations}
 # Load what we need
+print("Loading SVD Consensus Mechanism..")
 source("consensus/ConsensusMechanism.r")
-
 
 # I've already rescaled, but we still need to pass the boolean - must fix this.
 ScaleData <- matrix( c( rep(FALSE,ncol(RescaledVoteMatrix)),
@@ -77,17 +72,27 @@ ScaleData <- matrix( c( rep(FALSE,ncol(RescaledVoteMatrix)),
 ScaleData[1,] <- Scaled
 
 # Get the Resuls
+print("Calculating Results..")
 SvdResults <- Factory(RescaledVoteMatrix,Scales = ScaleData)
 
-source("consensus/PlotJ.r")
-Plot <- PlotJ(RescaledVoteMatrix, Scales = ScaleData)
+print("Writing Output .csvs..")
+print(" ")
 
 write.csv(SvdResults$Original, file="demo/output/OriginalVoteMatrix.csv")
 write.csv(SvdResults$Agents, file="demo/output/agents.csv")
 write.csv(SvdResults$Decisions, file="demo/output/decisions.csv")
 
+print("Loading Plot Functions..")
+source("consensus/PlotJ.r")
+
+print("Making Plot..")
+Plot <- PlotJ(RescaledVoteMatrix, Scales = ScaleData)
+
+
 svg("demo/output/plot.svg",width = 8.5,height = 11)
 Plot
 dev.off()
 
-```
+print("Plot Complete.")
+
+print("Done!")
