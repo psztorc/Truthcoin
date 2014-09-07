@@ -556,3 +556,36 @@ Chain <- function(X,Scales,N=2,ThisRep) {
   return(Output)
 }
 
+# Double-Factory (much more reliable)
+
+DoubleFactory <- function(X, Scales, Rep, CatchP=.1, MaxRow=5000, Phi=.65, Verbose=FALSE) {
+  # see http://forum.truthcoin.info/index.php/topic,102.msg289.html#msg289
+  
+  #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
+  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(X)))
+                     if(Verbose) print("Reputation not provided...assuming equal influence.")
+  }
+  
+  #******************
+  #Fill the default scales (binary) if none are provided. In practice, this would also never be used.
+  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(X)),
+                                             rep(0,ncol(X)),
+                                             rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(X)) )
+                        if(Verbose) print("Scales not provided...assuming binary (0,1).")
+  }
+  
+  WaveOne <- Factory(X,Scales,Rep,CatchP,MaxRow,Verbose)
+  
+  Safe  <- ( WaveOne$Decisions["Certainty",] ) >= Phi # all those contracts which were unanimous for a subset of proportion ("Phi")
+  
+  if(Verbose) {
+    print(" Wave One Complete.")
+    print( sum(Safe)/ncol(X) )
+  }
+  
+  WaveTwo <- Factory( X[,Safe] ,
+                      Scales[,Safe],
+                      Rep,CatchP,MaxRow,Verbose)
+  
+  return(WaveTwo)
+}
