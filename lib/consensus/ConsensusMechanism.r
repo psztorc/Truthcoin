@@ -42,13 +42,15 @@ GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=FALSE) {
   #Because the average state of Decisions is a function both of randomness and the way the Decisions are worded, I quickly check to see which
   #  of the two possible 'new' reputation vectors had more opinion in common with the original 'old' reputation.
   #  I originally tried doing this using math but after multiple failures I chose this ad hoc way.
+  
+  # The two options
   Set1 <-  FirstScore+abs(min(FirstScore))
   Set2 <-  FirstScore-max(FirstScore)   
   
   Old <- Rep%*%M
   
-  New1 <- GetWeight(Set1%*%M)
-  New2 <- GetWeight(Set2%*%M)
+  New1 <- GetWeight(Set1)%*%M
+  New2 <- GetWeight(Set2)%*%M
   
   #Difference in Sum of squared errors, if >0, then New1 had higher errors (use New2), and conversely if <0 use 1.
   RefInd <- sum( (New1-Old)^2) -  sum( (New2-Old)^2)
