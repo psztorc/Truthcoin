@@ -30,46 +30,7 @@ CompareIncentives <- function(X,FF=Factory,N=1) {
   return(Out)
 }
 
-#2 - Visual display of a given period.
-
-library(ggplot2)
-library(scales)
-library(reshape)
-library(ggthemes)
-
-#Colours <- c("Liar" = "red","Honest" = "blue","Confused 1" = "darkgreen", "Confused 2" = "orange")
-
-PlotJ <- function(M,FF=Factory,Title="Plot of Judgement Space") { 
-  
-  # Give unique names
-  row.names(M) <- paste("Voter",1:nrow(M))
-  
-  Results <- Factory(M,CatchP=0)
-  
-  DF <- melt(Results[["Filled"]])
-  DF$value <- factor(DF$value)
-  DF$X1  <- factor(DF$X1)
-  
-  SC <- data.frame(X1=rownames(M), Scores= Results[["Agents"]][,"ThisRep"])
-  
-  DF <- merge(DF,SC)
-  
-  p1 <- ggplot(DF,aes(x=value,fill=X1,alpha=Scores)) +
-              facet_grid(X2~.) +
-              geom_histogram() +
-    geom_bar(aes(y=1),stat="identity", colour="black") 
-
-  
-  p1f <- p1 + theme_bw() +
-    scale_fill_hue(h=c(10,90), guide=guide_legend(title = "Voter")) +
-    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.05,.8)) +
-    xlab("Outcome") +
-    ylab('Unscaled Votes') + 
-    theme_grey() +
-    labs(title = Title)
-  print(p1f)
-}
-
+source(file="consensus/PlotJ.r")
 ```
 
 
@@ -571,12 +532,21 @@ Factory(Mar4,Rep=r4)$Agents
 ```{r Unknown}
 Factory(Mg)$Agents[,c("OldRep","ThisRep","SmoothRep")]
 Factory(Mg2)$Agents[,c("OldRep","ThisRep","SmoothRep")]
-#True 1 of group 2 skyrockets ahead, as desired.
+# True 1 of group 2 skyrockets ahead, as desired.
 
-#upon reflection, I dont think this 'problem' is particularly bad.
+# upon reflection, I dont think this 'problem' is particularly bad.
 ```
 
+```{r }
+Mub1 <- matrix(c(1, 0, 1.0, 1,  0.4498141, 0, 0, 1, 1, 0.7488008,
+                 0, 0, 0.5, NA, 0.4460967, 0, 0, 1, 0, 0.7488008,
+                 1, 0, 1.0, 1,  0.4498141, 0, 0, 1, 1, NA), 3, byrow = TRUE)
 
+Factory(Mub1, Verbose = TRUE)
+
+
+
+```
 
 
 Scalability
@@ -633,7 +603,7 @@ What is the effect of withholding "confusing" Decisions?
 
 library(reshape)
 
-DoubleFactory <- function(X,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
+DoubleFactoryTest <- function(X, Scales, Rep, CatchP=.1, MaxRow=5000, Phi=.65, Verbose=FALSE) {
   
     #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
   if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(X)))
@@ -648,15 +618,15 @@ DoubleFactory <- function(X,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
                         if(Verbose) print("Scales not provided...assuming binary (0,1).")
   }
   
-  
   WaveOne <- Factory(X,Scales,Rep,CatchP,MaxRow,Verbose)
   
   print(" Wave One Complete.")
   
+  
   # Find the contested contracts
   ContestParameter <- .65 # completely made up, for now
   
-  Safe  <- ( WaveOne$Decisions["Certainty",] ) >= ContestParameter # all those contracts which were unanimous for a subset of proportion .65 (ContestParameter)
+  Safe  <- ( WaveOne$Decisions["Certainty",] ) >= Phi # all those contracts which were unanimous for a subset of proportion ("Phi")
   
   print( sum(Safe)/ncol(X) ) # proportion which made it
   print( X[,Safe] )          # the new matrix
@@ -678,7 +648,7 @@ DoubleFactory <- function(X,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
   
 }
 
-DoubleFactory(Scenarios$Base)
+DoubleFactoryTest(Scenarios$Base)
 
 #          X1       One   Two
 # 1 Distort 1 0.1717624 0.175
@@ -686,7 +656,7 @@ DoubleFactory(Scenarios$Base)
 # 3      Liar 0.3000000 0.300
 # 4      True 0.3564751 0.350
 
-DoubleFactory(Scenarios$CoalitionalDeviance)
+DoubleFactoryTest(Scenarios$CoalitionalDeviance)
 
 #      X1        One        Two
 # 1 Diver 0.08181818 0.08181818
@@ -696,12 +666,12 @@ DoubleFactory(Scenarios$CoalitionalDeviance)
 # The attack has essentially been erased...
 
 
-DoubleFactory(Scenarios$CluelessTest)
+DoubleFactoryTest(Scenarios$CluelessTest)
 # No difference
 
-DoubleFactory(Scenarios$Incoherence,CatchP=.2)
+DoubleFactoryTest(Scenarios$Incoherence,CatchP=.2)
 
-DoubleFactory(Scenarios$Gaming,CatchP=.2)
+DoubleFactoryTest(Scenarios$Gaming,CatchP=.2)
 
 
 Mz <- matrix( c(1, 1,.5, 0, 0, # real
@@ -710,8 +680,8 @@ Mz <- matrix( c(1, 1,.5, 0, 0, # real
               ncol=5,byrow=TRUE,dimnames=list(c("Honest","Attacker1","Attacker2"),c("C1.1","C2.1","C3.5","C4.0","C5.0")))
                 
                 
-DoubleFactory(Mz,Rep=c(.34,.30,.36))
-DoubleFactory(Mz,Rep=c(.34,.36,.30))
+DoubleFactoryTest(Mz,Rep=c(.34,.30,.36))
+DoubleFactoryTest(Mz,Rep=c(.34,.36,.30))
 
 # Having more reputation actually HURTs the attack, by kicking it out of the second wave. Then, with the contested Decision out of the wave, a less-interested attacker bailing with Honest on one other Decision (one that they don't really care about). The majority attacker loses some of the influence he would have gained had he been able to flip more contracts.
 # Knowing this, the minority attacker should be even more worried than usual.
