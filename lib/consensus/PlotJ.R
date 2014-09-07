@@ -12,7 +12,7 @@ PlotJ <- function(M,Scales,Title="Plot of Judgement Space") {
   require(reshape2)
   
   # Give unique names
-  row.names(M) <- paste("Voter",1:nrow(M))
+  # row.names(M) <- paste("Voter",1:nrow(M))
   
   # Use the SVD-Consensus
   Results <- Factory(M, Scales = ScaleData, CatchP=0)
@@ -27,12 +27,10 @@ PlotJ <- function(M,Scales,Title="Plot of Judgement Space") {
   
   DF <- merge(DF,SC)
   
-  p1 <- ggplot(DF,aes(x=value,fill=Var1,alpha=Scores)) +
-    facet_grid(Var2~.) +
-    geom_histogram() +
-    geom_bar(aes(y=1),stat="identity", colour="black") 
-  
-  
+  p1 <- ggplot(DF,aes(x=value,y=1,fill=Var1,alpha=Scores)) +
+    geom_bar(stat="identity", colour="black") +
+    facet_grid(Var2~.)
+
   p1f <- p1 + theme_bw() +
     scale_fill_hue(h=c(10,90), guide=guide_legend(title = "Voter")) +
     scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.05,.8)) +
@@ -40,5 +38,6 @@ PlotJ <- function(M,Scales,Title="Plot of Judgement Space") {
     ylab('Unscaled Votes') + 
     theme_grey() +
     labs(title = Title)
+  
   return(p1f)
 }
