@@ -7,6 +7,14 @@ Vox Populi
 Glimpse
 Palantíri
 Omniscience
+Tachyon
+Omen
+Firenze
+Tiresias
+Mene Mene
+PreCog
+
+
 
 
 The Truthcoins themselves should probably be renamed 'shares', 'reputation', or 'influence' or something similar.
