@@ -14,8 +14,13 @@ PlotJ <- function(M,Scales,Title="Plot of Judgement Space") {
   # Give unique names
   # row.names(M) <- paste("Voter",1:nrow(M))
   
+  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(M)),
+                                             rep(0,ncol(M)),
+                                             rep(1,ncol(M))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M)) )
+  }
+  
   # Use the SVD-Consensus
-  Results <- Factory(M, Scales = ScaleData, CatchP=0)
+  Results <- Factory(M, Scales, CatchP=0)
   
   # Get Dimensions and Labels (who voted for what?)
   DF <- melt(Results[["Filled"]])
