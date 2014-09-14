@@ -13,7 +13,7 @@ Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_White
 Visit our [FAQ](https://github.com/psztorc/Truthcoin/tree/master/docs#faq).  
 Visit our [forum](http://forum.truthcoin.info/).  
 Draft of a [presentation](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pdf) on why this project may be worth your attention, even if you only care about money ([.pptx (with notes)](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pptx)).  
-
+Check out the [voting demo](https://lyoshenka.ocpu.io/truthcoindemo/www/).  
 
 <h4>Rough Comparison to Popular CryptoProjects</h4>
 
@@ -21,7 +21,7 @@ Draft of a [presentation](https://github.com/psztorc/Truthcoin/raw/master/docs/T
 | :-------- | :------:| :--: | :--------:| :--: | :--------:| :--: | :--------:| :--: |
 | Truthcoin  ?  | X | X | * | * | X | *?| 3, 2, 1 |
 | Bitcoin       | X | X | * | * | . | *?| 2, 2, 2 |
-| BitsharesX ?  | X | . | * | X | . | . | 2, 1, 3 |
+| BitsharesX    | X | . | * | X | . | . | 2, 1, 3 |
 | Counterparty  | X | X | X | * | . | . | 3, 1, 2 |
 | Ethereum ?    | * | . | * | * | * | X | 1, 4, 1 |
 | Mastercoin    | X | X | X | * | . | . | 3, 1, 2 |
@@ -41,15 +41,13 @@ Table Notes:
 
 **Please be aware that this project exists only as a design with some proof of concept code for the novel parts. There is no useable version yet, although I expect it to be very easy to build.** In fact all the code/writing here was created solely by one guy (although we all stand on the shoulders of giants).  
 
-I'm Working on Now: Rewrite new R items in python.  
 I'm Working on Now: Evangelize via forum posts, FAQ improvements, etc.  
 Up Next: Seek development collaborators, and/or funding (for development). Anyone, anyone?  
 
 <h4>You Might Help By</h4> 
 Asking questions to grow the FAQ.  
-Posting to the forum (I'll be adding more posts soon).  
+Posting to the forum.
 Telling your friends (especially developers/investors).  
-I'm interested in starting a website where I can test the Event Consensus Mechanism in various ways.  This probably involves some web design/php. Need a way of keeping score / displaying the score, and having users supply a simple number or boolean.  
 Operationalizing "Sequential Intra-Block Trading", my protocol for near-instant-speed trades (easier than it sounds, just select 0-confirmed outputs, timestamp entire set, see Whitepaper and ctrl+f for why this works, email me to collaborate).  
 
 
