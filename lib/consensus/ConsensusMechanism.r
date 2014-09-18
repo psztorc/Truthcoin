@@ -11,10 +11,21 @@ source("consensus/CustomMath.r")
 
 ## Functions:
 
-GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=FALSE) {
+DemocracyRep <- function(X) {
+  # Run this if no Reputations were given...gives everyone an equal share and equal vote.
+  Rep <- ReWeight(rep(1,nrow(X)))
+}
+
+
+BinaryScales <- function(X) {
+  # Run this if no Scales were provided..assumes none were Scaled, all are Binary (0 or 1).
+  Scales <- matrix( c( rep(FALSE,ncol(X)),
+                       rep(0,ncol(X)),
+                       rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(X)) )
+}
+
+GetRewardWeights <- function(M, Rep=DemocracyRep(M), alpha=.1, Verbose=FALSE) {
   #Calculates the new reputations using WPCA
-  
-  if(is.null(Rep)) { Rep <- ReWeight(rep(1,nrow(M)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
   
   if(Verbose) {
     print("****************************************************")
@@ -60,6 +71,7 @@ GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=FALSE) {
   
   if(Verbose) {
     print("")
+    print(paste(" %% Reference Index %% :",RefInd))
     print("Estimations using: Previous Rep, Option 1, Option 2")
     print( cbind( AsMatrix(Old), AsMatrix(New1), AsMatrix(New2) ) )
     print("")
@@ -138,11 +150,9 @@ GetRewardWeights <- function(M,Rep=NULL,alpha=.1,Verbose=FALSE) {
 # [1] 0.1000000 0.1068146 0.7931854
 
 
-GetDecisionOutcomes <- function(Mtemp, Rep, ScaledIndex, Verbose=FALSE) {
+GetDecisionOutcomes <- function(Mtemp, Rep = DemocracyRep(Mtemp), ScaledIndex, Verbose=FALSE) {
   # Determines the Outcomes of Decisions based on the provided reputation (weighted vote)
-  
-  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(Mtemp)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
-  
+    
   if(Verbose) { print("****************************************************") ; print("Begin 'GetDecisionOutcomes'")}
   
   DecisionOutcomes.Raw  <- 1:ncol(Mtemp) # Declare this (filled below)
@@ -180,13 +190,11 @@ GetDecisionOutcomes <- function(Mtemp, Rep, ScaledIndex, Verbose=FALSE) {
 # [1] 1.0000000 0.7000000 0.5000000 0.1000000 0.5820690 0.6517202
 
 
-FillNa <- function(Mna, Rep, ScaledIndex, CatchP=.1, Verbose=FALSE) { 
+FillNa <- function(Mna, Rep = DemocracyRep(Mna), ScaledIndex = BinaryScales(Mna), CatchP=.1, Verbose=FALSE) { 
   # Uses exisiting data and reputations to fill missing observations.
   # Essentially a weighted average using all availiable non-NA data.
   # How much should slackers who arent voting suffer? I decided this would depend on the global percentage of slacking.
-  
-  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(Mna)))  ;   if(Verbose) print("Reputation not provided...assuming equal influence.")  }
-  
+    
   Mnew <- Mna # Declare (in case no Missing values, Mnew, MnewC, and Mna will be the same)
   MnewC <- Mna
   
@@ -257,25 +265,11 @@ FillNa <- function(Mna, Rep, ScaledIndex, CatchP=.1, Verbose=FALSE) {
 
 
 #Putting it all together:
-Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
-  #Main Routine
-  #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
-  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(M0)))
-                     if(Verbose) print("Reputation not provided...assuming equal influence.")
-  }
-  
-  #******************
-  #Fill the default scales (binary) if none are provided. In practice, this would also never be used.
-  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(M0)),
-                                             rep(0,ncol(M0)),
-                                             rep(1,ncol(M0))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M0)) )
-                        if(Verbose) print("Scales not provided...assuming binary (0,1).")
-  }
-  ScaledIndex=as.logical( Scales["Scaled",] )
-  
-  MScaled <- Rescale(M0, Scales)
+Factory <- function(M0, Scales = BinaryScales(M0), Rep = DemocracyRep(M0), CatchP=.1, MaxRow=5000, Verbose=FALSE) {
+  # Main Routine
 
-  #******************
+  ScaledIndex=as.logical( Scales["Scaled",] )
+  MScaled <- Rescale(M0, Scales)
   
   #Handle Missing Values  
   Filled <- FillNa(MScaled, Rep, ScaledIndex, CatchP, Verbose)
@@ -538,15 +532,9 @@ Factory <- function(M0,Scales,Rep,CatchP=.1,MaxRow=5000,Verbose=FALSE) {
 
 
 #Long-Term
-Chain <- function(X,Scales,N=2,ThisRep) {
-  #Repeats factory process N times
-  if(missing(ThisRep)) ThisRep <- ReWeight(rep(1,nrow(X)))
-  
-  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(X)),
-                                             rep(0,ncol(X)),
-                                             rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(X)) )
-  }
-  
+Chain <- function(X, Scales = BinaryScales(X), N = 2, ThisRep = DemocracyRep(X)) {
+  # Repeats factory process N times
+
   Output <- vector("list")
   for(i in 1:N) {
     Output[[i]] <- Factory(X,Scales,Rep=ThisRep)
@@ -558,21 +546,8 @@ Chain <- function(X,Scales,N=2,ThisRep) {
 
 # Double-Factory (much more reliable)
 
-DoubleFactory <- function(X, Scales, Rep, CatchP=.1, MaxRow=5000, Phi=.65, Verbose=FALSE) {
+DoubleFactory <- function(X, Scales = BinaryScales(X), Rep = DemocracyRep(X), CatchP=.1, MaxRow=5000, Phi=.65, Verbose=FALSE) {
   # see http://forum.truthcoin.info/index.php/topic,102.msg289.html#msg289
-  
-  #Fill the default reputations (egalitarian) if none are provided...unrealistic and only for testing.
-  if(missing(Rep)) { Rep <- ReWeight(rep(1,nrow(X)))
-                     if(Verbose) print("Reputation not provided...assuming equal influence.")
-  }
-  
-  #******************
-  #Fill the default scales (binary) if none are provided. In practice, this would also never be used.
-  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(X)),
-                                             rep(0,ncol(X)),
-                                             rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(X)) )
-                        if(Verbose) print("Scales not provided...assuming binary (0,1).")
-  }
   
   WaveOne <- Factory(X,Scales,Rep,CatchP,MaxRow,Verbose)
   
