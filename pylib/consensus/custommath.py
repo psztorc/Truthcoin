@@ -7,39 +7,29 @@ Supporting math for the consensus mechanism.
 from __future__ import division
 from numpy import *
 from numpy.linalg import *
-import weighted
 
-def WeightedMedian(data, weights, rage=False):
+def WeightedMedian(data, weights):
     """Calculate a weighted median.
 
     Args:
-      data (numpy.array): your data
-      weights (2d numpy.array "column vector"): your weights
-      rage (bool): False to use weighted.median from a package (default)
+      data (list or numpy.array): data
+      weights (list or numpy.array): weights
 
     """
-    # First, sort both arrays using the weight array.
-    sorted_weights, sorted_data = [], []
-    for r, c in sorted(zip(weights, data)):
-        sorted_weights.append(r)
-        sorted_data.append(c)
-    sorted_weights = array(sorted_weights)
-    sorted_data = array(sorted_data)
-
-    # Selects the data closest to where the cumulative sum of the weights
-    # is 0.5.  If there are multiple points found, then their simple median
-    # is used.
-    if rage:
-        absdiff = abs(cumsum(sorted_weights) - 0.5)
-        min_index = where(absdiff == absdiff.min())[0]
-        weighted_median = median(sorted_data[min_index])
-
-    # Use weighted.median from the wquantiles Python package.
+    # Sort the data and weight arrays using the weight array
+    data, weights = array(data), array(weights)
+    s_weights, s_data = map(array, zip(*sorted(zip(weights.squeeze(), data))))
+    midpoint = 0.5 * sum(s_weights)
+    if any(weights > midpoint):
+        w_median = median(data[weights == max(weights)])
     else:
-        weighted_median = weighted.median(sorted_data, sorted_weights)
-
-    return weighted_median
-
+        cs_weights = cumsum(s_weights)
+        idx = where(cs_weights <= midpoint)[0][-1]
+        if cs_weights[idx] == midpoint:
+            w_median = mean(s_data[idx:idx+2])
+        else:
+            w_median = s_data[idx+1]
+    return w_median
 
 def Rescale(UnscaledMatrix, Scales):
     """Forces a matrix of raw (user-supplied) information
