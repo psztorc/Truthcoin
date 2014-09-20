@@ -6,42 +6,45 @@ if(!require(reshape2)) install.packages('reshape2')
 
 if(!exists("Factory")) print("You have not loaded ConsensusMechanism.r")
 
-PlotJ <- function(M,Scales,Title="Plot of Judgement Space") { 
+PlotJ <- function(M, Scales = BinaryScales(M), Rep = DemocracyRep(M), Title="Plot of Judgement Space") { 
   
   require(ggplot2)
   require(reshape2)
   
-  # Give unique names
-  # row.names(M) <- paste("Voter",1:nrow(M))
-  
-  if(missing(Scales)) { Scales <- matrix( c( rep(FALSE,ncol(M)),
-                                             rep(0,ncol(M)),
-                                             rep(1,ncol(M))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(M)) )
+  # Non unique row names, while valid, make for a confusing graphic.
+  if( length(row.names(M)) > length(unique(row.names(M))) ) {
+    cat( "\nForcing unique row names...")
+    row.names(M) <- paste(1:nrow(M), row.names(M), sep=".")
   }
-  
+    
   # Use the SVD-Consensus
-  Results <- Factory(M, Scales, CatchP=0)
-  
+  Results <- Factory(M, Scales, Rep, CatchP=0)
+
   # Get Dimensions and Labels (who voted for what?)
-  DF <- melt(Results[["Filled"]])
-  DF$value <- factor( round(DF$value, 4))
-  DF$Var1  <- factor(DF$Var1)
+  mResults <- melt(Results[["Filled"]])
+  mResults$value <- factor( round(mResults$value, 4))
+  mResults$Var1  <- factor(mResults$Var1)
   
   # Get Scores (opacity)
-  SC <- data.frame(Var1=rownames(M), Scores= Results[["Agents"]][,"ThisRep"])
+  SC <- data.frame(Var1=row.names(M), GainLoss = Results[["Agents"]][,"RowBonus"] - Results[["Agents"]][,"OldRep"])
   
-  DF <- merge(DF,SC)
+  # Format Data
+  DF <- merge(mResults,SC)
+  names(DF) <- c("Voter","Decision","Outcome","Scores" ) # Purely to help code-readers understand R's ggplot below.
   
-  p1 <- ggplot(DF,aes(x=value,y=1,fill=Var1,alpha=Scores)) +
+  # Build the plot
+  p1 <- ggplot(DF,aes(x=Outcome, y=1, fill=Voter, alpha=Scores)) +
     geom_bar(stat="identity", colour="black") +
-    facet_grid(Var2~.)
-
-  p1f <- p1 + theme_bw() +
-    scale_fill_hue(h=c(10,90), guide=guide_legend(title = "Voter")) +
-    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"),range=c(.05,.8)) +
+    geom_text(aes(label = Voter, vjust = 1, ymax = 1), position = "stack", alpha=I(1)) +
+    facet_grid(Decision ~ .)
+  
+  # Control the colours and labels
+  p1f <- p1 +
+    theme_bw() +
+    scale_fill_hue(h=c(0,130)) +
+    scale_alpha_continuous(guide=guide_legend(title = "Consensus Scores"), range=c(.05,.9)) +
     xlab("Outcome") +
     ylab('Unscaled Votes') + 
-    theme_grey() +
     labs(title = Title)
   
   return(p1f)
