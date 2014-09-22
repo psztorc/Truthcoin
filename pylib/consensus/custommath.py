@@ -17,8 +17,7 @@ def WeightedMedian(data, weights):
 
     """
     data, weights = array(data).squeeze(), array(weights).squeeze()
-    # Sort the data and weight arrays, according to the weight array
-    s_weights, s_data = map(array, zip(*sorted(zip(weights, data))))
+    s_data, s_weights = map(array, zip(*sorted(zip(data, weights))))
     midpoint = 0.5 * sum(s_weights)
     if any(weights > midpoint):
         w_median = median(data[weights == max(weights)])
