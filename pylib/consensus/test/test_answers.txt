@@ -1,0 +1,55 @@
+"Official" Answers
+    
+NOTE: No coin distribution given, assuming democracy [one row, one vote].
+
+Original V.Matrix: 
+[[1 1 0 0]
+[1 0 0 0]
+[1 1 0 0]
+[1 1 1 0]
+[0 0 1 1]
+[0 0 1 1]]
+
+Filled V.Matrix: 
+[[1 1 0 0]
+[1 0 0 0]
+[1 1 0 0]
+[1 1 1 0]
+[0 0 1 1]
+[0 0 1 1]]
+
+Agents:
+  ParticipationR  RowBonus    OldRep  SmoothRep  NArow   ThisRep  \
+0        0.166667  0.282376  0.178238          0      1  0.166667   
+1        0.166667  0.217624  0.171762          0      1  0.166667   
+2        0.166667  0.282376  0.178238          0      1  0.166667   
+3        0.166667  0.217624  0.171762          0      1  0.166667   
+4        0.166667  0.000000  0.150000          0      1  0.166667   
+5        0.166667  0.000000  0.150000          0      1  0.166667   
+
+  RelativePart  
+0      0.178238  
+1      0.171762  
+2      0.178238  
+3      0.171762  
+4      0.150000  
+5      0.150000  
+
+[6 rows x 7 columns]
+
+Decisions: 
+                             0         1         2         3
+ParticipationC         1.000000  1.000000  1.000000  1.000000
+First Loading         -0.539537 -0.457056  0.457056  0.539537
+Consensus Reward       0.438140  0.061860  0.061860  0.438140
+DecisionOutcomes_Raw   0.700000  0.528238  0.471762  0.300000
+Author Bonus           0.438140  0.061860  0.061860  0.438140
+Certainty              0.400000  0.056475  0.056475  0.400000
+NAs Filled             0.000000  0.000000  0.000000  0.000000
+DecisionOutcome_Final  1.000000  0.500000  0.500000  0.000000
+
+[8 rows x 4 columns]
+
+Participation: 1.0
+
+Certainty: 0.228237569613    

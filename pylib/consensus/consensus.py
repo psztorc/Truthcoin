@@ -57,9 +57,9 @@ def GetRewardWeights(M, Rep=-1, Alpha=.1, Verbose=False):
     Set2 =  FirstScore-max(FirstScore) 
     
     Old = dot(Rep.T,M)
-  
-    New1 = GetWeight(dot(Set1,M))
-    New2 = GetWeight(dot(Set2,M))
+
+    New1 = dot(GetWeight(Set1), M)
+    New2 = dot(GetWeight(Set2), M)
     
     #Difference in Sum of squared errors, if >0, then New1 had higher errors (use New2), and conversely if <0 use 1.
     RefInd = sum( (New1-Old)**2) -  sum( (New2-Old)**2)
@@ -191,9 +191,9 @@ def FillNa(Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
         # (0,.5,1) slot. (continuous variables can be gamed).
         rows, cols = Mnew.shape
         for i in range(rows):
-            if not ScaledIndex[i]:
-                for j in range(cols):
-                    Mnew[i][j] = Catch(j, CatchP)
+            for j in range(cols):
+                if not ScaledIndex[j]:
+                    Mnew[i][j] = Catch(Mnew[i][j], CatchP)
 
         if Verbose:
             print('Binned:')
@@ -246,15 +246,14 @@ def Factory(M0, Scales=None, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
     # Consensus - "Who won?" Decision Outcome    
     # Simple matrix multiplication ... highest information density at RowBonus,
     # but need DecisionOutcomes.Raw to get to that
-    DecisionOutcomes_Raw = dot(PlayerInfo['SmoothRep'], Filled)
+    DecisionOutcomes_Raw = dot(PlayerInfo['SmoothRep'], Filled).squeeze()
 
     # Discriminate Based on Contract Type
     ncols = Filled.shape[1]
     for i in range(ncols):
         # Our Current best-guess for this Scaled Decision (weighted median)
         if ScaledIndex[i]:
-            DecisionOutcomes_Raw[i] = WeightedMedian(Filled[:,i],
-                                                     PlayerInfo["SmoothRep"])
+            DecisionOutcomes_Raw[i] = WeightedMedian(Filled[:,i], PlayerInfo["SmoothRep"])
 
     # .5 is obviously undesireable, this function travels from 0 to 1
     # with a minimum at .5
@@ -269,13 +268,13 @@ def Factory(M0, Scales=None, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
     # The Outcome Itself
     # Discriminate Based on Contract Type
     DecisionOutcome_Adj = []
-    for i, raw in enumerate(DecisionOutcomes_Raw[0]):
+    for i, raw in enumerate(DecisionOutcomes_Raw):
         DecisionOutcome_Adj.append(Catch(raw, CatchP))
         if ScaledIndex[i]:
             DecisionOutcome_Adj[i] = raw
 
     DecisionOutcome_Final = []
-    for i, raw in enumerate(DecisionOutcomes_Raw[0]):
+    for i, raw in enumerate(DecisionOutcomes_Raw):
         DecisionOutcome_Final.append(DecisionOutcome_Adj[i])
         if ScaledIndex[i]:
             DecisionOutcome_Final[i] *= (Scales[i]["max"] - Scales[i]["min"])
@@ -310,11 +309,10 @@ def Factory(M0, Scales=None, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
         print('Voter Turnout across questions')
         print(ParticipationR)
 
-    # # Combine Information
+    # Combine Information
     # Row
     NAbonusR = GetWeight(ParticipationR)
-    RowBonus = NAbonusR * PercentNA + PlayerInfo['SmoothRep'] * (1
-            - PercentNA)
+    RowBonus = NAbonusR * PercentNA + PlayerInfo['SmoothRep'] * (1 - PercentNA)
 
     # Column
     NAbonusC = GetWeight(ParticipationC)
@@ -419,7 +417,6 @@ def DisplayResults(FactorObject):
     
     return( q["Participation"] ) #simple estimate of sucess 
 
-
 def TestConsensus():
     """Verifies function works as required. If False, check comments below for full expected results."""
     
@@ -521,4 +518,4 @@ if __name__ == "__main__":
 #
 # Participation: 1.0
 #
-# Certainty: 0.228237569613    
+# Certainty: 0.228237569613
