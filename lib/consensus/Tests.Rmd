@@ -377,7 +377,7 @@ Factory(Scenarios$CluelessTest)
 ```
 Finding: 2 falls from tie at 5th .11 to a tie at 7th with .07; no impact on other results: success.
 
-Note: Must be a discrete set of options: c(1,0,NA,.5)    ---- !!! by extention, Catch must be implemented in FillNA. Indeed, in this example our lazy character is punished twice.
+[done] Note: Must be a discrete set of options: c(1,0,NA,.5)    ---- !!! by extention, Catch must be implemented in FillNA. Indeed, in this example our lazy character is punished twice.
 otherwise there will likely be pragmatic individuals who rationally deviate to answers like ~.85 or ~.92 or some nonsense. [obviously]
 
 Overwhelming Incoherence
@@ -552,7 +552,7 @@ Factory(Mub1, Verbose = TRUE)
 Scalability
 ------------------
 What are the computational limits?
-Largely irrelevant because of forking, this is important for setting parameters correctly (and in general).
+Largely irrelevant because of branching, this is important for setting parameters correctly (and in general).
 
 ```{r Scalability,cache=FALSE}
 
@@ -593,7 +593,72 @@ system.time(TestLimit(1000,100))
 #Actually all of this is irrelevant because code runs 100x faster on python
 ```
 
+```{r RewardFunction}
 
+RawVsReturn <- 0
+
+TwoTeams <- matrix( rbind( c(0,0,1,1,0,0,1,1),
+                           c(1,1,0,0,1,1,0,0)),nrow=2)
+
+OtherEffect <- function(Own) {
+  Other <- 1 - Own
+  Results <- Factory(TwoTeams, Rep = c(Own,Other))
+  End <-  Results$Agents[1,"RowBonus"]
+  Gain <- (End - Own)
+  if(RawVsReturn == 0) Gain <- Gain/Own
+  return(Gain)
+}
+
+RF <- data.frame("PctAgree"=seq(.05, .95, by = .05))
+
+RF$p100 <- vapply(RF$PctAgree,FUN =  OtherEffect, FUN.VALUE = 2)
+
+YLab <- "Your Reward (Raw)"
+if(RawVsReturn == 0) YLab <- "Your Reward (%)"
+plot(p100~PctAgree, data=RF, xlab = "Agreement with Your Choices (%)", ylab= YLab)
+abline(h=0, lty=2)
+
+lines(p100~PctAgree, data=RF)
+
+
+
+TwoTeams <- matrix( rbind( c(NA,0,1,1,0,0,1,1),
+                           c(1,1,0,0,1,1,0,0)),nrow=2)
+
+RF$p088 <- vapply(RF$PctAgree, FUN =  OtherEffect, FUN.VALUE = 2)
+lines(p088~PctAgree, data=RF, col=2, lty=3)
+
+TwoTeams <- matrix( rbind( c(NA,0,1,1,NA,0,NA,1),
+                           c(1,1,0,0,1,1,0,0)),nrow=2)
+
+RF$p063 <- vapply(RF$PctAgree, FUN =  OtherEffect, FUN.VALUE = 2)
+lines(p063~PctAgree, data=RF, col=3, lty=4)
+
+TwoTeams <- matrix( rbind( c(NA,0,NA,1,NA,0,NA,NA),
+                           c(1,1,0,0,1,1,0,0)),nrow=2)
+
+RF$p038 <- vapply(RF$PctAgree, FUN =  OtherEffect, FUN.VALUE = 2)
+lines(p038~PctAgree, data=RF, col=4, lty=5)
+
+LegPos <- c(.05,.045)
+if(RawVsReturn == 0) LegPos <- c(.07,.095)
+  
+legend(LegPos[1],LegPos[2], legend = c("0% Blank", "12.5% Blank", "37.5% Blank", "62.5% Blank"), lty = c(1,3,4,5), col = 1:4,cex=0.6 )
+# 
+# library(reshape)
+# library(ggplot2)
+# 
+# mDF <- melt(RF,id.vars = "PctAgree")
+# mDF
+# 
+# ggplot(mDF,aes(x = PctAgree, y = value, colour = variable, linetype = variable)) +
+#   geom_line() +
+#   ylim(-.06, .06)
+# 
+
+
+
+```
 
 Audit
 ------------------
