@@ -1,20 +1,24 @@
 <h2>Truthcoin: Decentralized Bitcoin Prediction Markets</h2>
 
 <h4>Summary</h4>  
-Truthcoin is my ambitious project to create a trustless P2P prediction-marketplace. This is possible because, unlike most marketplaces, the end product of a prediction market (PM) is information. Bitcoin adds the second piece of the puzzle: the exchange of value. The end result is the first of its kind: a market for actual prediction-commodities, which have a value based on their accuracy and not based on the behaviour of any administrator, rival trader, or counterparty.
+Truthcoin is my ambitious project to create a trustless P2P prediction-marketplace. This is possible because, unlike most marketplaces, the end product of a prediction market (PM) is information. Bitcoin adds the second piece of the puzzle: the exchange of value. The end result is the first of its kind: a market for actual prediction-commodities, which have a value based on their accuracy and not based on the behavior of any administrator, rival trader, or counterparty.
 
-Traditional PMs have been persecuted much in the same way as e-cash systems, and current Bitcoin alternatives require the user to trust the operator to 1] keep funds safe, 2] create desirable markets, and 3] correctly determine the outcome of markets.  
+Traditional PMs have been persecuted much in the same way as e-cash systems, and current Bitcoin alternatives require the user to trust the operator to:
+1. Keep funds safe.
+2. Create desirable markets.
+3. Accurately determine the outcome of markets.  
 
-Contract outcomes are determined in a trustless and decentralized way, through a weighted vote based on present and past consensus with a unique Nash Equilibrium where all voters report accurately on the state of markets. Incentives are to only create contracts which are useful (measured by trading volume), and unambiguous (measured by vote-similarity). Additionally, market liquidity (a frequent problem) is guaranteed to be permanently nonzero thanks to the LMSR, an invention of Dr. Robin Hanson. The LMSR's use of an update rule instead of actual Buy/Ask trading greatly simplifies implementation, while allowing for realtime buying and selling.
+Instead, Truthcoin's outcomes are determined by [a vote weighted by present and past conformity](https://lyoshenka.ocpu.io/truthcoindemo/www/), using in [a new token-ownership-model](http://www.truthcoin.info/presentations/truthcoin-outcomes.pdf). This theoretically produces a unique Nash Equilibrium of unanimous honesty. Moreover, incentives are to only create contracts which are useful (measured by trading volume), and unambiguous (measured by vote-similarity). Additionally, market liquidity is guaranteed to be permanently nonzero thanks to the [LMSR](http://hanson.gmu.edu/mktscore.pdf). MSRs allow for simple, secure, realtime buying and selling.
 
 <h4>What's going on!?</h4>
-Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) to understand "what this is and why it is important".  
-Read [this](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_Whitepaper.pdf) to understand "how it works".  
-Visit our [FAQ](https://github.com/psztorc/Truthcoin/tree/master/docs#faq).  
-Visit our [forum](http://forum.truthcoin.info/).  
-Draft of a [presentation](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pdf) on why this project may be worth your attention, even if you only care about money ([.pptx (with notes)](https://github.com/psztorc/Truthcoin/raw/master/docs/TruthcoinValuable.pptx)).  
+Look at some [Slide Shows](http://www.truthcoin.info/presentations/).  
+[This written intro](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) explains "what this is and why it is important".  
+[The whitepaper](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_Whitepaper.pdf) explains "how it works".  
 Check out the [voting demo](https://lyoshenka.ocpu.io/truthcoindemo/www/).  
+Read the [FAQ](http://www.truthcoin.info/faq/).  
+Visit the [website](http://www.truthcoin.info/) and [forum](http://forum.truthcoin.info/). 
 
+<!--
 <h4>Rough Comparison to Popular CryptoProjects</h4>
 
 | Concept   | P2P Coin| "Old" PoW Mining   | PMs - Trust 3rd Party (Administrator) | PMs - Trust 2nd Party (Traders) | Low-Trust PMs | Can Solve Computations | Score (X,*,.) |
@@ -35,40 +39,34 @@ Table Notes:
 2. Emphasis is on differences across coins, so many similarities were ignored (token issuance).  
 3. The question marks indicate some unproven claims, or vague theories, which have yet to be fully explored, tested, and resolved (these score as 'No'). When used after a concept name, they indicate that the concept does not yet exist.  
 4. Given that 3 of the columns are about PMs, and even somewhat mutually-exclusive, the score column really isn't very meaningful.
+5. -->
 
 
 <h4>My Pipeline</h4>
 
-**Please be aware that this project exists only as a design with some proof of concept code for the novel parts. There is no useable version yet, although I expect it to be very easy to build.** In fact all the code/writing here was created solely by one guy (although we all stand on the shoulders of giants).  
+I'm Working on Now: Meeting(s) with investors (late October).   
+Up Next: Begin publishing my [blog](truthcoin.info), to discuss the numerous problems with existing cryptocoin projects.  
+Up Next: Editing Whitepaper 1.4 (<a href="mailto:truthcoin@gmail.com?subject=Feedback">email me</a> with typos/confusions, or pull request into [here](https://github.com/psztorc/Truthcoin/tree/master/docs#addendum--errata)).  
+Up Next: Seeking (and responding to) new feedback.
 
-I'm Working on Now: Evangelize via forum posts, FAQ improvements, etc.  
-Up Next: Seek development collaborators, and/or funding (for development). Anyone, anyone?  
-
-<h4>You Might Help By</h4> 
-Asking questions to grow the FAQ.  
-Posting to the forum.
-Telling your friends (especially developers/investors).  
-Operationalizing "Sequential Intra-Block Trading", my protocol for near-instant-speed trades (easier than it sounds, just select 0-confirmed outputs, timestamp entire set, see Whitepaper and ctrl+f for why this works, email me to collaborate).  
-
+<h4>You Can Help!</h4> 
+1. Read the documentation / code and ask questions to grow the FAQ! (<a href="mailto:truthcoin@gmail.com?subject=Feedback">Email me</a> or pull into [the errata section](https://github.com/psztorc/Truthcoin/tree/master/docs#addendum--errata) or [the FAQ section](https://github.com/truthcoin/www.truthcoin.info/blob/gh-pages/faq/index.md) with any new questions). 
+2. Joining and posting to the forum.  
+5. Help continue the translation of the R code into Python and C++.
 
 
 <h4>Where is Everything?</h4>
+Code: lib folder (in R, incomplete python and C++ versions are in 'pylib' folder)
 Readings/Documentation/Purpose/Applications/Tech = 'docs' folder  
-Details about tx types:  docs/Development Plans/  
-R code = 'lib' folder  
-Python code = 'pylib' folder  
+Details about tx types:  docs/Development Plans/   
 
 The 'lib' folder also has html files which describe the outcome of function tests and demonstrations. These files were automatically generated from R code using R-markdown, and the .rmd files are included alongside the html files for reproducibility.
-
 
 
 <h4>Contact</h4>
 truthcoin@gmail.com  
 https://twitter.com/Truthcoin  
 
-Donation Address: 1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8  
-https://blockchain.info/address/1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8  
+Donation Address: [1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8](https://blockchain.info/address/1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8)  
 I'm giving away all of this work for free. It was hard work!  
-Thanks to everyone who donated.  
-  
-Please share your opinion, and your questions so the FAQ (docs page) can grow!  
+Thanks to everyone who donated.
