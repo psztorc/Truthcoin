@@ -3,9 +3,9 @@
 <h4>Summary</h4>  
 Truthcoin is my ambitious project to create a trustless P2P prediction-marketplace. This is possible because, unlike most marketplaces, the end product of a prediction market (PM) is information. Bitcoin adds the second piece of the puzzle: the exchange of value. The end result is the first of its kind: a market for actual prediction-commodities, which have a value based on their accuracy and not based on the behavior of any administrator, rival trader, or counterparty.
 
-Traditional PMs have been persecuted much in the same way as e-cash systems, and current Bitcoin alternatives require the user to trust the operator to:
-1. Keep funds safe.
-2. Create desirable markets.
+Traditional PMs have been persecuted much in the same way as e-cash systems, and current Bitcoin alternatives require the user to trust the operator to:  
+1. Keep funds safe.  
+2. Create desirable markets.  
 3. Accurately determine the outcome of markets.  
 
 Instead, Truthcoin's outcomes are determined by [a vote weighted by present and past conformity](https://lyoshenka.ocpu.io/truthcoindemo/www/), using in [a new token-ownership-model](http://www.truthcoin.info/presentations/truthcoin-outcomes.pdf). This theoretically produces a unique Nash Equilibrium of unanimous honesty. Moreover, incentives are to only create contracts which are useful (measured by trading volume), and unambiguous (measured by vote-similarity). Additionally, market liquidity is guaranteed to be permanently nonzero thanks to the [LMSR](http://hanson.gmu.edu/mktscore.pdf). MSRs allow for simple, secure, realtime buying and selling.
