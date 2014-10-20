@@ -1,0 +1,568 @@
+---
+title: "TcPlus"
+author: "Paul Sztorc"
+date: "Wednesday, September 17, 2014"
+output: html_document
+---
+
+
+The Goal: Reduce audit cost (it is currently a 'binding constraint').
+Making auditing between only a few choices.
+
+```{r Load,echo=FALSE,message=FALSE}
+#Cleanup
+rm(list=ls())
+
+#Load everything
+tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'Truthcoin/lib' folder:")) )
+source(file="consensus/ConsensusMechanism.r")
+
+Use <- function(package) { if(suppressWarnings(!require(package,character.only=TRUE))) install.packages(package,repos="http://cran.case.edu/") ; require(package,character.only=TRUE) }
+```
+
+
+Low Effort Auditing
+===============================
+```{r Data}
+
+R <- c(.40, .25, .10, .10, .05, .05, .05)
+
+VM <- matrix( c(1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0), 7,5,byrow=TRUE)
+
+VM2 <- matrix(c(1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0), 7,5,byrow=TRUE)
+
+VM3 <- matrix(c(1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                0, 1, 0, 1, 0,
+                0, 0, 0, 0, 1,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 1,
+                0, 0, 0, 0, 1), 7,5,byrow=TRUE)
+
+VM4 <- matrix(c(1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                .5, 0, 0, 0, 0,
+                .5, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0), 6,5,byrow=TRUE)
+
+VM5 <- matrix(c(0.0, 1.0, 0.81, 0.20, 0.03,
+                0.0, 1.0, 0.79, 0.20, 0.04, # confused
+                0.0, 1.0, 0.80, 0.20, 0.02,
+                0.0, 1.0, 0.80, 0.20, 0.03,
+                0.0, 1.0, 0.80, 0.98, 0.55, # liars spamming
+                0.0, 1.0, 0.80, 0.97, 0.56, # liars spamming
+                0.0, 1.0, 0.80, 0.99, 0.57), # liars spamming
+              7, 5, byrow=TRUE)
+
+# drawing it out of the binary ballot - cuts everything in half
+VM6 <- matrix(c(0.8, 0.0, 0.0, 0.25, 0.045,
+                0.6, 0.5, 0.5, 0.20, 0.030,
+                0.4, 1.0, 1.0, 0.15, 0.015),
+              3, 5, byrow=TRUE)
+
+R6a <- c(.34,.32,.34)
+
+R2 <- c(.40, .20, .20, .17, .01, .01, .01)
+
+```
+
+```{r Ballots}
+Use('reshape2')
+
+GetUniqueBallots <- function(VoteMatrix, Reputation = DemocracyRep(VoteMatrix)) {
+  # Takes a VoteMatrix and Reputation, and returns a minimal set of unique Ballots.
+  
+  Rep_VM <- matrix(c(Reputation,VoteMatrix), nrow = nrow(VoteMatrix))
+  
+  # Force Unique Names
+  colnames(Rep_VM) <- c( "Rep", paste("D",1:(ncol(Rep_VM)-1), sep=".") )
+  
+  # Get the unique ballots ("unique"), but ignore non-unique VTC ownership ( " [,-1]" ).
+  Map1 <- data.frame( unique(Rep_VM[,-1]) ) 
+  
+  # Relabel (for upcoming merge)
+  names(Map1) <- colnames(Rep_VM)[-1] # Again, we're dropping "Rep"
+  
+  # Give each Ballot a LETTER label
+  Map2 <- cbind( Map1, "BallotGroup"= factor(LETTERS[1:nrow(Map1)]) )
+
+  # Vote Matrix, with labelled Ballots
+  Merg <- merge(Rep_VM,Map2)
+  MergSub <- Merg[,c("Rep","BallotGroup")]
+  
+  # Aggregate Ballots
+  Map3 <- dcast(MergSub, formula = BallotGroup~., fun.aggregate = sum, value.var = "Rep") #
+  names(Map3) <- c("BallotGroup","BallotRep")
+  
+  Merg2 <- merge(Map3,Map2)
+  if( !is.null(colnames(VoteMatrix)) ) names(Merg2) <- c( names(Merg2)[1:2], colnames(VoteMatrix) ) # restore original column names (if the given VM had colnames)
+  return(Merg2)
+}
+
+GetUniqueBallots(VoteMatrix = VM3, R)
+#   BallotGroup BallotRep D.1 D.2 D.3 D.4 D.5
+# 1           A      0.65   1   0   0   0   0
+# 2           B      0.10   0   1   0   1   0
+# 3           C      0.20   0   0   0   0   1
+# 4           D      0.05   0   0   0   0   0
+
+
+GetUniqueBallots(VoteMatrix = VM4)
+#   BallotGroup BallotRep D.1 D.2 D.3 D.4 D.5
+# 1           A 0.3333333 1.0   0   0   0   0
+# 2           B 0.3333333 0.5   0   0   0   0
+# 3           C 0.3333333 0.0   0   0   0   0
+
+GetUniqueBallots(VoteMatrix = VM5)
+#   BallotGroup BallotRep D.1 D.2  D.3  D.4  D.5
+# 1           A 0.1428571   0   1 0.81 0.20 0.03
+# 2           B 0.1428571   0   1 0.79 0.20 0.04
+# 3           C 0.1428571   0   1 0.80 0.20 0.02
+# 4           D 0.1428571   0   1 0.80 0.20 0.03
+# 5           E 0.1428571   0   1 0.80 0.98 0.55
+# 6           F 0.1428571   0   1 0.80 0.97 0.56
+# 7           G 0.1428571   0   1 0.80 0.99 0.57
+
+GetUniqueBallots(VM6,Reputation = R6a)
+#   BallotGroup BallotRep D.1 D.2 D.3  D.4   D.5
+# 1           A      0.34 0.8 0.0 0.0 0.25 0.045
+# 2           B      0.32 0.6 0.5 0.5 0.20 0.030
+# 3           C      0.34 0.4 1.0 1.0 0.15 0.015
+```
+
+
+We have succeeded in paritioning the VoteMatrix into selections. Auditors need only choose their favorite Ballot.
+
+Can we do better?
+1. An attacker will likely distort many Decisions at once, to maximize the Attack Revenue.
+2. Double-Factory will already sort out only the contested Decisions.
+3. It takes effort for each Auditor to consider each Ballot. Fewer Ballots = Less Effort, Easier Audit.
+4. Likely, some attacked-Decisions will be extremely-obviously false (a claim that Romney was elected in 2012).
+
+Auditors should be doing MUCH less work than Voters.
+Reducing to an 0 / 1 Ballot Referendum easily allows reuse of the existing SVD consensus system.
+
+Goal: Reduce many unique Ballots to a maximally-representative set of 2 or 3.
+Strategy: calculated 'Moved Reputation' and minimize it.
+
+EasyAuditing
+==========================
+
+```{r BallotDistances}
+
+
+GetTravelMatrix <- function(UniqueBallotDf) {
+  # Takes the results computed by 'GetUniqueBallots' and uses them to build a matrix describing how different the Ballots are from each other.
+  
+  nBals <- nrow(UniqueBallotDf)
+  
+  DistMat <- matrix(0, nBals, nBals,dimnames = list(UniqueBallotDf$BallotGroup, UniqueBallotDf$BallotGroup))
+  
+  for(i in 1:nBals) { # for each Ballot-Group A, B, C...
+    for(j in 1:nBals) { # for each other Ballot-Group A, B, C...
+      if(i!=j) { # Diagonals will always be zero
+        
+        RowDifference <- UniqueBallotDf[i,-1:-2] - UniqueBallotDf[j,-1:-2] # How different are these rows?
+        Distance <- sum( abs( RowDifference ) ) # Aggregate distance
+        DistMat[i,j] <- Distance
+        
+        }
+      }
+    }
+  
+  DistMat
+  
+  TravelMat <- diag(UniqueBallotDf$BallotRep) %*% DistMat
+  row.names(TravelMat) <- colnames(TravelMat)
+  
+  return(TravelMat)
+}
+
+
+GetTravelMatrix( GetUniqueBallots(VoteMatrix = VM3, R) )
+#      A    B    C    D
+# A 0.00 1.95 1.30 0.65
+# B 0.30 0.00 0.30 0.20
+# C 0.40 0.60 0.00 0.20
+# D 0.05 0.10 0.05 0.00
+
+GetTravelMatrix( GetUniqueBallots(VoteMatrix = VM4) )
+#           A         B         C
+# A 0.0000000 0.1666667 0.3333333
+# B 0.1666667 0.0000000 0.1666667
+# C 0.3333333 0.1666667 0.0000000
+```
+
+```{r BallotPooling}
+# Now, our pooling algorithm
+
+
+Use('combinat')
+
+
+GetChosen <- function(TravMat, ExtractN = 2) {
+  # Takes a matrix of travel-distances ("from" row-Ballot "to" column-Ballot) and finds the two nearest destinations (columns)
+  
+  Options <- combn(colnames(TravMat), ExtractN)
+  
+  BallotPairs <- vector("numeric", ncol(Options))
+  
+  # Get Chosen
+  for(i in 1:ncol(Options)) {
+    
+    ThisDestination <- Options[,i]
+    
+    # remove rows where the rowname matched the entries in this Option-column
+    # "In a world where these Ballots are staying put (not going from anywhere to anwhere)."
+    
+    TravMatTemp <- TravMat[ , colnames(TravMat) %in% ThisDestination ]   # everyone must come to these rows
+    TravMatTemp <- TravMatTemp[ !( row.names(TravMatTemp) %in% ThisDestination ) ,] # these rows aren't going anywhere
+    
+    if(class(TravMatTemp) =="numeric") {
+      # In this case, we've removed all rows except one.
+      BallotPairs[i] <- sum(TravMatTemp) # Total distance
+      }
+    
+    if(class(TravMatTemp) =="matrix") {
+      # Normal case
+      ColMins <- apply( TravMatTemp, 1, function(x) x[which.min(x)]) # shortest path to a destination
+      BallotPairs[i] <- sum(ColMins) # Total distance
+      }
+    
+    # If TravMatTemp is of a different class, it is probably empty (and we can leave the distances at zero).
+    }
+  
+  Chosen <- Options[ , which.min(BallotPairs) ]
+  return(Chosen)
+}
+
+GetChosen( GetTravelMatrix( GetUniqueBallots(VoteMatrix = VM3, R) ) )
+
+GetChosen( GetTravelMatrix( GetUniqueBallots(VoteMatrix = VM4) ) ) 
+
+
+
+GetAuditChoices <- function(VoteMatrix, Reputation = DemocracyRep(VoteMatrix)) {
+  # Putting it all together.
+  
+  # Call our functions.
+  Ballots <- GetUniqueBallots(VoteMatrix, Reputation)
+  Distance <- GetTravelMatrix(Ballots)
+  
+  # Filter small fish / spam Ballots ( because I will be doing combinatorial math next)
+  SeriousCandidates <- Distance[, Ballots$BallotRep >= .05 ] # might change ".05" to the Branch's (1-Phi)
+  
+  # Grab the most-representative choices, and don't stop grabbing until you have enough
+  CumulativeReputation <- 0
+  ExtractN <- 2
+  while(CumulativeReputation < .80) {  # ".80" should definitly be (1-Phi)
+    Chosen <- GetChosen(SeriousCandidates, ExtractN)
+    CumulativeReputation <- sum( Ballots[ Ballots$BallotGroup %in% Chosen , "BallotRep" ] )
+    ExtractN <- ExtractN + 1
+  }
+  
+  # For simplicity
+  InChosen <- ( row.names(Distance) %in% Chosen )
+  
+  # Create two dataframes
+  Choices <- Ballots[ InChosen , ]
+  NonChoices <- Ballots[ !(InChosen) , ]
+  
+  # Get some info to tell people which Ballots contain which.
+  NonChDist <- as.matrix( Distance[ !(InChosen) , InChosen ] )
+  
+  NonChoices$SurrogateChoice <- apply( NonChDist, 1, function(x) colnames(NonChDist)[which.min(x)] )
+  
+  return(list("Choices"=Choices,"NonChoices"=NonChoices))
+  
+}
+
+GetAuditChoices(VM4)
+
+GetAuditChoices(VM3, R) 
+GetAuditChoices(VM3, R2) 
+
+GetAuditChoices(VM5)
+GetAuditChoices(VM5, R2)
+
+GetAuditChoices(VM6, R6a) 
+# Here, we've succeeded in drawing the 'real' ballot (B) off, using 68% of the votes. However, B still has a surrogate choice ("C")
+# B will deterministically have a unique surrogate choice (not a "Tie") unless every single Decision was scaled and had a real outcome of exactly ".5" (which is nearly impossible).
+
+
+```
+
+
+
+Double Factory Examination
+===========================================
+```{r DefineDoubleFact}
+
+Use('ggplot2')
+try( detach("package:reshape", unload=TRUE) ) # version control...
+Use('reshape2')
+
+## What effect does DoubleFactory have?
+
+Dim <- 20
+
+ContAmb <- matrix(0,(Dim-1),(Dim-1))
+ContAmb[ lower.tri(ContAmb, diag = TRUE) ]  <- 1
+
+# Balance the matrix
+ContAmb <- cbind(ContAmb,0) 
+
+# Add a few 'right answers'
+ContAmb <- rbind(ContAmb[1:9,],
+                 ContAmb[9,], ContAmb[9,],
+                 ContAmb[10,], ContAmb[10,],
+                 ContAmb[10:19,] ) 
+
+colnames( ContAmb ) <- paste("D.",1:(ncol(ContAmb)), sep="") 
+row.names( ContAmb ) <- paste("Voter.",1:(nrow(ContAmb)), sep="") 
+
+ContAmb
+
+
+DoubleFactoryTest <- function(X, Scales = BinaryScales(X), Rep = DemocracyRep(X), CatchP=.1, MaxRow=5000, Phi=.65, Verbose=FALSE, PrintSurvivors = TRUE) {
+  # Runs Factory Twice and checks on what happened as a result
+  
+  WaveOne <- Factory(X,Scales,Rep,CatchP,MaxRow,Verbose)
+  
+  if(Verbose) print(" Wave One Complete.")
+  
+  
+  # Find the contested contracts
+  Safe  <- ( WaveOne$Decisions["Certainty",] >= Phi )# all those contracts which were unanimous for a subset of proportion ("Phi")
+  
+  # What if they ALL were contested?
+  if( sum(Safe)==0 ) {
+    print("Consensus Failure!! ..printing Wave one")
+    print("Consensus Failure!! ..printing Wave one")
+    print("Consensus Failure!! ..printing Wave one")
+    return(WaveOne)
+    }
+  
+  if(PrintSurvivors) {
+    print( sum(Safe)/ncol(X) ) # proportion which made it
+    print( X[,Safe] )          # the new matrix
+  }
+  
+  WaveTwo <- Factory( X[,Safe] ,
+                      Scales[,Safe],
+                      Rep,CatchP,MaxRow,Verbose)
+  
+  Results <- matrix( c( ( WaveOne$Agents[,"RowBonus"] - WaveOne$Agents[,"OldRep"] ),
+                        ( WaveTwo$Agents[,"RowBonus"] - WaveTwo$Agents[,"OldRep"] ) ),
+                     ncol=2,
+                     dimnames=list(rownames(X),c("Gain.W1","Gain.W2")) )
+  
+  mRes <- melt(Results)
+  cRes <- dcast(mRes,formula=Var1~Var2,fun.aggregate=sum)
+  
+  Results <- cbind(Results, "Diff"=Results[,2]-Results[,1])
+  
+  PlotResults <- data.frame( cbind(Results, "Voter"=factor( 1:(nrow(Results)) )) )
+  mPR <- melt(PlotResults,id.vars="Voter")
+  
+  P1 <- ggplot(mPR, aes(y=value, x=Voter, fill=factor( Voter ) )) +
+    geom_bar(stat="identity", position = "dodge") +
+    theme(legend.position="none") +
+    facet_grid(variable~.)
+  
+  print(P1)
+  
+  return(Results)
+  
+}
+
+```
+
+```{r Tests}
+
+DoubleFactoryTest(ContAmb)
+# Comment: Here, because of this amusingly-unrealistic Voting Matrix (where nearly everyone is equally confused about everything),
+# ...the 'Reference Index' is at zero. The software cannot establish a reference case, and is essentially indifferent.
+# This is why Voters 1-8 benefit and 15-23. This is arbitrary and unstable, and might flip with just a fractional increase in 15-23 coordination.
+# Double Factory seems to help in this case: the middle groups become more coordinated and less arbitrary.
+
+ContAmb2 <- ContAmb
+ContAmb2["Voter.23", "D.18"] <- 0 # The most profitable deviation (?)
+
+DoubleFactoryTest(ContAmb2, PrintSurvivors = FALSE)
+# Voter 23 has sent his report skyrocketing...
+DoubleFactoryTest(ContAmb, PrintSurvivors = FALSE)["Voter.23","Gain.W2"] # -0.004347826
+DoubleFactoryTest(ContAmb2, PrintSurvivors = FALSE)["Voter.23","Gain.W2"] # 0.003491191
+# ...but the core group is mostly unaffected (improving slightly).
+DoubleFactoryTest(ContAmb, PrintSurvivors = FALSE)["Voter.10","Gain.W2"] # 0.0003981117
+DoubleFactoryTest(ContAmb2, PrintSurvivors = FALSE)["Voter.10","Gain.W2"] # 0.0004388715
+
+
+# The obvious counter-move:
+ContAmb3 <- ContAmb2
+ContAmb3["Voter.1", "D.3"] <- 1 # The most profitable deviation (?)
+
+DoubleFactoryTest(ContAmb3)
+# Voter 1 has reclaimed his position...
+DoubleFactoryTest(ContAmb2, PrintSurvivors = FALSE)["Voter.1","Gain.W2"] # -0.004347826  -- notice that this is actually the same as ContAmb1 Voter 23!
+DoubleFactoryTest(ContAmb3, PrintSurvivors = FALSE)["Voter.1","Gain.W2"] # 0.003792857
+# ...and the core group still marches slowly toward victory.
+DoubleFactoryTest(ContAmb2, PrintSurvivors = FALSE)["Voter.10","Gain.W2"] # 0.0004388715
+DoubleFactoryTest(ContAmb3, PrintSurvivors = FALSE)["Voter.10","Gain.W2"] # 0.0004328065
+
+# Repeat repeat repeat...
+ContAmb4 <- ContAmb3
+ContAmb4["Voter.22", "D.17"] <- 0
+ContAmb4["Voter.21", "D.16"] <- 0
+ContAmb4["Voter.20", "D.15"] <- 0
+# Voter 22 ...
+DoubleFactoryTest(ContAmb3, PrintSurvivors = FALSE)["Voter.22","Gain.W2"] # -0.004347826
+DoubleFactoryTest(ContAmb4, PrintSurvivors = FALSE)["Voter.22","Gain.W2"] # 0.003074838
+# ...march, march, march.
+DoubleFactoryTest(ContAmb3, PrintSurvivors = FALSE)["Voter.10","Gain.W2"] # 0.0004328065
+DoubleFactoryTest(ContAmb4, PrintSurvivors = FALSE)["Voter.10","Gain.W2"] # 0.0006672369
+
+
+```
+
+
+```{r PhiEffect}
+
+DoubleFactoryTest(ContAmb, Phi = .55)
+
+DoubleFactoryTest(ContAmb, Phi = .70)
+
+DoubleFactoryTest(ContAmb, Phi = .90)
+
+DoubleFactoryTest(ContAmb, Phi = .95)
+
+# The effect is clear: more stablity. W2 is simply "flatter" and less subject to the arbitrary tiebreaker of the Reference Index.
+
+```
+
+
+```{r BumpingInAndOut}
+
+Bump <- ContAmb
+
+Unbumped <- DoubleFactoryTest(Bump)
+
+#Voter 8 Bumps Decision 8
+Bump2 <- Bump
+Bump2["Voter.8","D.8"] <- 0
+Bumped <- DoubleFactoryTest(Bump2)
+
+Unbumped["Voter.8","Gain.W2"]
+Bumped["Voter.8","Gain.W2"]
+# This is kind of strange...
+
+# (1) There is a more profitable move availiable to Voter.8
+# (2) This is a function of this strange matrix specifically
+
+Bump3 <- Bump
+Bump3["Voter.8","D.9"] <- 1
+
+Unbumped["Voter.8","Gain.W2"]
+DoubleFactoryTest(Bump3)["Voter.8","Gain.W2"]
+# Ha, this is interesting...Voter 8 accidentally de-coordinated his misinformed group.
+
+Bump <- matrix(0,(Dim-1),(Dim-1))
+colnames( Bump ) <- paste("D.",1:(ncol(Bump)), sep="") 
+row.names( Bump ) <- paste("Voter.",1:(nrow(Bump)), sep="") 
+Bump[1:9,"D.1"] <- 1
+
+DoubleFactoryTest(Bump)
+
+# Clearly, if someone "un-Bumps" Decision 1, the "Bumpers" are screwed.
+
+```
+
+
+```{r Synthesis}
+
+# Outcome of Phi / DoubleFactory
+M_res <- M1[,2:3]
+
+GetUniqueBallots( M_res )
+
+GetAuditChoices( M_res )
+
+GetContestedDecisions <- function(M) {
+  # Puts a few pieces together
+  
+  Uncontested <- colnames( DoubleFactory(M)$Filled )
+  ContestedMatrix <- M[,! (colnames(M) %in% Uncontested) ] # notice "!"
+  return( GetAuditChoices( ContestedMatrix ) )
+}
+
+GetContestedDecisions(M1)
+# $Choices
+#   BallotGroup BallotRep D2.1 D3.0
+# 1           A 0.3333333    1    0
+# 4           D 0.3333333    0    1
+# 
+# $NonChoices
+#   BallotGroup BallotRep D2.1 D3.0 SurrogateChoice
+# 2           B 0.1666667    0    0             Tie
+# 3           C 0.1666667    1    1             Tie
+
+# Notice something interesting:
+GetAuditChoices( M )
+GetAuditChoices( M1[,2:3] )
+
+# Notice also that I am NOT using SVD on purpose:
+# [1] If we make it to this point, the attacker will have >50% ...
+# [2] SVD had a specific purpose of measuring disagreement with the majority. However, this case is a failure-to-find-majority.
+
+BigM1 <- cbind( M1, M1, M1, M1[,-3])
+
+DoubleFactoryTest(BigM1)
+GetContestedDecisions(BigM1)
+PlotJ(BigM1)
+
+
+
+#
+colnames(VM6) <- paste("D",1:5,sep = ".")
+Scales6 <- BinaryScales(VM6)
+Scales6["Scaled",] <- TRUE
+DoubleFactoryTest(VM6, Scales = Scales6, Rep = R6a)
+GetAuditChoices(VM6,Reputation = R6a)
+# This seems to be a successful attack ... but how strategically stable is it?
+
+# ...if the 68% group waivers a little:
+R6b <- c(.34, .32001, .33999)
+GetAuditChoices(VM6,Reputation = R6b)
+# $Choices
+#   BallotGroup BallotRep D.1 D.2 D.3  D.4   D.5
+# 1           A   0.34000 0.8   0   0 0.25 0.045
+# 3           C   0.33999 0.4   1   1 0.15 0.015
+# 
+# $NonChoices
+#   BallotGroup BallotRep D.1 D.2 D.3 D.4  D.5 SurrogateChoice
+# 2           B   0.32001 0.6 0.5 0.5 0.2 0.03               C
+
+# this results favors increasing the unique Ballots to 3, (perhaps, IF the current Ballots do not contain enough residual vote-distance)
+
+# let's go back and add that.
+
+
+# (later) ...added.
+
+```
+
+
+
