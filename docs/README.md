@@ -43,9 +43,24 @@ Find a typo? Was anything not **completely clear**? Send me an email or pull req
 5. Add the 'teacher story' as an appendix item.
 6. Typo on page 4: "continute".
 7. Add backlinks to figures.
+8. Explain that Scaled Decisions resolving to ".5" must be 'dodged' from the user's point of view
+	1. 'Unclear' should return ".5", and '.5' should return ~".5000001"
+	1. Remove previous explanation about max-min. 
+2. Describe an "Open" transaction, (likely ideal for low-dimensional, illiquid markets) where 2 parties could purchase and split $X worth of complete-sets. For example, pay $20,000 total at prices (p1, p2) to give (s1, s2) shares to identities (i1, i2).
 
 
 FAQ
 ------------------------------------------
 
 FAQ has been moved to: [http://www.truthcoin.info/faq/](http://www.truthcoin.info/faq/)
+
+
+Notes to Self
+---------
+
+1. Just as Namecoin has an extra tab for names, ideally an extra tab for Markets / Trading.
+2. Toggle an 'Voter/Employee Mode' to access a Voting tab.
+3. Concept of a "Voter helper": gets info from 'recentralizers' (reddit, google, twitter, etc).
+4. Arbitrage Helper (described slightly in Paper #3).
+5. Voters for 'Unclear' always become ".5". For this reason, clear votes for a value which would actually translate to .5 must instead translate to .500001 or so.
+6. 
