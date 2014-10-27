@@ -30,6 +30,20 @@ CompareIncentives <- function(X,FF=Factory,N=1) {
   return(Out)
 }
 
+
+Chain <- function(X, Scales = BinaryScales(X), N = 2, ThisRep = DemocracyRep(X)) {
+  # Repeats factory process N times
+
+  Output <- vector("list")
+  for(i in 1:N) {
+    Output[[i]] <- Factory(X,Scales,Rep=ThisRep)
+    ThisRep <- Output[[i]]$Agents[,"RowBonus"]
+  }
+  
+  return(Output)
+}
+
+
 source(file="consensus/PlotJ.r")
 ```
 
