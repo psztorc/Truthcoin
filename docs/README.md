@@ -25,18 +25,19 @@ Find a typo? Was anything not **completely clear**? Send me an email or pull req
 ### Whitepaper
 
 1. Change terminology: "Voting Period" implies that what-is-being-discussed is "the time it takes to vote". Instead, call it "Intervote Period", or "Voting Cycle Length" or something.
-2. Emphasize that Tau-'Voting' and Tau-'Unsealing' really not vary anywhere near as much as 
-3. Explain the 'free option' to own a future Branch better.
+2. Emphasize that Tau-'Voting' and Tau-'Unsealing' really not vary anywhere near as much as Tau-'Idle'. Voting/Unsealing need to be more or less fixed at 1000 or so blocks.
+3. Explain the {'free option' to own a future Branch} better.
 4. Change the Encryption Vote Seal method of voting to the Hash-Publish as described on forum.
-5. Emphasize that Auditors fight over Pooled Trading Fees 
+5. Emphasize that Auditors fight over Pooled Trading Fees: 
 	1. Half to the Auditors.
 	2. Half to the Ballot which agreed with the Auditors (this is what encourages minority voters to 'stick it out').
-	3. Don't even mention 'Audit Fee parameter' as it is terrible way of explaining this.
+	3. Erase the 'Audit Fee parameter' as it is terrible way of explaining this.
 4. Update Figure of the Attacker-flowchart, possibly warrants a whole second page at this point.
 5. Explain the Miner-Veto Concept better
 	1. Princeton idea isn't great - consensus failure, laziness, instability
 	2. Better is a 'fail-SAFE' (more like mining an empty block)
 		1. Nonce + Vetos have no signature.
+	2. Explain that it will probably never be used (and this is a good thing).
 2. Fee1 can be set by >Phi Branch vote.
 3. Explain that it is extremely easy to have Markets not just reference Decisions, but also LOG, LN, ()^2, ()^3, etc of Decisions.
 4. Update the Vote-Outcome plot using the new PlotJ().
@@ -47,6 +48,8 @@ Find a typo? Was anything not **completely clear**? Send me an email or pull req
 	1. 'Unclear' should return ".5", and '.5' should return ~".5000001"
 	1. Remove previous explanation about max-min. 
 2. Describe an "Open" transaction, (likely ideal for low-dimensional, illiquid markets) where 2 parties could purchase and split $X worth of complete-sets. For example, pay $20,000 total at prices (p1, p2) to give (s1, s2) shares to identities (i1, i2).
+3. Add the concept of "non-outsourceable" VTC buying/selling (one VTC private key per transfer), to prevent an obscure but critical assurance-contract attack (which would place attacker a world where he only had to purchase when his attack would succeed).
+4. Improve Appendix b / 2 on page 35, by highlight the (1-p) case, and by adding examples that aren't 2 by 2, to highlight the ( p + (1-p) ) / 2 aggregation in the code.
 
 
 FAQ
