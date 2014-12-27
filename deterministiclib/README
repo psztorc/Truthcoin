@@ -1,0 +1,7 @@
+This version is different in these ways:
+1) It only supports binary, not scalar. ( I am planning on adding scalar eventually.)
+2) It doesn't use vectors for graphics card oprimization, so it is much slower.
+3) It requires installing the cdecimal python library (but not R or numpy)
+4) It is deterministic, so Macs and Windows and Linux all get identical outcomes. We avoid floating point operations.
+
+The 4th property is the most important one. That is why this is the only version so far that can be used in a blockchain. 
