@@ -24,8 +24,9 @@ Find a typo? Was anything not **completely clear**? Send me an email or pull req
 
 ### Whitepaper
 
-1. Change terminology: "Voting Period" implies that what-is-being-discussed is "the time it takes to vote". Instead, call it "Intervote Period", or "Voting Cycle Length" or something.
-2. Emphasize that Tau-'Voting' and Tau-'Unsealing' really not vary anywhere near as much as Tau-'Idle'. Voting/Unsealing need to be more or less fixed at 1000 or so blocks.
+1. There is an error in the description of RBCR. The first column of the U matrix is transformed, as in the statistical technique of PCA, into the first score and loading. It is the first Score which becomes the new reputation vector.
+2. Change terminology: "Voting Period" implies that what-is-being-discussed is "the time it takes to vote". Instead, call it "Intervote Period", or "Voting Cycle Length" or something.
+2. Emphasize that Tau-'Voting' and Tau-'Unsealing' really do not vary anywhere near as much as Tau-'Idle'. In fact, Voting/Unsealing need to be more or less fixed at 1000 or so blocks.
 3. Explain the {'free option' to own a future Branch} better.
 4. Change the Encryption Vote Seal method of voting to the Hash-Publish as described on forum.
 5. Emphasize that Auditors fight over Pooled Trading Fees: 
@@ -38,8 +39,9 @@ Find a typo? Was anything not **completely clear**? Send me an email or pull req
 	2. Better is a 'fail-SAFE' (more like mining an empty block)
 		1. Nonce + Vetos have no signature.
 	2. Explain that it will probably never be used (and this is a good thing).
-2. Fee1 can be set by >Phi Branch vote.
-3. Explain that it is extremely easy to have Markets not just reference Decisions, but also LOG, LN, ()^2, ()^3, etc of Decisions.
+2. Fee1 set algorithmically (details to follow).
+4. Add 'Sequence Numbers' for Decisions (for far off Decisions)
+3. Explain that it is extremely easy to have Markets not just reference Decisions, but also LOG, LN, ()^2, ()^3, etc of Decisions. This includes NotSequenced() of Decision. These might be called 'Gratis Decisions'.
 4. Update the Vote-Outcome plot using the new PlotJ().
 5. Add the 'teacher story' as an appendix item.
 6. Typo on page 4: "continute".
@@ -50,6 +52,7 @@ Find a typo? Was anything not **completely clear**? Send me an email or pull req
 2. Describe an "Open" transaction, (likely ideal for low-dimensional, illiquid markets) where 2 parties could purchase and split $X worth of complete-sets. For example, pay $20,000 total at prices (p1, p2) to give (s1, s2) shares to identities (i1, i2).
 3. Add the concept of "non-outsourceable" VTC buying/selling (one VTC private key per transfer), to prevent an obscure but critical assurance-contract attack (which would place attacker a world where he only had to purchase when his attack would succeed).
 4. Improve Appendix b / 2 on page 35, by highlight the (1-p) case, and by adding examples that aren't 2 by 2, to highlight the ( p + (1-p) ) / 2 aggregation in the code.
+5. Do the MonteCarlo experiment (random matrices, test vs more-central)
 
 
 FAQ
@@ -66,4 +69,5 @@ Notes to Self
 3. Concept of a "Voter helper": gets info from 'recentralizers' (reddit, google, twitter, etc).
 4. Arbitrage Helper (described slightly in Paper #3).
 5. Voters for 'Unclear' always become ".5". For this reason, clear votes for a value which would actually translate to .5 must instead translate to .500001 or so.
-6. 
+6. To stop runaway Branch-growth, the process must kick out to miners somewhere (possibly by requiring tx fees with Votes).
+7. Branch-participation aggregation formula (should probably be based on current accumulated-trading-fees).
