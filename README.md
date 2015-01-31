@@ -44,10 +44,9 @@ Table Notes:
 
 <h4>My Pipeline</h4>
 
-I'm Working on Now: Meeting(s) with investors (late October).   
 Up Next: Begin publishing my [blog](truthcoin.info), to discuss the numerous problems with existing cryptocoin projects.  
 Up Next: Editing Whitepaper 1.4 (<a href="mailto:truthcoin@gmail.com?subject=Feedback">email me</a> with typos/confusions, or pull request into [here](https://github.com/psztorc/Truthcoin/tree/master/docs#addendum--errata)).  
-Up Next: Seeking (and responding to) new feedback.
+Up Next: Releasing C++ client, Q1 2015
 
 <h4>You Can Help!</h4> 
 1. Read the documentation / code and ask questions to grow the FAQ! (<a href="mailto:truthcoin@gmail.com?subject=Feedback">Email me</a> or pull into [the errata section](https://github.com/psztorc/Truthcoin/tree/master/docs#addendum--errata) or [the FAQ section](https://github.com/truthcoin/www.truthcoin.info/blob/gh-pages/faq/index.md) with any new questions). 
