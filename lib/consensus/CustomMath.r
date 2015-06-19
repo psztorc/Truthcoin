@@ -1,4 +1,7 @@
-# CustomMath.r
+# Custom Math
+# Paul Sztorc
+# Written in R (v 3.1.1) using Rstudio (v 0.98.1028)
+
 # A collection of relatively basic functions.
 
 
@@ -298,7 +301,7 @@ ReverseMatrix <- function(Mat) {
 
 
 
-WeightedPrinComp <- function(X, Weights) {
+WeightedPrinComp <- function(X, Weights, Verbose=FALSE) {
   # Takes Matrix X and vector of row-weights "Weights"
   # Manually computes the statistical procedure known as Principal Components Analysis (PCA)
   # This version of the procedure is so basic, that it can also be thought of as merely a singular-value decomposition on a weighted covariance matrix.
@@ -316,10 +319,21 @@ WeightedPrinComp <- function(X, Weights) {
   
   # http://en.wikipedia.org/wiki/Singular_value_decomposition
   L <- svd(wCVM$cov)$u[,1]                                           # extract first Loading (first column of U matrix)
-  S <- as.vector(scale(X,center=wCVM$center,scale= FALSE) %*% L)     # manually calculate the first Score, using the input matrix, covariance matrix, and first loading
+  S <- as.vector( scale(X, center=wCVM$center, scale=FALSE) %*% L)   # manually calculate the first Score, using the input matrix, covariance matrix, and first loading
   # (center subtracts the weight-adjusted-means from X's columns)
   # (scale=FALSE means that no scaling is done)
   # %*% is matrix multiplication
+  
+  if(Verbose) {
+    Ls <- svd(wCVM$cov)$u # the entire u matrix
+    Ss <- scale(X, center=wCVM$center, scale=FALSE) %*% Ls # all of the scores
+    print("Loadings: ")
+    print(Ls)
+    print(" ")
+    print("Scores:")
+    print(Ss)
+    print(" ")
+  }
   
   Out <- list("Scores"=S,"Loadings"=L)
   return(Out)

@@ -1,0 +1,457 @@
+Trading Tests and Demo
+========================================================
+Paul Sztorc
+`r date()`
+Written in R (v 3.1.1) using Rstudio (v 0.98.1028)
+
+```{r Load,echo=FALSE,message=FALSE}
+#Source
+rm(list=ls())
+
+tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'lib' folder:")) )
+source("market/Trading.R")
+
+```
+
+```{r Setup}
+
+# Critical Steps...creates data structures...erases them if called twice.
+CreateDecisionSpace()
+CreateBranchSpace()
+CreateMarketSpace()
+CreateUserSpace()
+
+source("Governance.R")
+CreateBlockchain()
+
+
+AddBranch(Name="Politics", ExodusAddress="1M5tVTtynuqiS7Goq8hbh5UBcxLaa5XQb8", Description="Politics, particularly US Elections. No violence (or anything existential), no self-reference.", BaseListingFee=.02, 600, MinimumTradingFee=.0005, VotingPeriod=26208, 2016, 2016, TauRange = 3, ConsensusThreshold=.80)
+
+
+# Eventually, there will need to be a function to "update the branch rules", which will probably require some kind of 75% vote.
+
+AddDecision(Branch="Politics", Prompt="Did Barack H Obama win the United States 2012 presidential election?",
+            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh", TauFromNow=2)
+AddDecision(Branch="Politics", Prompt="Did the Democratic Party Candidate win the United States presidential election in 2016?",
+            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh", TauFromNow=2)
+AddDecision(Branch="Politics", Prompt="Did the Democratic Party win (only) a majority of Senate seats?",
+            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh", TauFromNow=2)
+AddDecision(Branch="Politics", Prompt="Did the Democratic Party win (only) a three-fifths supermajority of Senate seats (60+)?",
+            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh", TauFromNow=2)
+AddDecision(Branch="Politics", Prompt="Did the Democratic Party win a two-thirds supermajority of Senate seats (67+)?",
+            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh", TauFromNow=2)
+AddDecision(Branch="Politics", Prompt="Did the Democratic Party win (only) a majority of House seats?",
+            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh", TauFromNow=2)
+AddDecision(Branch="Politics", Prompt="Did the Democratic Party win a two-thirds supermajority of House seats (290+)?",
+            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh", TauFromNow=2)
+
+
+
+names(Markets)
+
+CreateMarket(Title="Obama", B=0.01, TradingFee=.010, MaxCommission=.01,
+             D_State=list( "ce098cf1b40be3547d66a90ca23b1a64" ), #Decisions (just one: will Barack be Elected)
+             Description="Barack Obama to win United States President in 2012\nThis Market will expire in state 1 if the statement is true and 0 otherwise.",
+             Tags=c("Politics, UnitedStates, President, Winner"),
+             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+             )
+
+CreateMarket(Title="DemControl", B=12, TradingFee=.005, MaxCommission=0,
+             D_State=list( c("3c17f406170b53f5cf4bf4caa43cc34e"), # This market has three dimensions ... 1 x 3 x 2
+                           c("b2b9baf8985e083b9f4b953b1c19c553", "42c802c8b0b22dfb966599771dbee4a3", "b03306d8bfaa7963c0123405668c998c"),
+                           c("af7121cdec22ea9c17158db6af2155cb", "3db8ae7b99b9066852895836e27a4e74")
+                         ),
+             Description="Democratic Control of the United States federal government following 2016 election.\nThis Market ...",
+             Tags=c("en", "UnitedStates", "Politics", "President", "Congress"),
+             OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh"
+             )
+
+names(Markets)
+
+
+CreateAccount("Alice",10)
+CreateAccount("Bob",50)
+Users
+
+
+
+```
+
+
+Markets 
+===========
+
+```{r Examples}
+
+## M1 and M2, two Example Markets with annotations.
+# M1 <- list(
+#           # features which change during trading
+#   
+#            Market_ID=NA,    #hash of c1[-1:-7] (permanent features)
+#            Size=NA,         #size in bytes of c1[-1:-7] (permanent features) 
+#            Shares=NA,       #initially, zero of course
+#            Balance=NA,      #funds in escrow for this Market
+#            FeeBalance=NA,   #Trading Fees Collected
+#            State=1,         # 1 indicates active (ie "trading"), 2 = "contested", 3 = "redeemable"
+#            B=1,             #Liquidity Parameter
+# 
+#            #permanent features
+#            TradingFee=.01,  #Cost to traders for participating in this market
+#            MaxCommission=.01 # the maximum spread of the market
+#            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",  #the Bitcoin address of the creator of this Market
+#            Title="Obama2012",                             #title - not necessarily unique
+#            Description="Barack Obama to win United States President in 2012\nThis Market will expire in state 1 if the statement is true and 0 otherwise.",
+#            #in practice, this might be pretty long.
+#            Tags=c("en", "UnitedStates", "Politics", "President", "Winner"), #ordinal descriptors, so individuals can find the market
+#            MaturationTime=2,   #max of Decision "TauFromNow", the point in time where all required info is available  
+#            D_State=list( "ce098cf1b40be3547d66a90ca23b1a64" )
+# )
+# 
+# M2 <- list(Market_ID=NA,
+#            Size=NA,
+#            Shares=NA,
+#            Balance=NA,
+#            FeeBalance=NA,
+#            State=1,
+#            B=2,
+#            
+#            TradingFee=.01,  
+#            MaxCommission=.01
+#            OwnerAd="1Loxo4RsiokFYXgpjc4CezGAmYnDwaydWh",
+#            Title="Dems2016",                 
+#            Description="Democratic Control of the United States federal government following 2016 election.\nThis Market ...",
+#            Tags=c("en", "UnitedStates", "Politics", "President", "Congress"),
+#            MaturationTime=5,
+#            D_State=list( "3c17f406170b53f5cf4bf4caa43cc34e",
+#                          c("b2b9baf8985e083b9f4b953b1c19c553", "42c802c8b0b22dfb966599771dbee4a3", "b03306d8bfaa7963c0123405668c998c"),
+#                          c("af7121cdec22ea9c17158db6af2155cb", "3db8ae7b99b9066852895836e27a4e74")
+#                          )
+# )
+
+```
+
+Outcome Axis
+----------------------
+```{r OutcomeAxes}
+# Assume some Results
+Decisions$State <- -1
+Decisions$ResolvedOutcome <- c(1, 1, .4, .7, .9, 0, 0) # the most ridiculous results possible.
+
+# > GetOutcomeAxis(  Markets$DemControl$D_State[[1]] , TRUE )
+#       [,1] [,2]
+# [1,]   NA    1
+#
+# [1] 0 1
+
+
+# > GetOutcomeAxis(  Markets$DemControl$D_State[[2]] , TRUE )
+#       [,1] [,2] [,3] [,4]
+# [1,]   NA  0.4   NA   NA
+# [2,]   NA   NA  0.7   NA
+# [3,]   NA   NA   NA  0.9
+#
+# [1] 0.00 0.20 0.35 0.45
+
+
+# > GetOutcomeAxis(  Markets$DemControl$D_State[[3]] , TRUE )
+#       [,1] [,2] [,3]
+# [1,]   NA    0   NA
+# [2,]   NA   NA    0
+
+# [1] 1 0 0
+
+
+# GetFinalPrices( Markets$DemControl )
+# [1] "This market does not yet HAVE final price. It is either being traded or audited."
+# [1] -1
+# 
+# > Markets$DemControl$State=3
+# > GetFinalPrices( Markets$DemControl )
+# , , d3.No
+# 
+#        d2.No d2.Yes d2.Yes d2.Yes
+# d1.No      0    0.0   0.00   0.00
+# d1.Yes     0    0.2   0.35   0.45
+# 
+# , , d3.Yes
+# 
+#        d2.No d2.Yes d2.Yes d2.Yes
+# d1.No      0      0      0      0
+# d1.Yes     0      0      0      0
+# 
+# , , d3.Yes
+# 
+#        d2.No d2.Yes d2.Yes d2.Yes
+# d1.No      0      0      0      0
+# d1.Yes     0      0      0      0
+
+```
+
+
+Trading
+==========
+
+
+Visualization / Convenience Functions
+------------------------------------------
+
+```{r AnalysisFunctions,echo=FALSE,message=FALSE}
+#Tests
+DisplayTest <- function() {
+  print(Users$Alice)
+  print(ShowPrices("Obama"))
+  print(Markets$Obama$Shares)
+}
+
+Capture <- function(FUN="Buy",uID,ID,State,P) {
+  #Captures the effect of trades on variables and captures this in a data frame.
+  if(FUN=="Buy") Out <- Buy(uID,ID,State,P)
+  if(FUN=="Sell") Out <- Sell(uID,ID,State,P)
+  if(length(Out)==1) DOut <- data.frame("SharesTraded"=0,"TradeCost"=0,"MarketPrice"=ShowPrices(ID)[State],"Cash"=Users[[uID]]$Cash)
+  if(length(Out)==2) DOut <- data.frame("SharesTraded"=Out[1],"TradeCost"=Out[2],"MarketPrice"=P,"Cash"=Users[[uID]]$Cash)
+  return(DOut)
+}
+
+EmbellishRows <- function(DataIn) {
+  DataIn$Time <- 1:nrow(DataIn)
+  DataIn$SharesOwned <- cumsum(DataIn$SharesTraded)
+  DataIn$TotalPaid <- cumsum(DataIn$TradeCost)
+  DataIn$PriceChange <- c(diff(DataIn$MarketPrice),NA)
+  return(DataIn)
+}
+
+ResetAlice <- function() {
+  try( Q <- Users$Alice$Obama["State1"])
+  if( !is.null(Q) ) {
+      if(Q > 0) Sell("Alice", "Obama", 1, Q )
+      }
+  }
+
+CaptureSequence <- function(Sequence) {
+  ResetAlice()
+  DataOut <- data.frame("SharesTraded"=0,"TradeCost"=0,"MarketPrice"=0,"Cash"=0)
+  for(i in 1:(length(Sequence))) {
+    if(Sequence[i]<ShowPrices("Obama")[1]) DataOut <- rbind(DataOut,Capture('Sell',"Alice","Obama",1,Sequence[i]))
+    if(Sequence[i]>=ShowPrices("Obama")[1]) DataOut <- rbind(DataOut,Capture('Buy',"Alice","Obama",1,Sequence[i]))
+    }
+  return(DataOut[-1,])
+}
+
+
+
+MarketVisual <- function(Data) {
+  library(ggplot2)
+  library(reshape)
+  
+  mData <- melt(Data[,c(2,1,8,3,6,7,5)],id.vars="Time")
+  
+  P1 <- ggplot(mData,aes(x=Time,y=value)) +
+    geom_point()+geom_line()+
+    facet_grid(variable~.,scales="free_y")
+  
+  print(P1)
+}
+
+
+```
+
+Basics
+-----------------------
+```{r Tests1}
+
+ShowPrices("Obama", Standardized=TRUE)
+#  d1.No d1.Yes 
+#    0.5    0.5 
+
+ShowPrices("Obama") # with Liquidity-Sensitivity, traders are slightly overcharged
+#  d1.No d1.Yes 
+#  0.505  0.505 
+
+
+ShowPrices("DemControl")
+# , , d3.No
+# 
+#             d2.No     d2.Yes     d2.Yes     d2.Yes
+# d1.No  0.04166667 0.04166667 0.04166667 0.04166667
+# d1.Yes 0.04166667 0.04166667 0.04166667 0.04166667
+# 
+# , , d3.Yes
+# 
+#             d2.No     d2.Yes     d2.Yes     d2.Yes
+# d1.No  0.04166667 0.04166667 0.04166667 0.04166667
+# d1.Yes 0.04166667 0.04166667 0.04166667 0.04166667
+# 
+# , , d3.Yes
+# 
+#             d2.No     d2.Yes     d2.Yes     d2.Yes
+# d1.No  0.04166667 0.04166667 0.04166667 0.04166667
+# d1.Yes 0.04166667 0.04166667 0.04166667 0.04166667
+
+ShowPrices("Obama")
+#  d1.No d1.Yes 
+#  0.505  0.505 
+
+QueryMove("Obama", State=1, P=.6) #
+#       d1.No 
+# 0.003862929
+
+Buy("Alice", "Obama", State=1, P=.6)
+# [1] "Calulating Required Shares... 0.00386292917268716"
+# [1] "Determining Cost of Trade... 0.00193281009936941"
+# [1] "Fee: 1.93281009936941e-05"
+# [1] "Bought 0.00386292917268716 for 0.0019521382003631 ."
+#       d1.No             
+# 0.003862929 0.001952138
+
+ShowPrices("Obama")
+#     d1.No    d1.Yes 
+# 0.6000000 0.4097373
+
+
+QueryMove("DemControl", State=3, P=.30) # higher B, more states, increases liquidity
+# [1] 27.45836
+
+QueryCost("Obama",State=2, S=1) # cost for 1 share
+# [1] 0.5873772
+
+QueryCost("DemControl", State=1, S=1) # cost for 1 share ...better deal, has higher lower price and higher B
+# [1] 0.04337354
+
+
+```
+
+1 Trader, 1 Contract
+------------------------
+```{r Simple}
+
+ResetAlice()
+
+Simple <- CaptureSequence(
+  c(.6,.7,.6,.8,.6,.5,.7,seq(.7,.99,length.out=15)))
+
+MarketVisual(EmbellishRows(Simple))
+# Produces a plot showing sample trades (0-10), and then a demo of linear incrase in Market Price corresponding to geometric growth in Trade Cost.
+```
+
+Trades Revealing Effect of LMSR
+-----------------------------------
+```{r LMRSEffect}
+
+# This section was originally conceieved with Liquidity-Sensitivity off.
+
+#Set 1
+ResetAlice()
+Users$Alice$Cash <- 1000 #lots of cash
+Markets$Obama$Shares[1]  <- 10 #force possibility of lower price
+Markets$Obama$Shares[2]  <- 10 #force possibility of lower price
+
+MarketVisual(EmbellishRows(CaptureSequence(seq(.5,.95,length.out=30))))
+# Graphic: linear incrase in Market Price (ie "Price Change") corresponds to geometric growth in Trade Cost.
+
+
+#Self-Financing Effect
+ResetAlice()
+SFE <- EmbellishRows(CaptureSequence(c(seq(.5,.05,length.out=25),seq(.1,.5,length.out=4),seq(.5,.95,length.out=15))))
+SFE$CostPerShare <- SFE$TradeCost/SFE$SharesTraded
+plot(TradeCost~MarketPrice , data=SFE,main="The 'Self-Financing Effect'",sub="Rising cost to increase MarketPrice by exactly 0.01551724.",xlim=c(.55,1))
+plot(CostPerShare~MarketPrice , data=SFE,main="The 'Self-Financing Effect II'",sub="Each share (eventually worth either $0 or $1) costs approximately its own price.")
+
+#In fact, setting the probability to 1 is always impossible (very realistic).
+QueryMoveCost("Obama",1,1)
+# [1] Inf
+
+
+#Set 2
+ResetAlice()
+
+dLMSR2 <- rbind(
+            Capture('Buy', "Alice","Obama",1,0.8181818),
+            Capture('Buy', "Alice","Obama",1,0.90000),
+            Capture('Buy', "Alice","Obama",1,0.99000),
+            Capture('Buy', "Alice","Obama",1,0.99900),
+            Capture('Buy', "Alice","Obama",1,0.99990))
+#Notice same cost to move for (1/10)th price change.
+ResetAlice()
+
+dLMSR3 <- rbind(
+            Capture('Buy', "Alice","Obama",1,0.8181818),
+            Capture('Buy', "Alice","Obama",1,0.900000),
+            Capture('Buy', "Alice","Obama",1,0.940000),
+            Capture('Buy', "Alice","Obama",1,0.970000),
+            Capture('Buy', "Alice","Obama",1,0.990000),
+            Capture('Buy', "Alice","Obama",1,0.991000),
+            Capture('Buy', "Alice","Obama",1,0.992000),
+            Capture('Buy', "Alice","Obama",1,0.993000),
+            Capture('Buy', "Alice","Obama",1,0.994000),
+            Capture('Buy', "Alice","Obama",1,0.995000),
+            Capture('Buy', "Alice","Obama",1,0.996000),
+            Capture('Buy', "Alice","Obama",1,0.997000),
+            Capture('Buy', "Alice","Obama",1,0.998000),
+            Capture('Buy', "Alice","Obama",1,0.999000),
+            Capture('Buy', "Alice","Obama",1,0.999900),
+            Capture('Buy', "Alice","Obama",1,0.999999),
+            Capture('Buy', "Alice","Obama",1,0.99999999))
+
+
+dLMSR2 <- dLMSR2[-1,] # .5 to .81818 is nonrepresentative of this effect
+dLMSR3 <- dLMSR3[-1,] 
+
+
+plot(MarketPrice~Cash,main="Price impact from spending 2.302",data=dLMSR2,xlim=c(999,988),axes=FALSE)
+lines(dLMSR3$Cash,dLMSR3$MarketPrice)
+axis(side = 2, at = c(.9,.99,.999,.9999),las=2)
+axis(side = 1, at = seq(998,980,by=-2.302),las=2)
+box()
+# Graphic: Although we've spent the same amount (2.302), price increase is geometrically-decreasing (+0.0900, +0.0090, +0.0009, ...)
+
+```
+
+Redemptions
+-------------------------------
+
+```{r Redeptions}
+
+Buy(uID="Alice",ID="Obama",State=2,P=.7,Verbose=TRUE)
+# [1] "Calulating Required Shares... 0.00847297860387203"
+# [1] "Determining Cost of Trade... 0.0042688546201457"
+# [1] "Fee: 4.2688546201457e-05"
+# [1] "Bought 0.00847297860387203 for 0.00431154316634716 ."
+# [1] 0.008472979 0.004311543
+ShowPrices("Obama")
+#     d1.No    d1.Yes 
+# 0.3274946 0.7168892 
+ShowPrices("Obama",Standardized = TRUE)
+#     d1.No    d1.Yes 
+# 0.3053027 0.6946973 
+
+Redeem(uID="Alice",ID="Obama",State=2,S=.8,Verbose=TRUE)
+# [1] "You cannot redeem (sell) using this function until there is a consensus about the outcome."
+# [1] -1
+
+Markets$Obama$State <- 3  # obviously, never would the user set or edit this.
+
+GetFinalPrices(Markets$Obama) # Requres that all Decisions be resolved. (These results were assumed).
+#  d1.No d1.Yes 
+#      0      1 
+
+Redeem(uID="Alice",ID="Obama",State=2,S=.84,Verbose=TRUE)
+# [1] "Redeemed 0.84 for 0.84 ."
+# [1] -0.84   -0.84 
+
+Users$Alice
+# $Cash
+# [1] 10.32407
+# 
+# $Obama
+#     State2 
+# 0.00729786 
+
+Markets$Obama$Balance
+# [1] 0.3639728
+
+Markets$Obama$Shares
+#      d1.No     d1.Yes 
+# 0.00000000 0.00729786 
+
+```
+
