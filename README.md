@@ -1,5 +1,7 @@
 <h2>Truthcoin: Decentralized Bitcoin Prediction Markets</h2>
 
+This is the theoretical work behind [the actual C++ implementation here](https://github.com/truthcoin/truthcoin-cpp).
+
 <h4>Summary</h4>  
 Truthcoin is my ambitious project to create a trustless P2P prediction-marketplace. This is possible because, unlike most marketplaces, the end product of a prediction market (PM) is information. Bitcoin adds the second piece of the puzzle: the exchange of value. The end result is the first of its kind: a market for actual prediction-commodities, which have a value based on their accuracy and not based on the behavior of any administrator, rival trader, or counterparty.
 
@@ -42,23 +44,17 @@ Table Notes:
 5. -->
 
 
-<h4>My Pipeline</h4>
-
-Up Next: Begin publishing my [blog](truthcoin.info), to discuss the numerous problems with existing cryptocoin projects.  
-Up Next: Editing Whitepaper 1.4 (<a href="mailto:truthcoin@gmail.com?subject=Feedback">email me</a> with typos/confusions, or pull request into [here](https://github.com/psztorc/Truthcoin/tree/master/docs#addendum--errata)).  
-Up Next: Releasing C++ client, Q1 2015
 
 <h4>You Can Help!</h4> 
 1. Read the documentation / code and ask questions to grow the FAQ! (<a href="mailto:truthcoin@gmail.com?subject=Feedback">Email me</a> or pull into [the errata section](https://github.com/psztorc/Truthcoin/tree/master/docs#addendum--errata) or [the FAQ section](https://github.com/truthcoin/www.truthcoin.info/blob/gh-pages/faq/index.md) with any new questions). 
 2. Joining and posting to the forum.  
-5. Help continue the translation of the R code into Python and C++.
+3. Help test/improve the code. Or, work for money and use that money to hire someone who can test/improve the code!
 
 
 <h4>Where is Everything?</h4>
-Code: lib folder (in R, incomplete python and C++ versions are in 'pylib' folder)
-Readings/Documentation/Purpose/Applications/Tech = 'docs' folder  
-Details about tx types:  docs/Development Plans/   
-
+Code: 'lib' folder
+Readings/Documentation/Purpose/Applications/Tech: 'docs' folder 
+ 
 The 'lib' folder also has html files which describe the outcome of function tests and demonstrations. These files were automatically generated from R code using R-markdown, and the .rmd files are included alongside the html files for reproducibility.
 
 
