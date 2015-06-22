@@ -22,6 +22,11 @@ Addendum / Errata
 ------------------------------------------
 Find a typo? Was anything not **completely clear**? Send me an email or pull request into this section:
 
+Whitepaper  
+
+1. Andrew Poelstra has pointed out (and I agree) that there should be breif periods (20 blocks or so) of forced VoteCoin inactivity between each of the steps of the Voting Period. This costs the protocol almost-nothing, but prevents a kind of bizarre uncertainty where extremely confused or reckless Voters accidentally do something which might give other Voter-Miner coalitions an incentive to wait until the last to cast their vote (and potentially try to rewind it [if the reckless thing is done]).
+
+
 
 
 
