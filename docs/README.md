@@ -25,6 +25,7 @@ Find a typo? Was anything not **completely clear**? Send me an email or pull req
 Whitepaper  
 
 1. Andrew Poelstra has pointed out (and I agree) that there should be breif periods (20 blocks or so) of forced VoteCoin inactivity between each of the steps of the Voting Period. This costs the protocol almost-nothing, but prevents a kind of bizarre uncertainty where extremely confused or reckless Voters accidentally do something which might give other Voter-Miner coalitions an incentive to wait until the last to cast their vote (and potentially try to rewind it [if the reckless thing is done]).
+2. A reader has pointed out that the offered limit of 100K Voters per Outcome resolution per Branch (in performing SVD) may in fact be conservative, and points out that [the SVDPACK library](http://www.netlib.org/svdpack/) can handle a dataset of size 100M x 500k in reasonable time.
 
 
 
