@@ -1,6 +1,6 @@
 <h2>Truthcoin: Decentralized Bitcoin Prediction Markets</h2>
 
-This is the theoretical work behind [the actual C++ implementation here](https://github.com/truthcoin/truthcoin-cpp).
+This is the theoretical work behind [the actual C++ implementation here](https://github.com/bitcoin-hivemind/hivemind).
 
 <h4>Summary</h4>  
 Truthcoin is my ambitious project to create a trustless P2P prediction-marketplace. This is possible because, unlike most marketplaces, the end product of a prediction market (PM) is information. Bitcoin adds the second piece of the puzzle: the exchange of value. The end result is the first of its kind: a market for actual prediction-commodities, which have a value based on their accuracy and not based on the behavior of any administrator, rival trader, or counterparty.
