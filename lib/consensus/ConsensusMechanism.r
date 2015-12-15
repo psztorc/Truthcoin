@@ -8,241 +8,34 @@
 
 
 # To my knowledge, R does not feature 'automatic working directories' unless it is being run as a script
-try(setwd("~/GitHub/Truthcoin/lib"))
-source("consensus/CustomMath.r")
+# try(setwd("~/GitHub/Truthcoin/lib/consensus"))
+source("CustomMath.r")
 
 ## Functions:
 
 DemocracyRep <- function(X) {
   # Run this if no Reputations were given...gives everyone an equal share and equal vote.
-  Rep <- ReWeight(rep(1,nrow(X)))
+  
+  Dem_Rep <- ReWeight(rep(1,nrow(X)))
+  return( Dem_Rep )
 }
 
 
-BinaryScales <- function(X) {
+BinaryScales <- function(X, IndexOnly=FALSE) {
   # Run this if no Scales were provided..assumes none were Scaled, all are Binary (0 or 1).
-  Scales <- matrix( c( rep(FALSE,ncol(X)),
+  
+  Bin_Scales <- matrix( c( rep(FALSE,ncol(X)),
                        rep(0,ncol(X)),
                        rep(1,ncol(X))), 3, byrow=TRUE, dimnames=list(c("Scaled","Min","Max"),colnames(X)) )
+  
+  if(IndexOnly) return( as.logical( Bin_Scales["Scaled",] ) )
+  return( Bin_Scales )
 }
 
-GetRewardWeights <- function(M, Rep=DemocracyRep(M), alpha=.1, Verbose=FALSE) {
-  # Calculates the new reputations using WPCA
-  
-  if(Verbose) {
-    print("****************************************************")
-    print("Begin 'GetRewardWeights'")
-    print("Inputs...")
-    print("Matrix:")
-    print(M)
-    print("")
-    print("Reputation:")
-    print(AsMatrix(Rep))
-    print("")
-  }
 
-  Results <- WeightedPrinComp(M,Rep)
+GetDecisionOutcomes <- function(Mtemp, Rep = DemocracyRep(Mtemp), ScaledIndex = BinaryScales(Mtemp, TRUE), Verbose=FALSE) {
+  # Determines the (raw) Outcomes of Decisions based on the provided reputation (weighted vote)
   
-  FirstLoading <- Results$Loadings #The first loading is designed to indicate which Decisions were more 'agreed-upon' than others. 
-  FirstScore   <- Results$Scores   #The scores show loadings on consensus (to what extent does this observation represent consensus?)
-  
-  if(Verbose) { print("First Loading:"); print(FirstLoading); print("First Score:"); print(AsMatrix(FirstScore)) }
-  
-  # PCA, being an abstract factorization, is incapable of determining anything absolute.
-  # Therefore the results of the entire procedure would theoretically be reversed if the average state of Decisions changed from TRUE to FALSE.
-  # Because the average state of Decisions is a function both of randomness and the way the Decisions are worded, I quickly check to see which
-  #   of the two possible 'new' reputation vectors had more opinion in common with the original 'old' reputation.
-  #   I originally tried doing this using math but after multiple failures I chose this ad hoc way.
-  
-  # Zeroing Out ...the two options
-  Set1 <-  FirstScore + abs( min(FirstScore) )
-  Set2 <-  abs( FirstScore - max(FirstScore) )
-  
-  Old <- Rep %*% M                  # Outcomes under the previous period's reputation
-  
-  Method <- 3 # Being thinking this over for a long time...I'm pretty sure that Method 3 is the best.
-  
-  if( Method == 1 ) {
-    # Statistics Method
-    # "Which set would produce more representative results?"
-    
-    New1 <- GetWeight(Set1) %*% M  # reweight to the reputation units first, then calculate what outcomes would resolve to using this Rep
-    New2 <- GetWeight(Set2) %*% M 
-    
-    RefInd <- sum( (New1-Old)^2 ) -  sum( (New2-Old)^2 ) # squared errors
-    
-  }
-  
-  if( Method == 2 ) {
-    # Mathematics Method
-    # "Which set moves the results the shortest distance?"
-    
-    New1 <- Set1 %*% M # Do not change units at all (only shift one observation to zero, and remove negatives).
-    New2 <- Set2 %*% M # Notice that Set1 and Set2 already have the same max and min.
-    
-    RefInd <- sum( abs(New1-Old)) -  sum( abs(New2-Old))  # Raw errors, no squaring.
-    
-  }
-  
-  if( Method == 3 ) {
-    # Rank Method
-    # "Which set moves the direction the least?"
-    
-    rOld <- rank(Old)
-    
-    # Same as method 2, but focusing only on rank order. The logic being that we are focusing on the measurement of a single direction here.
-    New1 <- rank( (GetWeight(Set1) %*% M) + 0.01*Old ) # I add Old because rank will erase data if final values are non-unique values
-    New2 <- rank( (GetWeight(Set2) %*% M) + 0.01*Old )
-    
-    RefInd <- sum( abs(New1-rOld) ) - sum( abs(New2-rOld) )  # Raw errors, no squaring.
-    
-    if(RefInd==0) { # If the ranks are a tie, go back to Method 1
-    
-      New1 <- GetWeight(Set1) %*% M
-      New2 <- GetWeight(Set2) %*% M
-      
-      RefInd <- sum( (New1-Old)^2 ) -  sum( (New2-Old)^2 ) # squared errors
-    }
-    
-  }
-  
-  
-  # The Reference Index is a measurement of error, if >0, then New1 had higher errors (use New2), and conversely if <0 use 1.
-  
-  if(RefInd<=0) AdjPrinComp <- Set1  
-  if(RefInd>0)  AdjPrinComp <- Set2  
-  
-  if(Verbose) {
-    print("")
-    print(paste(" %% Reference Index %% :",RefInd))
-    print("Estimations using: Previous Rep, Option 1, Option 2")
-    print( cbind( AsMatrix(Old), AsMatrix(New1), AsMatrix(New2) ) )
-    print("")
-    print("Previous period reputations, Option 1, Option 2, Selection")
-    print( cbind( AsMatrix(Rep), AsMatrix(Set1), AsMatrix(Set2), AsMatrix(AdjPrinComp) ) )
-  }
-  
-  # Declared here, filled below (unless there was a perfect consensus).
-  RowRewardWeighted <- Rep # (set this to uniform if you want a passive diffusion toward equality when people cooperate [not sure why you would]). Instead diffuses towards previous reputation (Smoothing does this anyway).
-  if(max(abs(AdjPrinComp))!=0) RowRewardWeighted <- GetWeight( (AdjPrinComp * Rep/mean(Rep)) ) # Overwrite the inital declaration IFF there wasn't perfect consensus.
-  # note: Rep/mean(Rep) is a correction ensuring Reputation is additive. Therefore, nothing can be gained by splitting/combining Reputation into single/multiple accounts.
-  
-  
-  # Freshly-Calculated Reward (Reputation) - Exponential Smoothing
-  # New Reward: RowRewardWeighted
-  # Old Reward: Rep
-  SmoothedR <- alpha*(RowRewardWeighted) + (1-alpha)*Rep
-  
-  if(Verbose) {
-    print("")
-    print("Corrected for Additivity , Smoothed _1 period")
-    print( cbind( AsMatrix(RowRewardWeighted), AsMatrix(SmoothedR)) )
-  }
-  
-  # Return Data
-  Out <- list("FirstL"=FirstLoading,"OldRep"=Rep,"ThisRep"=RowRewardWeighted,"SmoothRep"=SmoothedR)  # Keep the factors and time information along for the ride, they are interesting.
-  return(Out)
-}
-
-# M <- matrix(nrow=3,byrow=TRUE,data=c(1,0,1,0,
-#                                      1,0,1,0,
-#                                      1,0,0,1))
-# 
-# M2 <- matrix(nrow=3,byrow=TRUE,data=c(.80, .1, .72, 0,
-#                                       .80, .1, .62, 0,
-#                                       .43, .1, .00, 1))
-
-# > GetRewardWeights(M)
-# $FirstL
-# [1]  0.0000000  0.0000000 -0.7071068  0.7071068
-# $OldRep
-# [1] 0.3333333 0.3333333 0.3333333
-# $ThisRep
-# [1] 0.5 0.5 0.0
-# $SmoothRep
-# [1] 0.35 0.35 0.30
-# 
-# > GetRewardWeights(M, Rep=c(.2,.2,.6))
-# $FirstL
-# [1]  0.0000000  0.0000000 -0.7071068  0.7071068
-# $OldRep
-# [1] 0.2 0.2 0.6
-# $ThisRep
-# [1] 0 0 1
-# $SmoothRep
-# [1] 0.18 0.18 0.64
-# 
-# > GetRewardWeights(M2)
-# $FirstL
-# [1] -0.2934226  0.0000000 -0.5338542  0.7930340
-# $OldRep
-# [1] 0.3333333 0.3333333 0.3333333
-# $ThisRep
-# [1] 0.5105984 0.4894016 0.0000000
-# $SmoothRep
-# [1] 0.3510598 0.3489402 0.3000000
-# 
-# > GetRewardWeights(M2, Rep=c(.2,.2,.6), alpha=.5, Verbose = TRUE)
-# [1] "****************************************************"
-# [1] "Begin 'GetRewardWeights'"
-# [1] "Inputs..."
-# [1] "Matrix:"
-# [,1] [,2] [,3] [,4]
-# [1,] 0.80  0.1 0.72    0
-# [2,] 0.80  0.1 0.62    0
-# [3,] 0.43  0.1 0.00    1
-# [1] ""
-# [1] "Reputation:"
-# [,1]
-# [1,]  0.2
-# [2,]  0.2
-# [3,]  0.6
-# [1] ""
-# [1] "First Loading:"
-# [1] -0.2935984  0.0000000 -0.5330507  0.7935092
-# [1] "First Score:"
-# [,1]
-# [1,] -0.7822233
-# [2,] -0.7289182
-# [3,]  0.5037139
-# [1] ""
-# [1] " %% Reference Index %% : -4"
-# [1] "Estimations using: Previous Rep, Option 1, Option 2"
-# [,1] [,2] [,3]
-# [1,] 0.578    3    4
-# [2,] 0.100    2    2
-# [3,] 0.268    1    3
-# [4,] 0.600    4    1
-# [1] ""
-# [1] "Previous period reputations, Option 1, Option 2, Selection"
-# [,1]       [,2]     [,3]       [,4]
-# [1,]  0.2 0.00000000 1.285937 0.00000000
-# [2,]  0.2 0.05330507 1.232632 0.05330507
-# [3,]  0.6 1.28593716 0.000000 1.28593716
-# [1] ""
-# [1] "Corrected for Additivity , Smoothed _1 period"
-# [,1]      [,2]
-# [1,] 0.00000000 0.1000000
-# [2,] 0.01362912 0.1068146
-# [3,] 0.98637088 0.7931854
-# $FirstL
-# [1] -0.2935984  0.0000000 -0.5330507  0.7935092
-# 
-# $OldRep
-# [1] 0.2 0.2 0.6
-# 
-# $ThisRep
-# [1] 0.00000000 0.01362912 0.98637088
-# 
-# $SmoothRep
-# [1] 0.1000000 0.1068146 0.7931854
-
-
-
-
-GetDecisionOutcomes <- function(Mtemp, Rep = DemocracyRep(Mtemp), ScaledIndex, Verbose=FALSE) {
-  # Determines the Outcomes of Decisions based on the provided reputation (weighted vote)
-    
   if(Verbose) { print("****************************************************") ; print("Begin 'GetDecisionOutcomes'")}
   
   DecisionOutcomes.Raw  <- 1:ncol(Mtemp) # Declare this (filled below)
@@ -255,7 +48,7 @@ GetDecisionOutcomes <- function(Mtemp, Rep = DemocracyRep(Mtemp), ScaledIndex, V
     #Discriminate Based on Contract Type
     if(!ScaledIndex[i]) DecisionOutcomes.Raw[i] <- Row %*% Col                   # Our Current best-guess for this Binary Decision (weighted average) 
     if(ScaledIndex[i]) DecisionOutcomes.Raw[i] <- weighted.median(w=Row, x=Col)  # Our Current best-guess for this Scaled Decision (weighted median)
-   
+    
     if(Verbose) { print("** **"); print("Column:"); print(i); print(AsMatrix(Row)); print(Col); print("Consensus:"); print(DecisionOutcomes.Raw[i]) }
   }
   
@@ -279,6 +72,317 @@ GetDecisionOutcomes <- function(Mtemp, Rep = DemocracyRep(Mtemp), ScaledIndex, V
 # > GetDecisionOutcomes(Mtemp=M, ScaledIndex=c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE), Rep=c(.2,.2,.1,.4,.04,.06))
 # [1] 1.0000000 0.7000000 0.5000000 0.1000000 0.5820690 0.6517202
 
+
+
+GetRewardWeights <- function(M, Rep=DemocracyRep(M), ScaledIndex = BinaryScales(M, TRUE), alpha=.1, Tol=.2, Verbose=FALSE, RBCR=6) {
+  # Calculates the new reputations using WPCA
+  
+  if(Verbose) {
+    print("****************************************************")
+    print("Begin 'GetRewardWeights'")
+    print("Inputs...")
+    print("Matrix:")
+    print(M)
+    print("")
+    print("Reputation:")
+    print(AsMatrix(Rep))
+    print("")
+  }
+
+  Results <- WeightedPrinComp(M,Rep)
+  
+  FirstLoading <- Results$Loadings #The first loading is designed to indicate which Decisions were more 'agreed-upon' than others. 
+  FirstScore   <- Results$Scores   #The scores show loadings on consensus (to what extent does this observation represent consensus?)
+  
+  if(Verbose) { print("First Loading:"); print(FirstLoading); print("First Score:"); print(AsMatrix(FirstScore)) }
+  
+
+  # Skip all of this if there is pefect consensus (ie, all people agree).
+  
+  # Declared here, filled below (unless there was a perfect consensus).
+  NewRep <- Rep # By default, reputations don't change if everyone agrees.
+  
+  if( ! sum(abs(FirstScore))==0 ) {
+    
+    ## Choosing Among Two Score-Persepectives
+    
+    # Now we have some work to do on the FirstScore.
+    
+    # PCA, being an abstract factorization, is incapable of determining anything absolute.
+    # Therefore the results of the entire procedure would theoretically be reversed if the average state of Decisions changed from TRUE to FALSE.
+    # Because the average state of Decisions is a function both of randomness and the way the Decisions are worded, I check to see which of the
+    # two possible 'new' reputation vectors had more opinion in common with the original 'old' reputation.
+    
+    
+    
+    # The two options:
+    Option1 <-  FirstScore + abs( min(FirstScore) )
+    Option2 <-  abs( FirstScore - max(FirstScore) )
+    
+    # For each option:
+    
+    Score_Reflect <- function( Component, Previous_Reputation ) {
+      # Takes an adjusted score, and breaks it at a median point.
+      
+      # Only if there actually is a median point.
+      if( length( unique(Component) ) <= 2 ) return(Component)
+      
+      # If the Reps are calculated directly, there is an exploit in generating "sacrificial variance" and passing it to a teammate.
+      # Although initially the sac-var is zero-sum (pointless), after reweighting it can become helpful to attackers.
+      
+      # Instead, a simple adjustment:
+      MedianFactor <- weighted.median(Component, w = Previous_Reputation) # Which component is in the center?
+      # This central value will be the next maximum, NOT the value opposite the most-deviant.
+      
+      # By how much does the component exceed the Median?
+      Reflection <- Component - MedianFactor  
+      # Where does the Component exceed the Median?
+      Excessive <- ( Reflection > 0 )
+      
+      # Declare and Fill Answer
+      AdjPrinComp <- Component
+      AdjPrinComp[ Excessive ] <- Component[ Excessive ] - (  Reflection[ Excessive ] * 0.5  ) # Mixes in some of the old method.
+      # Check: max(Component) == MedianFactor # TRUE
+      
+      return(AdjPrinComp)
+    }
+    
+    
+    NewScore_1 <- Score_Reflect(Option1, Rep)
+    NewScore_2 <- Score_Reflect(Option2, Rep)
+    
+    # Now, by what criteria do we compare the options?
+    # (This should be easy, because one option will be the opposite of truth, but it deserves some thought nonetheless.)
+  
+    Method <- RBCR # All of these work very well, but I'm pretty sure that Method 6 is the best.
+    
+    if( Method == 1 ) {
+      # Statistics Method
+      # "Which set would produce more representative results?"
+      
+      New1 <- GetWeight(Set1) %*% M  # reweight to the reputation units first, then calculate what outcomes would resolve to using this Rep
+      New2 <- GetWeight(Set2) %*% M 
+      
+      RefInd <- sum( (New1-Old)^2 ) -  sum( (New2-Old)^2 ) # squared errors
+      
+    }
+    
+    if( Method == 2 ) {
+      # Mathematics Method
+      # "Which set moves the results the shortest distance?"
+      
+      New1 <- Set1 %*% M # Do not change units at all (only shift one observation to zero, and remove negatives).
+      New2 <- Set2 %*% M # Notice that Set1 and Set2 already have the same max and min.
+      
+      RefInd <- sum( abs(New1-Old)) -  sum( abs(New2-Old))  # Raw errors, no squaring.
+      
+    }
+    
+    if( Method == 3 ) {
+      # Rank Method
+      # "Which set moves the direction the least?"
+      
+      rOld <- rank(Old)
+      
+      # Same as method 2, but focusing only on rank order. The logic being that we are focusing on the measurement of a single direction here.
+      New1 <- rank( (GetWeight(Set1) %*% M) + 0.01*Old ) # I add Old because rank will erase data if final values are non-unique values
+      New2 <- rank( (GetWeight(Set2) %*% M) + 0.01*Old )
+      
+      RefInd <- sum( abs(New1-rOld) ) - sum( abs(New2-rOld) )  # Raw errors, no squaring.
+      
+      if(RefInd==0) { # If the ranks are a tie, go back to Method 1
+      
+        New1 <- GetWeight(Set1) %*% M
+        New2 <- GetWeight(Set2) %*% M
+        
+        RefInd <- sum( (New1-Old)^2 ) -  sum( (New2-Old)^2 ) # squared errors
+      }
+    }
+    
+    if( Method == 4 ) {
+      # Norm Method - Operating Logic Unknown
+      
+      # Caluclate Potential Outcomes
+      New1 <- GetDecisionOutcomes(M, GetWeight(Set1), ScaledIndex)
+      New2 <- GetDecisionOutcomes(M, GetWeight(Set2), ScaledIndex) 
+      
+      # Absolute Differences in Outcome
+      Choice1 <- abs( New1 - Old )
+      Choice2 <- abs( New2 - Old )
+      
+      # Absolute Relevance of Dissagreement
+      Dissent <- abs(FirstLoading)
+      
+      RefInd <- (Choice1 %*% Dissent) - (Choice2 %*% Dissent)
+    }
+    
+    if( Method == 5 | Method == 6 ) {
+      # Use Old Reputation to calculate outcomes.
+      # Examine each voter's agreement with these outcomes.
+      # Collapse this agreement using this period's Loading.
+      
+      # Old Outcomes
+      Old_raw <- GetDecisionOutcomes(M, Rep, ScaledIndex) # Outcomes under the previous period's reputation
+      # Bin non-scaled modes into < 0, .5, 1 > using Catch()
+      Old_c <- vapply(Old_raw, FUN = Catch, Tolerance = Tol, FUN.VALUE = 1)
+      Old_f <- Old_c ;  Old_f[ScaledIndex] <- Old_raw[ScaledIndex]
+      
+      # Build distance matrix: absolute value of difference between "Group Outcomes (using Old)" and "Individual Outcomes"
+      Distance <- abs(  M - ( array(1, dim(M)) %*% diag(Old_f) )  )
+      
+      # Separately, build index of question-cohesion
+      Dissent <- abs(FirstLoading) # FirstLoading is higher when people disagree, lower when people agree, zero for perfect agreement.
+      Dissent[Dissent==0] <- NA # Remove Zeros (zeros are irrelevant, not infinitely important), avoid division-by-zero problems
+      Mainstream <- ReWeight( 1/Dissent )
+      
+      # Integrate the Two
+      NonCompliance <- Distance %*% t(t(Mainstream))
+      Compliance <- ReWeight(  abs( NonCompliance - max(NonCompliance) )  )
+      
+      # Compare - Which score has more error when it is matched up against compliance?
+      Choice1 <- sum( (GetWeight(NewScore_1) - Compliance)^2 )  # Reweight is absolutely required here, as the components will always sum to different values.
+      Choice2 <- sum( (GetWeight(NewScore_2) - Compliance)^2 ) 
+  
+      # When RefInd becomes positive, switch to Set2.
+      RefInd <- Choice1 - Choice2  # When Choice1 has greater error, this will be positive.
+      
+    }
+    
+    # Rep/mean(Rep) is a correction ensuring Reputation is additive. Therefore, nothing can be gained by splitting/combining Reputation into single/multiple accounts.
+    Rep1 <- GetWeight( (NewScore_1 * Rep/mean(Rep)) )
+    Rep2 <- GetWeight( (NewScore_2 * Rep/mean(Rep)) )
+    
+    # The Reference Index is a measurement of error, if >0, then New1 had higher errors (use New2), and conversely if <0 use 1.
+    if(RefInd <  0 ) NewRep <- Rep1
+    if(RefInd >= 0 ) NewRep <- Rep2
+    
+  }
+  
+
+  if(Verbose) {
+  
+    print("")
+    print(paste(" %% Reference Index %% :",RefInd))
+    print("Estimations using: Previous Rep, Option 1, Option 2")
+    print(  cbind( AsMatrix(Old_f), AsMatrix( GetDecisionOutcomes(M, Rep1, ScaledIndex) ), AsMatrix( GetDecisionOutcomes(M, Rep2, ScaledIndex) ) )  )
+    print("")
+    print("Previous period reputations, Option 1, Option 2, Raw1, Raw2, Selection")
+    print(  cbind( AsMatrix(Rep), AsMatrix(Rep1), AsMatrix(Rep2), AsMatrix(NewScore_1), AsMatrix(NewScore_2), AsMatrix(NewRep) )  )
+    
+  }
+  
+  
+  # Freshly-Calculated Reward (Reputation) - Exponential Smoothing
+  # New Reward: NewRep
+  # Old Reward: Rep
+  SmoothedR <- alpha*(NewRep) + (1-alpha)*Rep
+  
+  if(Verbose) {
+    print("")
+    print("Corrected for Additivity , Smoothed _1 period")
+    print( cbind( AsMatrix(NewRep), AsMatrix(SmoothedR)) )
+  }
+  
+  # Return Data
+  Out <- list("FirstL"=FirstLoading,"OldRep"=Rep,"ThisRep"=NewRep,"SmoothRep"=SmoothedR)  # Keep the factors and time information along for the ride, they are interesting.
+  return(Out)
+}
+
+# M <- matrix(nrow=3,byrow=TRUE,data=c(1,0,1,0,
+#                                      1,0,1,0,
+#                                      1,0,0,1))
+# 
+# M2 <- matrix(nrow=3,byrow=TRUE,data=c(.80, .1, .72, 0,
+#                                       .80, .1, .62, 0,
+#                                       .43, .1, .00, 1))
+# 
+# > GetRewardWeights(M)
+# $FirstL
+# [1]  0.0000000  0.0000000 -0.7071068  0.7071068
+# $OldRep
+# [1] 0.3333333 0.3333333 0.3333333
+# $ThisRep
+# [1] 0.5 0.5 0.0
+# $SmoothRep
+# [1] 0.35 0.35 0.30
+# 
+# > GetRewardWeights(M, Rep=c(.2,.2,.6), Tol = .1)
+# $FirstL
+# [1]  0.0000000  0.0000000 -0.7071068  0.7071068
+# $OldRep
+# [1] 0.2 0.2 0.6
+# $ThisRep
+# [1] 0 0 1
+# $SmoothRep
+# [1] 0.18 0.18 0.64
+# 
+# > GetRewardWeights(M2)
+# $FirstL
+# [1] -0.2934226  0.0000000 -0.5338542  0.7930340
+# $OldRep
+# [1] 0.3333333 0.3333333 0.3333333
+# $ThisRep
+# [1] 0.505356 0.494644 0.000000
+# $SmoothRep
+# [1] 0.3505356 0.3494644 0.3000000
+# 
+# > GetRewardWeights(M2, Rep=c(.2,.2,.6), alpha=.5, Verbose = TRUE)
+# [1] "****************************************************"
+# [1] "Begin 'GetRewardWeights'"
+# [1] "Inputs..."
+# [1] "Matrix:"
+# [,1] [,2] [,3] [,4]
+# [1,] 0.80  0.1 0.72    0
+# [2,] 0.80  0.1 0.62    0
+# [3,] 0.43  0.1 0.00    1
+# [1] ""
+# [1] "Reputation:"
+# [,1]
+# [1,]  0.2
+# [2,]  0.2
+# [3,]  0.6
+# [1] ""
+# [1] "First Loading:"
+# [1] -0.2935984  0.0000000 -0.5330507  0.7935092
+# [1] "First 
+# [1] "Previous period reputations, Option 1, Option 2, Raw1, Raw2, Selection"
+# [,1]       [,2]      [,3]       [,4]      [,5]       [,6]
+# [1,]  0.2 0.00000000 0.5105824 0.00000000 0.6429686 0.00000000
+# [2,]  0.2 0.01362912 0.4894176 0.05330507 0.6163160 0.01362912
+# [3,]  0.6 0.98637088 0.0000000 1.28593716 0.0000000 0.98637088
+# [1] ""
+# [1] "Corrected for Additivity , Smoothed _1 period"
+# [,1]      [,2]
+# [1,] 0.00000000 0.1000000
+# [2,] 0.01362912 0.1068146
+# [3,] 0.98637088 0.7931854
+# $FirstL
+# [1] -0.2935984  0.0000000 -0.5330507  0.7935092
+# 
+# $OldRep
+# [1] 0.2 0.2 0.6
+# 
+# $ThisRep
+# [1] 0.00000000 0.01362912 0.98637088
+# 
+# $SmoothRep
+# [1] 0.1000000 0.1068146 0.7931854
+
+
+# Score:"
+# [,1]
+# [1,] -0.7822233
+# [2,] -0.7289182
+# [3,]  0.5037139
+# [1] ""
+# [1] " %% Reference Index %% : -1.26355970920342"
+# [1] "Estimations using: Previous Rep, Option 1, Option 2"
+# [,1]        [,2]      [,3]
+# [1,]  0.5 0.435042774 0.8000000
+# [2,]  0.0 0.100000000 0.1000000
+# [3,]  0.0 0.008450054 0.6710582
+# [4,]  0.5 0.986370881 0.0000000
+# [1] ""
 
 FillNa <- function(Mna, Rep = DemocracyRep(Mna), ScaledIndex = BinaryScales(Mna), CatchP=.1, Verbose=FALSE) { 
   # Uses exisiting data and reputations to fill missing observations.
@@ -315,7 +419,7 @@ FillNa <- function(Mna, Rep = DemocracyRep(Mna), ScaledIndex = BinaryScales(Mna)
     MnewC <- Mnew
     ## Discriminate based on contract type
     #Fill ONLY Binary contracts by appropriately forcing predictions into their discrete (0,.5,1) slot. (reveals .5 coordination, continuous variables are more gameable).
-    MnewC[,!ScaledIndex] <- apply(Mnew[,!ScaledIndex], c(1,2), function(x) Catch(x,CatchP) )
+    MnewC[,!ScaledIndex] <- apply(Mnew[,!ScaledIndex], c(1,2), function(x) Catch(x,Tolerance = CatchP) )
     #
     
   
@@ -355,7 +459,7 @@ FillNa <- function(Mna, Rep = DemocracyRep(Mna), ScaledIndex = BinaryScales(Mna)
 
 
 #Putting it all together:
-Factory <- function(M0, Scales = BinaryScales(M0), Rep = DemocracyRep(M0), CatchP=.1, MaxRow=5000, Verbose=FALSE) {
+Factory <- function(M0, Scales = BinaryScales(M0), Rep = DemocracyRep(M0), CatchP=.2, MaxRow=5000, Verbose=FALSE, RBCR = 6) {
   # Main Routine
 
   ScaledIndex=as.logical( Scales["Scaled",] )
@@ -366,7 +470,7 @@ Factory <- function(M0, Scales = BinaryScales(M0), Rep = DemocracyRep(M0), Catch
 
   ## Consensus - Row Players 
   # New Consensus Reward
-  PlayerInfo <- GetRewardWeights(Filled,Rep,.1,Verbose)
+  PlayerInfo <- GetRewardWeights(M = Filled, Rep, ScaledIndex, alpha = .1, Tol = CatchP, Verbose, RBCR)
   AdjLoadings <- PlayerInfo$FirstL
   
   ## Column Players (The Decision Creators)
@@ -392,7 +496,7 @@ Factory <- function(M0, Scales = BinaryScales(M0), Rep = DemocracyRep(M0), Catch
   # For each Decision
   for(i in 1:ncol(Filled)) { 
     # Sum of, the reputations which, met the condition that they voted for the outcome which was selected for this Decision.
-    Certainty[i] <- sum( PlayerInfo$SmoothRep [ DecisionOutcome.Adj[i] == Filled[,i] ] )
+    Certainty[i] <- sum( PlayerInfo$SmoothRep [ DecisionOutcome.Final[i] == Filled[,i] ] )
   }
   Avg.Certainty <- mean(Certainty)    # How well did beliefs converge?
   
@@ -458,8 +562,8 @@ Factory <- function(M0, Scales = BinaryScales(M0), Rep = DemocracyRep(M0), Catch
   colnames(Output[[3]]) <- c("OldRep", "ThisRep", "SmoothRep", "NArow", "ParticipationR","RelativePart","RowBonus")   
   Output[[4]] <- rbind(AdjLoadings,DecisionOutcomes.Raw,ConReward,Certainty,apply(NAmat,2,sum),ParticipationC,ColBonus,DecisionOutcome.Final)
   rownames(Output[[4]]) <- c("First Loading","DecisionOutcomes.Raw","Consensus Reward","Certainty","NAs Filled","ParticipationC","Author Bonus","DecisionOutcome.Final")
-  Output[[5]] <- (1-PercentNA) #Using this to set inclusion fees.
-  Output[[6]] <- Avg.Certainty #Using this to set Catch Parameter
+  Output[[5]] <- (1-PercentNA) # Using this to set inclusion fees.
+  Output[[6]] <- Avg.Certainty # Using this to set Catch Parameter
   
   return(Output)
 }

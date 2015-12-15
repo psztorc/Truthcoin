@@ -260,9 +260,16 @@ ReWeight <- function(Vec,exclude=is.na(Vec)) {
     print("Warning: Expected all positive.")
   }
     
-  Out <- Vec
+  # force well-behaved
+  Out <- abs(Vec)
   Out[exclude] <- 0
+  
+  # division by zero error
+  if(sum(Out)==0) Out <- Out + 1
+  
+  # Reweight
   Out <- Out/sum(Out)
+  
   return(Out)
 }
 

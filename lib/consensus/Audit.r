@@ -4,14 +4,14 @@
 # Making auditing between only a few choices.
 
 
-#Cleanup
-rm(list=ls())
+# #Cleanup
+# rm(list=ls())
 
-#Load everything
-tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'Truthcoin/lib' folder:")) )
-source(file="consensus/ConsensusMechanism.r")
-
-Use <- function(package) { if(suppressWarnings(!require(package,character.only=TRUE))) install.packages(package,repos="http://cran.case.edu/") ; require(package,character.only=TRUE) }
+# #Load everything
+# tryCatch(expr=setwd("~/GitHub/Truthcoin/lib"), error=function(e) setwd(choose.dir(caption="Failed to set working directory automatically. Choose 'Truthcoin/lib' folder:")) )
+# source(file="consensus/ConsensusMechanism.r")
+# 
+# Use <- function(package) { if(suppressWarnings(!require(package,character.only=TRUE))) install.packages(package,repos="http://cran.case.edu/") ; require(package,character.only=TRUE) }
 
 
 
@@ -19,59 +19,59 @@ Use <- function(package) { if(suppressWarnings(!require(package,character.only=T
 # 
 # Data:
 # 
-# R <- c(.40, .25, .10, .10, .05, .05, .05)
-# 
-# VM <- matrix( c(1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0), 7,5,byrow=TRUE)
-# 
-# VM2 <- matrix(c(1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0,
-#                 0, 0, 0, 0, 0,
-#                 0, 0, 0, 0, 0,
-#                 0, 0, 0, 0, 0,
-#                 0, 0, 0, 0, 0,
-#                 0, 0, 0, 0, 0), 7,5,byrow=TRUE)
-# 
-# VM3 <- matrix(c(1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0,
-#                 0, 1, 0, 1, 0,
-#                 0, 0, 0, 0, 1,
-#                 0, 0, 0, 0, 0,
-#                 0, 0, 0, 0, 1,
-#                 0, 0, 0, 0, 1), 7,5,byrow=TRUE)
-# 
-# VM4 <- matrix(c(1, 0, 0, 0, 0,
-#                 1, 0, 0, 0, 0,
-#                 .5, 0, 0, 0, 0,
-#                 .5, 0, 0, 0, 0,
-#                 0, 0, 0, 0, 0,
-#                 0, 0, 0, 0, 0), 6,5,byrow=TRUE)
-# 
-# VM5 <- matrix(c(0.0, 1.0, 0.81, 0.20, 0.03,
-#                 0.0, 1.0, 0.79, 0.20, 0.04, # confused
-#                 0.0, 1.0, 0.80, 0.20, 0.02,
-#                 0.0, 1.0, 0.80, 0.20, 0.03,
-#                 0.0, 1.0, 0.80, 0.98, 0.55, # liars spamming
-#                 0.0, 1.0, 0.80, 0.97, 0.56, # liars spamming
-#                 0.0, 1.0, 0.80, 0.99, 0.57), # liars spamming
-#               7, 5, byrow=TRUE)
-# 
-# # drawing it out of the binary ballot - cuts everything in half
-# VM6 <- matrix(c(0.8, 0.0, 0.0, 0.25, 0.045,
-#                 0.6, 0.5, 0.5, 0.20, 0.030,
-#                 0.4, 1.0, 1.0, 0.15, 0.015),
-#               3, 5, byrow=TRUE)
-# 
-# R6a <- c(.34,.32,.34)
-# 
-# R2 <- c(.40, .20, .20, .17, .01, .01, .01)
+R <- c(.40, .25, .10, .10, .05, .05, .05)
 
-## End Setup
+VM <- matrix( c(1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0), 7,5,byrow=TRUE)
+
+VM2 <- matrix(c(1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0), 7,5,byrow=TRUE)
+
+VM3 <- matrix(c(1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                0, 1, 0, 1, 0,
+                0, 0, 0, 0, 1,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 1,
+                0, 0, 0, 0, 1), 7,5,byrow=TRUE)
+
+VM4 <- matrix(c(1, 0, 0, 0, 0,
+                1, 0, 0, 0, 0,
+                .5, 0, 0, 0, 0,
+                .5, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0), 6,5,byrow=TRUE)
+
+VM5 <- matrix(c(0.0, 1.0, 0.81, 0.20, 0.03,
+                0.0, 1.0, 0.79, 0.20, 0.04, # confused
+                0.0, 1.0, 0.80, 0.20, 0.02,
+                0.0, 1.0, 0.80, 0.20, 0.03,
+                0.0, 1.0, 0.80, 0.98, 0.55, # liars spamming
+                0.0, 1.0, 0.80, 0.97, 0.56, # liars spamming
+                0.0, 1.0, 0.80, 0.99, 0.57), # liars spamming
+              7, 5, byrow=TRUE)
+
+# drawing it out of the binary ballot - cuts everything in half
+VM6 <- matrix(c(0.8, 0.0, 0.0, 0.25, 0.045,
+                0.6, 0.5, 0.5, 0.20, 0.030,
+                0.4, 1.0, 1.0, 0.15, 0.015),
+              3, 5, byrow=TRUE)
+
+R6a <- c(.34,.32,.34)
+
+R2 <- c(.40, .20, .20, .17, .01, .01, .01)
+
+# End Setup
 
 
 GetUniqueBallots <- function(VoteMatrix, Reputation = DemocracyRep(VoteMatrix)) {
