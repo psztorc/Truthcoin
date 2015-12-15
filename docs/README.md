@@ -15,17 +15,13 @@ Other papers which describe the overall purposes and goals of this endeavour:
 3. [How PMs can be used in ways other than simply predicting the future.](https://github.com/psztorc/Truthcoin/raw/master/docs/3_PM_Applications.pdf)  
 4. [Some myths about PMs which I still hear.](https://github.com/psztorc/Truthcoin/raw/master/docs/4_PM_Myths.pdf)  
 5. [A comment on PM-manipulation and why it actually is helpful (by providing profit opportunities).](https://github.com/psztorc/Truthcoin/raw/master/docs/5_PM_Manipulation.pdf)
+6. [Comments on the "assassination markets" concept (why it is unlikely to work).](https://github.com/psztorc/Truthcoin/raw/master/docs/6_Crime_Markets.pdf)
 
 
 
 Addendum / Errata
 ------------------------------------------
 Find a typo? Was anything not **completely clear**? Send me an email or pull request into this section:
-
-Whitepaper  
-
-1. Andrew Poelstra has pointed out (and I agree) that there should be breif periods (20 blocks or so) of forced VoteCoin inactivity between each of the steps of the Voting Period. This costs the protocol almost-nothing, but prevents a kind of bizarre uncertainty where extremely confused or reckless Voters accidentally do something which might give other Voter-Miner coalitions an incentive to wait until the last to cast their vote (and potentially try to rewind it [if the reckless thing is done]).
-2. Riccardo Casatta points out that the offered limit of 100K Voters per Outcome resolution per Branch (in performing SVD) may in fact be conservative, and advises that [the SVDPACK library](http://www.netlib.org/svdpack/) can handle a dataset of size 100M x 500k in reasonable time.
 
 
 
