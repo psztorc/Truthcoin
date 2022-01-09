@@ -1,8 +1,8 @@
-<h2>Truthcoin: Decentralized Bitcoin Prediction Markets</h2>
+# Truthcoin: Decentralized Bitcoin Prediction Markets
 
 This is the theoretical work behind [the actual C++ implementation here](https://github.com/bitcoin-hivemind/hivemind).
 
-<h4>Summary</h4>  
+## Summary 
 Truthcoin is my ambitious project to create a trustless P2P prediction-marketplace. This is possible because, unlike most marketplaces, the end product of a prediction market (PM) is information. Bitcoin adds the second piece of the puzzle: the exchange of value. The end result is the first of its kind: a market for actual prediction-commodities, which have a value based on their accuracy and not based on the behavior of any administrator, rival trader, or counterparty.
 
 Traditional PMs have been persecuted much in the same way as e-cash systems, and current Bitcoin alternatives require the user to trust the operator to:  
@@ -10,9 +10,9 @@ Traditional PMs have been persecuted much in the same way as e-cash systems, and
 2. Create desirable markets.  
 3. Accurately determine the outcome of markets.  
 
-Instead, Truthcoin's outcomes are determined by [a vote weighted by present and past conformity](https://lyoshenka.ocpu.io/truthcoindemo/www/), using in [a new token-ownership-model](http://www.truthcoin.info/presentations/truthcoin-outcomes.pdf). This theoretically produces a unique Nash Equilibrium of unanimous honesty. Moreover, incentives are to only create contracts which are useful (measured by trading volume), and unambiguous (measured by vote-similarity). Additionally, market liquidity is guaranteed to be permanently nonzero thanks to the [LMSR](http://hanson.gmu.edu/mktscore.pdf). MSRs allow for simple, secure, realtime buying and selling.
+Instead, Truthcoin's outcomes are determined by [a vote weighted by present and past conformity](https://lyoshenka.ocpu.io/truthcoindemo/www/), using [a new token-ownership-model](http://www.truthcoin.info/presentations/truthcoin-outcomes.pdf). This theoretically produces a unique Nash Equilibrium of unanimous honesty. Moreover, incentives are to only create contracts which are useful (measured by trading volume), and unambiguous (measured by vote-similarity). Additionally, market liquidity is guaranteed to be permanently nonzero thanks to the [LMSR](http://hanson.gmu.edu/mktscore.pdf). MSRs allow for simple, secure, realtime buying and selling.
 
-<h4>What's going on!?</h4>
+## What's going on!?
 Look at some [Slide Shows](http://www.truthcoin.info/presentations/).  
 [This written intro](https://github.com/psztorc/Truthcoin/raw/master/docs/1_Purpose.pdf) explains "what this is and why it is important".  
 [The whitepaper](https://github.com/psztorc/Truthcoin/raw/master/docs/Truthcoin_Whitepaper.pdf) explains "how it works".  
@@ -21,10 +21,10 @@ Read the [FAQ](http://www.truthcoin.info/faq/).
 Visit the [website](http://www.truthcoin.info/) and [forum](http://forum.truthcoin.info/). 
 
 <!--
-<h4>Rough Comparison to Popular CryptoProjects</h4>
+## Rough Comparison to Popular CryptoProjects
 
 | Concept   | P2P Coin| "Old" PoW Mining   | PMs - Trust 3rd Party (Administrator) | PMs - Trust 2nd Party (Traders) | Low-Trust PMs | Can Solve Computations | Score (X,*,.) |
-| :-------- | :------:| :--: | :--------:| :--: | :--------:| :--: | :--------:| :--: |
+| :-------- | :------:| :--: | :--------:| :--: | :--------:| :--: | :--------:|
 | Truthcoin  ?  | X | X | * | * | X | *?| 3, 2, 1 |
 | Bitcoin       | X | X | * | * | . | *?| 2, 2, 2 |
 | BitsharesX    | X | . | * | X | . | . | 2, 1, 3 |
@@ -45,20 +45,20 @@ Table Notes:
 
 
 
-<h4>You Can Help!</h4> 
+## You Can Help!
 1. Read the documentation / code and ask questions to grow the FAQ! (<a href="mailto:truthcoin@gmail.com?subject=Feedback">Email me</a> or pull into [the errata section](https://github.com/psztorc/Truthcoin/tree/master/docs#addendum--errata) or [the FAQ section](https://github.com/truthcoin/www.truthcoin.info/blob/gh-pages/faq/index.md) with any new questions). 
 2. Joining and posting to the forum.  
 3. Help test/improve the code. Or, work for money and use that money to hire someone who can test/improve the code!
 
 
-<h4>Where is Everything?</h4>
+## Where is Everything?
 Code: 'lib' folder
 Readings/Documentation/Purpose/Applications/Tech: 'docs' folder 
- 
+
 The 'lib' folder also has html files which describe the outcome of function tests and demonstrations. These files were automatically generated from R code using R-markdown, and the .rmd files are included alongside the html files for reproducibility.
 
 
-<h4>Contact</h4>
+## Contact
 truthcoin@gmail.com  
 https://twitter.com/Truthcoin  
 
